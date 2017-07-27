@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1058014047274",
+    "firebase_url": "https://folio-148102.firebaseio.com",
+    "project_id": "folio-148102",
+    "storage_bucket": "folio-148102.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058014047274:android:b5e97c1d8bef8726",
+        "android_client_info": {
+          "package_name": "com.enrandomlabs.jasensanders.v1.folio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058014047274-564t4a2u2atl9bi3obpmr7ga917afgj6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiuN8OKpnghppaSI3oWl2RF18E3z5qdb4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

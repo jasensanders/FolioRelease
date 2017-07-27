@@ -1,0 +1,35 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+
+
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+        <item name="android:windowReturnTransition">@transition/slide_bottom</item>
+        <item name="android:windowReenterTransition">@transition/slide_bottom</item>
+    </style>
+
+    <style name="AppTheme.AddNew" >
+        <item name="android:windowEnterTransition" >@transition/slide_bottom</item>
+    </style>
+    <style name="AppTheme.Details" >
+        <item name="android:windowEnterTransition" >@transition/slide_bottom</item>
+
+    </style>
+    <style name="AppTheme.RetailSearch" >
+        <item name="android:windowEnterTransition" >@transition/slide_bottom</item>
+
+    </style>
+</resources>

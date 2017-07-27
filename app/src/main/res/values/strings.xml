@@ -1,0 +1,134 @@
+<resources>
+    <!--Test Strings-->
+    <string name="hello_world">Hello World!</string>
+
+    <string name="app_name">Folio</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="search_hint">Search your Folio</string>
+
+    <!--Main Activity Strings-->
+    <string name="movie_view">- Movies</string>
+    <string name="wish_list_view">- Wish List</string>
+    <string name="books_view">- Books</string>
+
+
+    <!--Nav Drawer Strings-->
+    <string name="nav_description">Find and Add to your collection!</string>
+    <string name="search_retailers_nav">Search Retailers</string>
+    <string name="select_movies_owned">All Movies</string>
+    <string name="select_books">All Books</string>
+    <string name="select_wish_list">Wish List</string>
+    <string name="sort_label">Sort By</string>
+    <string name="sort_date_added_new">Date Added Newest</string>
+    <string name="sort_date_added_old">Date Added Oldest</string>
+    <string name="sort_title_AZ">Title A->Z</string>
+    <string name="sort_title_ZA">Title Z->A</string>
+    <string name="admin_nav">Administration</string>
+    <string name="select_restore_backup">Restore Database</string>
+
+
+    <!-- Barcode Capture Strings-->
+    <string name="barcode_activity_label">Read Barcode</string>
+    <string name="ok">OK</string>
+    <string name="alert_dialoge_label">Barcode Scanner</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This Barcode scanner cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Barcode dependencies cannot be downloaded due to low device storage</string>
+    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="barcode_success">Barcode read successfully</string>
+    <string name="barcode_failure">No barcode captured</string>
+    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+    <string name="tap_directions">Tap to capture. Pinch/Stretch to zoom</string>
+
+    <!-- Error Message Strings-->
+    <string name="no_internet">No Internet Connection</string>
+    <string name="empty_database_list">No Information Available</string>
+
+    <!-- AddNew Strings-->
+    <string name="title_add_new">Add</string>
+    <string name="scan_button">scan</string>
+    <string name="input_hint">Enter UPC Digits.</string>
+    <string name="store_hint">\u0020\u0020Enter location here: </string>
+    <string name="notes_hint">\u0020\u0020Enter Notes here: </string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="NoTitle">Enter Title!</string>
+    <string name="NoByline">Enter the byline.</string>
+    <string name="NoAuthor">Enter some author.</string>
+    <string name="NoDate">Enter release date.</string>
+    <string name="NoPublisher">Enter publisher.</string>
+    <string name="NoFormats">Enter formats E.G.: DVD</string>
+    <string name="NoRatingRuntime">Enter rating and runtime: G 100 MIN</string>
+    <string name="NoOverview"> Type overview here: </string>
+    <string name="wish_list_button">Add to Wish List</string>
+    <string name="NoImage">Type valid URL for image</string>
+
+    <!--DetailActivity/Fragment Strings-->
+    <string name="title_activity_detail">Details</string>
+    <string name="overview"><b>Overview:</b> \n\n %1$s</string>
+    <string name="rating_runtime">%1$s %2$s</string>
+    <string name="delete_button">Delete</string>
+    <string name="search_retail_button">Search Retailers</string>
+    <string name="wish_List_label">Added to Wish List</string>
+    <string name="placeholder_share">The Folio APP is Awesome!</string>
+    <string name="detail_movie_desc">%1$s %2$s released %3$s rated %4$s UPC: %5$s</string>
+    <string name="detail_book_desc">%1$s by %2$s published %3$s ISBN: %4$s</string>
+
+    <!--Search Retailers Activity-->
+    <string name="title_search_retailers">Search Retailers</string>
+    <string name="button_amazon">Search Amazon</string>
+    <string name="button_target">Search Target</string>
+    <string name="button_walmart">Search Walmart</string>
+    <string name="button_ebay">Search eBay</string>
+    <string name="button_besy_buy">Search Best Buy</string>
+    <string name="button_toysrus">Search Toys R\' Us</string>
+    <string name="upc_input_label">\u0020 UPC :\u0020</string>
+    <string name="title_input_label">\u0020 Title :\u0020\u0020</string>
+    <string name="title_hint">Search by Title</string>
+    <string name="action_share">Share Last Search</string>
+
+
+    <!--widget strings-->
+    <string name="title_widget_detail">Folio Details</string>
+
+    <!-- A11y Strings-->
+    <string name="wish_list_checkbox_desc">Check this to add to wish list</string>
+    <string name="barcode_scan_button">scan barcode button</string>
+    <string name="save_button_desc">save movie button</string>
+    <string name="cancel_button_desc">cancel button</string>
+    <string name="movie_detail_view_description">%1$s %2$s released %3$s rated %4$s</string>
+    <string name="book_detail_view_description">%1$s by %2$s published in %3$s</string>
+    <string name="poster_description">%1$s Movie art</string>
+    <string name="barcode_description">Barcode %1$s</string>
+    <string name="trailer_play_description">Play Trailer number %1$s</string>
+
+    <!--Preference Key Strings-->
+    <string name="provider_call_key">MAIN_VIEW</string>
+    <string name="sort_order_key">SORT_ORDER</string>
+
+    <!--ACCESS KEYS-->
+    <string name="search_upc_key">4BC274AE-00D6-4E2B-BF64-DEC4F7F3C6F5</string>
+    <string name="tmdb_key">749df891d0cc54abbb33461227d40008</string>
+    <string name="google_books_key">AIzaSyAZBR_tVc2wleSVMA4L6HC5uu_rAe9IKbg</string>
+
+    <!--Test ad id-->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!--Ad app id-->
+    <string name="ads_app_id">ca-app-pub-8372524945349378~3438927048</string>
+
+    <!--Real ad ids-->
+    <string name="home_ad_unit_id">ca-app-pub-8372524945349378/4915660248</string>
+    <string name="add_new_ad_unit_id">ca-app-pub-8372524945349378/5973591045</string>
+    <string name="retail_search_ad_unit_id">ca-app-pub-8372524945349378/7450324241</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

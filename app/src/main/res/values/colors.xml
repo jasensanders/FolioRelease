@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryWhat">#3F51B5</color>
+    <color name="colorPrimaryDark">#00253F</color>
+    <color name="colorPrimary">#004A7F</color>
+    <color name="colorAccent">#FF9C00</color>
+    <color name="colorLogo">#402600</color>
+    <color name="colorStarkWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="hintColorGray">#A9BBC4</color>
+    <color name="colorAccentDim">#E8A90C</color>
+
+    <color name="photo_placeholder">#CCCCCC</color>
+
+    <color name="secondary_text">#677278</color>
+    <color name="primary_text">#000000</color>
+    <color name="dividerGray">#EDEDED</color>
+
+
+    <color name="target_red">#CC0000</color>
+    <color name="amazon_orange">@color/colorAccent</color>
+    <color name="walmart_blue">#007bc4</color>
+    <color name="walmart_yellow">#ffc120</color>
+    <color name="ebay_green">#85B716</color>
+    <color name="best_buy_blue">#002E4E</color>
+    <color name="toysrus_blue">#004EBC</color>
+
+
+</resources>

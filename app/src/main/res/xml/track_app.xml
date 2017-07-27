@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <resources>
+        <string name="ga_trackingId">UA-85524745-1</string>
+        <bool name="ga_autoActivityTracking">true</bool>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.MainActivity">
+            Main screen
+        </screenName>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.AddNewActivity">
+            Add New Screen
+        </screenName>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.DetailActivity">
+            Details Screen
+        </screenName>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.DetailMovieFragment">
+            Details Screen Fragment
+        </screenName>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.RetailerSearchActivity">
+            Search Screen
+        </screenName>
+        <screenName name="com.enrandomlabs.jasensanders.v1.folio.barcode.BarcodeActivity">
+            Barcode Scanner
+        </screenName>
+    </resources>

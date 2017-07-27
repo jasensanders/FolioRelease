@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/user_input"
+    android:layout_below="@+id/details"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:background="@color/colorPrimaryDark">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorStarkWhite"
+        android:textColorHint="@color/colorAccentDim"
+        android:background="@color/colorPrimary"
+        android:id="@+id/store"
+        android:minEms="@integer/min_upc_input_width"
+        android:maxLines="@integer/store_input_max_lines"
+        android:minHeight="?attr/actionBarSize"
+        android:focusable="true"
+        android:gravity="start|center_vertical"
+        android:hint="@string/store_hint"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/store_input_padding"
+        android:paddingEnd="@dimen/store_input_padding"
+        android:theme="@style/UserInputStyle"/>
+
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notes"
+        android:textColor="@color/colorStarkWhite"
+        android:textColorHint="@color/colorAccentDim"
+        android:background="@color/colorPrimary"
+        android:minLines="@integer/notes_input_min_lines"
+        android:minEms="@integer/min_upc_input_width"
+        android:focusable="true"
+        android:gravity="start|center_vertical"
+        android:hint="@string/notes_hint"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/notes_input_padding"
+        android:paddingEnd="@dimen/notes_input_padding"
+        android:theme="@style/UserInputStyle"/>
+
+</LinearLayout>
