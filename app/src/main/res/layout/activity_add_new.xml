@@ -376,8 +376,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/add_new_ad_unit_id">
+        ads:adSize="SMART_BANNER">
     </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

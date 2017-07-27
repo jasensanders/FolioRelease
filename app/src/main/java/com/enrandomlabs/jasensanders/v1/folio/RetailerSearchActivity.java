@@ -62,6 +62,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         mAdView = (AdView) findViewById(R.id.retailerAdView);
+        mAdView.setAdUnitId(BuildConfig.RETAIL_SEARCH_AD_ID);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."

@@ -28,6 +28,15 @@ android {
             jniDebuggable true
         }
     }
+    buildTypes.each{
+        it.buildConfigField 'String', 'TMDB_API_KEY', MyTMDBApiKey
+        it.buildConfigField 'String', 'SEARCH_UPC_KEY', MySearchUPCKey
+        it.buildConfigField 'String', 'GOOGLE_BOOKS_KEY', MyGoogleBooksKey
+        it.buildConfigField 'String', 'HOME_AD_ID', FolioHomeAdID
+        it.buildConfigField 'String', 'ADD_NEW_AD_ID', FolioAddNewAdID
+        it.buildConfigField 'String', 'RETAIL_SEARCH_AD_ID', FolioRetailSearchAdID
+        it.buildConfigField 'String', 'MY_ADS_APP_ID', FolioMyAdID
+    }
 }
 
 dependencies {
@@ -44,6 +53,9 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:25.0.1'
     testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test:runner:0.5', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     //compile 'com.opencsv:opencsv:3.8'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.enrandomlabs.jasensanders.v1.folio.AddNewActivity;
-import com.enrandomlabs.jasensanders.v1.folio.R;
+import com.enrandomlabs.jasensanders.v1.folio.BuildConfig;
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -145,7 +145,7 @@ public class FetchBookService extends IntentService {
             final String QUERY_PARAM = "q";
             final String ISBN_PARAM = "isbn:" + ean;
             final String KEY_PARAM = "key";
-            final String API_KEY = getResources().getString(R.string.google_books_key);
+            final String API_KEY = BuildConfig.GOOGLE_BOOKS_KEY;
 
             Uri builtUri = Uri.parse(BOOKS_BASE_URL).buildUpon()
                     .appendQueryParameter(QUERY_PARAM, ISBN_PARAM)
@@ -402,7 +402,7 @@ public class FetchBookService extends IntentService {
             final String REQUEST_TYPE = "request_type";
             final String TYPE_JSON = "3";
             final String ACCESS_TOKEN = "access_token";
-            final String UPC_KEY = getResources().getString(R.string.search_upc_key);
+            final String UPC_KEY = BuildConfig.SEARCH_UPC_KEY;
             final String UPC = "upc";
 
             Uri builtUri = Uri.parse(SEARCHUPC_BASE_URL).buildUpon()
@@ -491,7 +491,7 @@ public class FetchBookService extends IntentService {
             final String REQUEST_TYPE = "request_type";
             final String TYPE_CSV = "1";
             final String ACCESS_TOKEN = "access_token";
-            final String UPC_KEY = getResources().getString(R.string.search_upc_key);
+            final String UPC_KEY = BuildConfig.SEARCH_UPC_KEY;
             final String UPC = "upc";
 
             Uri builtUri = Uri.parse(SEARCHUPC_BASE_URL).buildUpon()

@@ -210,6 +210,7 @@ public class AddNewActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
         mAdView = (AdView) findViewById(R.id.addNewAdView);
+        mAdView.setAdUnitId(BuildConfig.ADD_NEW_AD_ID);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."

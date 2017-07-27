@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.enrandomlabs.jasensanders.v1.folio.AddNewActivity;
-import com.enrandomlabs.jasensanders.v1.folio.R;
+import com.enrandomlabs.jasensanders.v1.folio.BuildConfig;
 import com.enrandomlabs.jasensanders.v1.folio.Utility;
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 import com.google.firebase.crash.FirebaseCrash;
@@ -231,7 +231,7 @@ public class FetchMovieDataService extends IntentService {
             final String REQUEST_TYPE = "request_type";
             final String TYPE_JSON = "3";
             final String ACCESS_TOKEN = "access_token";
-            final String UPC_KEY = getResources().getString(R.string.search_upc_key);
+            final String UPC_KEY = BuildConfig.SEARCH_UPC_KEY;
             final String UPC = "upc";
 
             Uri builtUri = Uri.parse(SEARCHUPC_BASE_URL).buildUpon()
@@ -302,7 +302,7 @@ public class FetchMovieDataService extends IntentService {
             final String TMDB_BASE_URL =
                     "https://api.themoviedb.org/3/search/movie?";
             final String APP_KEY = "api_key";
-            final String TMDB_KEY = getResources().getString(R.string.tmdb_key);
+            final String TMDB_KEY = BuildConfig.TMDB_API_KEY;
             final String LANG_PARAM = "language";
             final String US_LANG = "en-US";
             final String QUERY_PARAM = "query";
@@ -371,7 +371,7 @@ public class FetchMovieDataService extends IntentService {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try{
-            final String TMDB_KEY = getResources().getString(R.string.tmdb_key);
+            final String TMDB_KEY = BuildConfig.TMDB_API_KEY;
             final String TMDB_BASE_URL =
                     "http://api.themoviedb.org/3/movie/";
             final String LANGUAGE = "en-US";
@@ -428,7 +428,7 @@ public class FetchMovieDataService extends IntentService {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try{
-            final String TMDB_KEY = getResources().getString(R.string.tmdb_key);
+            final String TMDB_KEY = BuildConfig.TMDB_API_KEY;
             final String TMDB_BASE_URL =
                     "http://api.themoviedb.org/3/movie/";
             final String QUERY_PARAM = "videos";
@@ -484,7 +484,7 @@ public class FetchMovieDataService extends IntentService {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try{
-            final String TMDB_KEY = getResources().getString(R.string.tmdb_key);
+            final String TMDB_KEY = BuildConfig.TMDB_API_KEY;
             final String TMDB_BASE_URL =
                     "http://api.themoviedb.org/3/movie/";
             final String QUERY_PARAM = "release_dates";

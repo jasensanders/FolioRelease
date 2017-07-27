@@ -113,22 +113,8 @@
     <string name="provider_call_key">MAIN_VIEW</string>
     <string name="sort_order_key">SORT_ORDER</string>
 
-    <!--ACCESS KEYS-->
-    <string name="search_upc_key">4BC274AE-00D6-4E2B-BF64-DEC4F7F3C6F5</string>
-    <string name="tmdb_key">749df891d0cc54abbb33461227d40008</string>
-    <string name="google_books_key">AIzaSyAZBR_tVc2wleSVMA4L6HC5uu_rAe9IKbg</string>
-
     <!--Test ad id-->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-
-    <!--Ad app id-->
-    <string name="ads_app_id">ca-app-pub-8372524945349378~3438927048</string>
-
-    <!--Real ad ids-->
-    <string name="home_ad_unit_id">ca-app-pub-8372524945349378/4915660248</string>
-    <string name="add_new_ad_unit_id">ca-app-pub-8372524945349378/5973591045</string>
-    <string name="retail_search_ad_unit_id">ca-app-pub-8372524945349378/7450324241</string>
-
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

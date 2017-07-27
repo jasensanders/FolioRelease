@@ -113,9 +113,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         //Ads app ID Initialization
-        MobileAds.initialize(getApplicationContext(), getString(R.string.ads_app_id));
+        MobileAds.initialize(getApplicationContext(), BuildConfig.MY_ADS_APP_ID);
 
         mAdView = (AdView) findViewById(R.id.adView);
+        mAdView.setAdUnitId(BuildConfig.HOME_AD_ID);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
