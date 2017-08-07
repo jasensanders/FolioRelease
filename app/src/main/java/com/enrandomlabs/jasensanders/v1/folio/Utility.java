@@ -148,11 +148,13 @@ public class Utility {
         if(productName.contains(" (")) {
             String[] tempParens = productName.split(" \\(");
             name = tempParens[0];
-        }
-        if(productName.contains(" [")){
+        }else if(productName.contains(" [")){
             String[] tempParens = productName.split(" \\[");
             name = tempParens[0];
+        }else{
+            name = productName;
         }
+
 
         //Finds all formats in productName string and appends to format string
         String[] match = {"Blu-ray", "DVD", "Digital Copy", "Digital HD"};

@@ -43,6 +43,10 @@ public class FetchMovieDataService extends IntentService {
     private static final String UPC_PARAM = "com.enrandomlabs.jasensanders.v1.folio.services.extra.UPC_PARAM";
     private String param1 = "";
 
+    //Error
+    private static final String NOT_FOUND = "NOT_FOUND";
+    private static final String SERVER_ERROR = "ERROR";
+
 
 
 
@@ -87,17 +91,18 @@ public class FetchMovieDataService extends IntentService {
         //We do not include the _ID column because it is auto-generated, so 18 (Not 19) in length
         String[] FullRow = new String[18];
 
-        //Variables to hold row data
+        //Variables to hold row data and known variables initialized
         String TMDB_MOVIE_ID = "";
-        String UPC_CODE;
+        String UPC_CODE = upc;
         String MOVIE_THUMB = "";
         String POSTER_URL = "";
         String ART_IMAGE_URL = "";
-        String BARCODE_URL;
+        String BARCODE_URL = "http://www.searchupc.com/drawupc.aspx?q=" + UPC_CODE;
         String TITLE = "";
         String RELEASE_DATE = "";
         String RUNTIME = "";
-        String ADD_DATE;
+        DateFormat df = DateFormat.getDateInstance();
+        String ADD_DATE = df.format(Calendar.getInstance().getTime());
         String FORMATS = "";
         String STORE = "";
         String NOTES = "";
@@ -109,109 +114,117 @@ public class FetchMovieDataService extends IntentService {
         String GENRES = "";
         String IMDB_NUMBER = "";
 
-        //Verify input and restrict input to Movies only for alpha version
+
+        //FAIL TESTS
+        //Verify input
         if(upc == null ||upc.length() != 12){
             Log.e(LOG_TAG, "UPC is null or invalid, nothing will be added to Database");
-            return;}
+            sendApologies("UPC is Null or Invalid");
+            return;
+        }
 
-        //Add current Data to Variables
-        UPC_CODE = upc;
-        BARCODE_URL = "http://www.searchupc.com/drawupc.aspx?q=" + UPC_CODE;
-
-        DateFormat df = DateFormat.getDateInstance();
-        ADD_DATE = df.format(Calendar.getInstance().getTime());
-
-        //Get UPC data from SearchUPC.com database
+        //Get UPC data from SearchUPC.com database Verify Success.
         String upcJson = requestUPCdata(upc);
-        String TMDBmovieJson;
-        String[] TMDBmovieData;
-        //If request successful attempt to parse and add to variables
-        if(upcJson != null) {
-            String[] upcResults = parseUPCdataJson(upcJson);
-            if(upcResults != null) {
-                ART_IMAGE_URL = upcResults[1];
-                String[] nameAndFormat = Utility.parseProductName(upcResults[0]);
-                TITLE = nameAndFormat[0];
-                FORMATS = nameAndFormat[1];
-                TMDBmovieJson = requestMovieData(nameAndFormat[0]);
-                if(TMDBmovieJson != null){
-                    TMDBmovieData = parseTMDBdataJson(TMDBmovieJson);
-                    //String[]{id, thumb, poster, title, date, synopsis, genre};
+        if(upcJson == null){
+            Log.v(LOG_TAG, "Not found in SearchUPC database");
+            sendApologies("UPC Lookup Error");
+            return;
+        }
 
-                    if(TMDBmovieData != null){
-                        TMDB_MOVIE_ID = TMDBmovieData[0];
-                        MOVIE_THUMB = TMDBmovieData[1];
-                        POSTER_URL = TMDBmovieData[2];
-                        RELEASE_DATE = TMDBmovieData[4];
-                        SYNOPSIS = TMDBmovieData[5];
-                        GENRES = TMDBmovieData[6];
+        //Parse UPC data. Verify Success.
+        String[] upcResults = parseUPCdataJson(upcJson);
+        if(upcResults == null){
+            Log.e(LOG_TAG, "Error Parsing UPC json data");
+            sendApologies("UPC parse Error");
+            return;
+        }
+        //Add data to row
+        ART_IMAGE_URL = upcResults[1];
+        String[] nameAndFormat = Utility.parseProductName(upcResults[0]);
+        TITLE = nameAndFormat[0];
+        FORMATS = nameAndFormat[1];
 
-                        String DetailsJson = requestDetailsData(TMDB_MOVIE_ID);
-                        if(DetailsJson != null){
-                            String[] detailsRes = parseTMDBdetailsJson(DetailsJson);
-                            String runtime = detailsRes[0];
-                            String imdbRes = detailsRes[1];
-                            if(runtime != null && imdbRes != null){
-                                RUNTIME = runtime;
-                                IMDB_NUMBER = imdbRes;
-                            }
-                            else{
-                                Log.e(LOG_TAG, "Error parsing movie runtime data");
-                            }
-                        }else{
-                            Log.e(LOG_TAG, "Error retrieving movie runtime data");
-                        }
-
-                        String TrailerJson = requestTrailerData(TMDB_MOVIE_ID);
-                        if(TrailerJson != null){
-                            String trailers = parseTMDBtrailerJson(TrailerJson);
-                            if(trailers != null){
-                                TRAILERS = trailers;
-                            }else{
-                                Log.e(LOG_TAG, "Error parsing movie trailers data");
-                            }
-                        }else{
-                            Log.e(LOG_TAG, "Error retrieving movie trailers data");
-                        }
-
-                        String ReleaseJson = requestReleaseData(TMDB_MOVIE_ID);
-                        if(ReleaseJson != null){
-                            String rating = parseTMDBreleaseJson(ReleaseJson);
-                            if(rating != null){
-                                RATING = Utility.normalizeRating(rating);
-                            }else{
-                                Log.e(LOG_TAG, "Error parsing movie rating data");
-                            }
-                        }else{
-                            Log.e(LOG_TAG, "Error retrieving movie rating data");
-                        }
-
-
-                    }else{
-                        Log.e(LOG_TAG, "Error parsing TMDB json data");
-                        //sendError();
-                    }
-                }else{
-                    //Not in TMDB database
-                    Log.v(LOG_TAG, "Not found in TMDB database");
-                    //sendApologies();
-                    return;
-                }
-            }else {
-                Log.e(LOG_TAG, "Error Parsing UPC json data");
-                //sendError();
-            }
-            //send back what we got, Whatever that is.
+        //Get Movie Data. Verify Success.
+        String TMDBmovieJson = requestMovieData(nameAndFormat[0]);
+        if(TMDBmovieJson == null){
+            Log.e(LOG_TAG, "Not found in TMDB database");
+            //sendApologies("Movie Lookup Error");
+            //Return what we can even if its minimal.
             FullRow = new String[]{TMDB_MOVIE_ID, UPC_CODE, ART_IMAGE_URL, TITLE,
                     FORMATS, MOVIE_THUMB, BARCODE_URL, RELEASE_DATE, RUNTIME, ADD_DATE,
                     POSTER_URL, STORE, NOTES, STATUS, RATING, SYNOPSIS, TRAILERS, GENRES, IMDB_NUMBER};
 
             sendDataBack(FullRow);
-        }else{
-            //Not in SearchUPC database
-            Log.v(LOG_TAG, "Not found in SearchUPC database");
-            sendApologies();
+            return;
         }
+
+        //Parse Movie Data. Verify Success.
+        String[] TMDBmovieData = parseTMDBdataJson(TMDBmovieJson);
+        //String[]{id, thumb, poster, title, date, synopsis, genre};
+        if(TMDBmovieData == null){
+            //Log.e(LOG_TAG, "Error parsing TMDB json data");
+            sendApologies("Movie Data Parse Error");
+            return;
+        }
+
+
+        //Add Data to row.
+        TMDB_MOVIE_ID = TMDBmovieData[0];
+        MOVIE_THUMB = TMDBmovieData[1];
+        POSTER_URL = TMDBmovieData[2];
+        RELEASE_DATE = TMDBmovieData[4];
+        SYNOPSIS = TMDBmovieData[5];
+        GENRES = TMDBmovieData[6];
+
+        //Attempt to Get Details Data
+        String DetailsJson = requestDetailsData(TMDB_MOVIE_ID);
+        if(DetailsJson != null){
+            String[] detailsRes = parseTMDBdetailsJson(DetailsJson);
+            String runtime = detailsRes[0];
+            String imdbRes = detailsRes[1];
+            if(runtime != null && imdbRes != null){
+                RUNTIME = runtime;
+                IMDB_NUMBER = imdbRes;
+            }
+            else{
+                Log.e(LOG_TAG, "Error parsing movie runtime data");
+            }
+        }else{
+            Log.e(LOG_TAG, "Error retrieving movie runtime data");
+        }
+
+        String TrailerJson = requestTrailerData(TMDB_MOVIE_ID);
+        if(TrailerJson != null){
+            String trailers = parseTMDBtrailerJson(TrailerJson);
+            if(trailers != null){
+                TRAILERS = trailers;
+            }else{
+                Log.e(LOG_TAG, "Error parsing movie trailers data");
+            }
+        }else{
+            Log.e(LOG_TAG, "Error retrieving movie trailers data");
+        }
+
+        String ReleaseJson = requestReleaseData(TMDB_MOVIE_ID);
+        if(ReleaseJson != null){
+            String rating = parseTMDBreleaseJson(ReleaseJson);
+            if(rating != null){
+                RATING = Utility.normalizeRating(rating);
+            }else{
+                Log.e(LOG_TAG, "Error parsing movie rating data");
+            }
+        }else{
+            Log.e(LOG_TAG, "Error retrieving movie rating data");
+        }
+
+        //send back what we got, Whatever that is.
+        FullRow = new String[]{TMDB_MOVIE_ID, UPC_CODE, ART_IMAGE_URL, TITLE,
+                FORMATS, MOVIE_THUMB, BARCODE_URL, RELEASE_DATE, RUNTIME, ADD_DATE,
+                POSTER_URL, STORE, NOTES, STATUS, RATING, SYNOPSIS, TRAILERS, GENRES, IMDB_NUMBER};
+
+        sendDataBack(FullRow);
+
+
     }
 
 
@@ -227,7 +240,7 @@ public class FetchMovieDataService extends IntentService {
         String upcJsonStr = null;
 
         try{
-            final String SEARCHUPC_BASE_URL = "http://www.searchupc.com/handlers/upcsearch.ashx?";
+            final String SEARCHUPC_BASE_URL = "https://secure25.win.hostgator.com/searchupc_com/handlers/upcsearch.ashx?";
             final String REQUEST_TYPE = "request_type";
             final String TYPE_JSON = "3";
             final String ACCESS_TOKEN = "access_token";
@@ -249,6 +262,7 @@ public class FetchMovieDataService extends IntentService {
             urlConnection.connect();
 
             // Read the input stream into a String
+
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
@@ -298,6 +312,9 @@ public class FetchMovieDataService extends IntentService {
         String MovieJsonStr = null;
 
         try {
+            if(movieName.isEmpty()){
+                return null;
+            }
             // Construct the URL for the TMDB query
             final String TMDB_BASE_URL =
                     "https://api.themoviedb.org/3/search/movie?";
@@ -318,6 +335,8 @@ public class FetchMovieDataService extends IntentService {
             // Create the request to TMDB, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+            urlConnection.setRequestProperty("Accept","*/*");
             urlConnection.connect();
 
             // Read the input stream into a String
@@ -344,10 +363,11 @@ public class FetchMovieDataService extends IntentService {
             MovieJsonStr = buffer.toString();
 
         } catch (IOException e) {
-            Log.e(LOG_TAG, "IO Error TMDB data request", e);
-            FirebaseCrash.logcat(Log.ERROR, LOG_TAG, "IO Error TMDB data request");
+            Log.e(LOG_TAG, "IO Error TMDB data request" + movieName , e);
+            FirebaseCrash.logcat(Log.ERROR, LOG_TAG, "IO Error TMDB data request" + movieName);
             // If the code didn't successfully get the Movie data, there's no point in attempting
             // to parse it.
+
             return null;
         } finally{
             if (urlConnection != null) {
@@ -576,7 +596,10 @@ public class FetchMovieDataService extends IntentService {
 
             //If there are no results, then there is nothing to parse
             int totalResults = movieJson.getInt(TMDB_RESULTS_TOTAL);
-            if(totalResults == 0 || movieArray.length() == 0){return null;}
+            if(totalResults == 0 || movieArray.length() == 0){
+                Log.e(LOG_TAG, "Error Parsing TMDB data NO DATA" );
+                return null;
+            }
 
             // Strings to hold the data"
             String id, thumb, poster, title, date, synopsis, genre;
@@ -698,12 +721,13 @@ public class FetchMovieDataService extends IntentService {
 
     }
 
-    private void sendApologies(){
-        sendDataBack( new String[]{"404", param1, "none", "NOT_FOUND"});
+    //TODO: Need a better failure notice with useful data
+    private void sendApologies(String message){
+        sendDataBack( new String[]{message, param1, "none", NOT_FOUND});
     }
 
-    private void sendError(){
-        sendDataBack(new String[]{"500", param1, "none", "ERROR"});
+    private void sendError(String message){
+        sendDataBack(new String[]{message, param1, "none", SERVER_ERROR});
     }
 
     private void sendDataBack(String[] movieData){

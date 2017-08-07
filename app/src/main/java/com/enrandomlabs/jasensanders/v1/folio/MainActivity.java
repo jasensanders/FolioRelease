@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     public final Activity activity = this;
     private RecyclerView itemList;
     private ListItemAdapter listItemAdapter;
+    private MenuItem mSearchItem;
 
     AdView mAdView;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -224,9 +225,9 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
 
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchItem = menu.findItem(R.id.action_search);
 
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
         if(searchView != null){
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override

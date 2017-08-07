@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.google.firebase.crash.FirebaseCrash;
 public class AddNewActivity extends AppCompatActivity {
     //private static final String LOG_TAG = AddNewActivity.class.getSimpleName();
     private static final String ACTIVITY_NAME = "AddNewActivity";
+    private static final String LOG_TAG = AddNewActivity.class.getSimpleName();
 
     //Instance State Keys
     private static final String CURRENT_UPC_KEY = "UPC_CURRENT";
@@ -68,8 +70,8 @@ public class AddNewActivity extends AppCompatActivity {
     private BroadcastReceiver messageReceiver;
 
     //Error
-    private static final String NOT_FOUND = "404";
-    private static final String SERVER_ERROR = "500";
+    private static final String NOT_FOUND = "NOT_FOUND";
+    private static final String SERVER_ERROR = "ERROR";
 
     //State variables
     private String[] movie;
@@ -123,6 +125,7 @@ public class AddNewActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         LogActionEvent(ACTIVITY_NAME, "ActivityStarted", "action");
         initializeViews();
+        registerMessageReceiver();
 
         //If app still in session, Restore State after rotation
         if(savedInstanceState != null){
@@ -195,6 +198,7 @@ public class AddNewActivity extends AppCompatActivity {
                         Toast message = Toast.makeText(getApplicationContext(), "That is not a Valid UPC/ISBN", Toast.LENGTH_SHORT);
                         message.setGravity(Gravity.CENTER, 0, 0);
                         message.show();
+                        return;
                         
                     }
 
@@ -203,11 +207,7 @@ public class AddNewActivity extends AppCompatActivity {
             }
         });
 
-        messageReceiver = new MessageReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(SERVICE_EVENT_MOVIE);
-        filter.addAction(SERVICE_EVENT_BOOK);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
+
 
         mAdView = (AdView) findViewById(R.id.addNewAdView);
         //mAdView.setAdUnitId(BuildConfig.ADD_NEW_AD_ID);
@@ -225,6 +225,16 @@ public class AddNewActivity extends AppCompatActivity {
 
     }
 
+    private void registerMessageReceiver(){
+
+        messageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SERVICE_EVENT_MOVIE);
+        filter.addAction(SERVICE_EVENT_BOOK);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
+
+    }
+
     private class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -236,7 +246,8 @@ public class AddNewActivity extends AppCompatActivity {
                 }
                 //Report to user with results
                 String[] received = intent.getStringArrayExtra(SERVICE_EXTRA_MOVIE);
-                if ((received[0].contentEquals(NOT_FOUND)|| received[0].contentEquals(SERVER_ERROR)) && received.length == 4) {
+                if ((received[3].equals(NOT_FOUND)|| received[3].equals(SERVER_ERROR)) && received.length == 4) {
+                    Log.e(LOG_TAG, "SendApologies Error Received "+ received[0]);
                     movieError(received);
                 }else{
                     movie = received;
@@ -257,7 +268,7 @@ public class AddNewActivity extends AppCompatActivity {
                 //Report to user with results
                 String[] received = intent.getStringArrayExtra(SERVICE_EXTRA_BOOK);
 
-                if ((received[0].contentEquals(NOT_FOUND)|| received[0].contentEquals(SERVER_ERROR)) && received.length == 4) {
+                if ((received[3].contentEquals(NOT_FOUND)|| received[3].contentEquals(SERVER_ERROR)) && received.length == 4) {
                     bookError(received);
                 }else {
                     book = received;
@@ -319,6 +330,12 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart(){
+        registerMessageReceiver();
+        super.onStart();
+    }
+
+    @Override
     public void onPause() {
         if (mAdView != null) {
             mAdView.pause();
@@ -335,6 +352,13 @@ public class AddNewActivity extends AppCompatActivity {
         }
     }
 
+    /**Called when activity is stopped**/
+    @Override
+    public void onStop(){
+
+        super.onStop();
+    }
+
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
@@ -342,6 +366,7 @@ public class AddNewActivity extends AppCompatActivity {
             mAdView.destroy();
         }
         super.onDestroy();
+
     }
 
     public void LaunchBarcodeScanner(View view){
@@ -723,8 +748,9 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void bookError(String[] response){
+        //ToDo set all views below scan to gone and set error message below scan
         String message;
-        if(response[0].contentEquals(NOT_FOUND)) {
+        if(response[3].contentEquals(NOT_FOUND)) {
             message = "Sorry, the book with ISBN: " + response[1] + " is not in our database. \n" +
                     "Error: " + response[0] + "\n" +
                     "Tap this message to clear and add a different book. \n" +
@@ -741,17 +767,18 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void movieError(String[] response){
+        //ToDo set all views below scan to gone and set error message below scan
         String message;
-        if(response[0].contentEquals(NOT_FOUND)) {
+        if(response[3].contentEquals(NOT_FOUND)) {
             message = "Sorry, the movie with UPC: " + response[1] + " is not in our database. \n" +
                     "Error: " + response[0] + "\n" +
-                    "Tap this message to clear and add a different book. \n" +
+                    "Tap this message to clear and add a different Movie. \n" +
                     "Manual entry is coming soon!";
             FirebaseCrash.log("Movie NOT FOUND" + response[1]);
         }else{
             message = "Sorry, something went wrong in our database. \n" +
                     "Error: " + response[0] + "\n" +
-                    "Tap this message to clear and add a different book. \n" +
+                    "Tap this message to clear and add a different Movie. \n" +
                     "Manual entry is coming soon!";
         }
         error.setText(message);
