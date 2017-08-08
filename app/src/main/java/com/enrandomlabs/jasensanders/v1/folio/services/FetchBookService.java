@@ -482,7 +482,7 @@ public class FetchBookService extends IntentService {
         String upcCsvStr = null;
 
         try{
-            final String SEARCHUPC_BASE_URL = "http://www.searchupc.com/handlers/upcsearch.ashx?";
+            final String SEARCHUPC_BASE_URL = "https://secure25.win.hostgator.com/searchupc_com/handlers/upcsearch.ashx?";
             final String REQUEST_TYPE = "request_type";
             final String TYPE_CSV = "1";
             final String ACCESS_TOKEN = "access_token";
