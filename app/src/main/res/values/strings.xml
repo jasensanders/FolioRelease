@@ -54,6 +54,7 @@
     <!-- AddNew Strings-->
     <string name="title_add_new">Add</string>
     <string name="scan_button">scan</string>
+    <string name="submit_button">submit</string>
     <string name="input_hint">Enter UPC Digits.</string>
     <string name="store_hint">\u0020\u0020Enter location here: </string>
     <string name="notes_hint">\u0020\u0020Enter Notes here: </string>

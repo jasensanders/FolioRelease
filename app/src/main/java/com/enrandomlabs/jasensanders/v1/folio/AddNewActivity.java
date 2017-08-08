@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +34,8 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+
+import static com.enrandomlabs.jasensanders.v1.folio.R.id.upc;
 
 public class AddNewActivity extends AppCompatActivity {
     //private static final String LOG_TAG = AddNewActivity.class.getSimpleName();
@@ -147,7 +147,7 @@ public class AddNewActivity extends AppCompatActivity {
             STATE = STATE_MOVIE;
             restoreRadioButtonState(STATE);
         }
-        inputText.addTextChangedListener(new TextWatcher() {
+        /*inputText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -205,7 +205,7 @@ public class AddNewActivity extends AppCompatActivity {
                 }
 
             }
-        });
+        });*/
 
 
 
@@ -391,6 +391,53 @@ public class AddNewActivity extends AppCompatActivity {
         }
     }
 
+    public void onSubmit(View view){
+        String upc = inputText.getText().toString();
+        currentUPC = upc;
+        if(upc.length()>9) {
+            if (upc.length() == 12 && STATE == STATE_MOVIE) {
+                //Start the progress bar
+                if(mProgress != null) {
+                    mProgress.setIndeterminate(true);
+                    mProgress.setVisibility(View.VISIBLE);
+                }
+                //Launch the service
+                FetchMovieDataService.startActionFetchData(getApplicationContext(), upc);
+                return;
+            }
+            if (upc.length() != 12 && STATE == STATE_MOVIE) {
+                Toast message = Toast.makeText(getApplicationContext(), "That is not a Valid UPC", Toast.LENGTH_SHORT);
+                message.setGravity(Gravity.CENTER, 0, 0);
+                message.show();
+                return;
+            }
+            if (upc.length() == 10 || upc.length() == 13 && STATE == STATE_BOOK) {
+                //Convert ean 10 to ean 13
+                if (upc.length() == 10 && !upc.startsWith("978")) {
+                    upc = "978" + upc;
+                }
+                //Start the progress bar
+                if(mProgress != null) {
+                    mProgress.setIndeterminate(true);
+                    mProgress.setVisibility(View.VISIBLE);
+                }
+                //Launch the Service
+                FetchBookService.startActionFetchBook(getApplicationContext(), upc);
+                return;
+            }
+            if ((upc.length() != 10 || upc.length() != 13) && STATE == STATE_BOOK) {
+
+                Toast message = Toast.makeText(getApplicationContext(), "That is not a Valid UPC/ISBN", Toast.LENGTH_SHORT);
+                message.setGravity(Gravity.CENTER, 0, 0);
+                message.show();
+                return;
+
+            }
+
+        }
+
+    }
+
     public void SetWishOwnStatus(View view){
         CheckBox input = (CheckBox) view;
         LogActionEvent(ACTIVITY_NAME,"SetToWishListbutton", "action");
@@ -513,7 +560,7 @@ public class AddNewActivity extends AppCompatActivity {
         error.setVisibility(View.GONE);
 
         //Input Area
-        inputText = (EditText) findViewById(R.id.upc);
+        inputText = (EditText) findViewById(upc);
         selectMovie = (RadioButton) findViewById(R.id.selectMovie);
         selectBook = (RadioButton) findViewById(R.id.selectBook);
 
