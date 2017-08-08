@@ -44,6 +44,10 @@ public class FetchBookService extends IntentService {
 
     private String param1 = "";
 
+    //Error
+    private static final String NOT_FOUND = "NOT_FOUND";
+    private static final String SERVER_ERROR = "ERROR";
+
 
     public FetchBookService() {
         super("FetchBookService");
@@ -78,40 +82,20 @@ public class FetchBookService extends IntentService {
     }
 
     /**
-     * Handle action Foo in the provided background thread with the provided
+     * Handle action FetchBook in the provided background thread with the provided
      * parameters.
      */
     private void handleActionFetchBook(String ean){
-        String results = fetchBook(ean);
+        String[] results = fetchBook(ean);
         String[] baseData = fetchProduct(ean);
-        String[] resultsArray;
+
 
         if(results != null ){
             //If results are good, then send data back.
-            resultsArray = parseGoogleBooksJson(results, ean);
-            if(resultsValid(resultsArray)){
-                sendDataBack(resultsArray);
-            }else{
-                //If BooksAPI can't find it, then send what we have.
-                if(baseData != null ){
-                    String barcode = "http://www.searchupc.com/drawupc.aspx?q=" + ean;
-                    DateFormat df = DateFormat.getDateInstance();
-                    String addDate = df.format(Calendar.getInstance().getTime());
-                    String status = DataContract.STATUS_BOOK;
+            sendDataBack(results);
 
-                    resultsArray = new String[]{"000", ean, baseData[1], baseData[0], " ", " ", barcode,
-                            " ", " ", addDate, " ", "", "", status, " ", " "};
-                    sendDataBack(resultsArray);
-                    Log.e("Alternate Book Data: ",baseData[1] );
-
-                }
-                else {
-                    //We got nothing. Sorry.
-                    sendApologies();
-                }
-            }
         }else{
-            //Not Found in google books
+            //Not Found in google books, but found in SearchUPC database.
             if(baseData != null){
 //                new String[] {bookId, ean, imgUrl, title, subtitle, desc, barcode, pubDate, authors,
 //                        addDate, publisher, store, notes, status, pages, categories};
@@ -120,17 +104,18 @@ public class FetchBookService extends IntentService {
                 String addDate = df.format(Calendar.getInstance().getTime());
                 String status = DataContract.STATUS_BOOK;
 
-                resultsArray = new String[]{"000", ean, baseData[1], baseData[0], " ", " ", barcode,
+                results = new String[]{"000", ean, baseData[1], baseData[0], " ", " ", barcode,
                 " ", " ", addDate, " ", "", "", status, " ", " "};
-                sendDataBack(resultsArray);
+                sendDataBack(results);
             }else {
-                sendApologies();
+                //We got nothing. Book not in either database.
+                sendApologies("Not found in Databases");
             }
         }
 
 
     }
-    private String fetchBook(String ean) {
+    private String[] fetchBook(String ean) {
 
         if(ean.length()!=13){
             return null;
@@ -175,7 +160,17 @@ public class FetchBookService extends IntentService {
                 return null;
             }
             bookJsonString = buffer.toString();
-            return  bookJsonString;
+            if(bookJsonString  == null){
+                return null;
+            }
+            String[] returnable = parseGoogleBooksJson(bookJsonString, ean);
+            if(resultsValid(returnable)){
+                return returnable;
+            }else{
+                Log.e(LOG_TAG, "Google books results not valid");
+                return null;
+            }
+
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error retrieving Google book data ", e);
             FirebaseCrash.logcat(Log.ERROR, LOG_TAG, "Error retrieving Google book data");
@@ -398,7 +393,7 @@ public class FetchBookService extends IntentService {
         String upcJsonStr = null;
 
         try{
-            final String SEARCHUPC_BASE_URL = "http://www.searchupc.com/handlers/upcsearch.ashx?";
+            final String SEARCHUPC_BASE_URL = "https://secure25.win.hostgator.com/searchupc_com/handlers/upcsearch.ashx?";
             final String REQUEST_TYPE = "request_type";
             final String TYPE_JSON = "3";
             final String ACCESS_TOKEN = "access_token";
@@ -588,12 +583,12 @@ public class FetchBookService extends IntentService {
         }
         return true;
     }
-    private void sendApologies(){
-        sendDataBack( new String[]{"404", param1, "none", "NOT_FOUND"});
+    private void sendApologies(String message){
+        sendDataBack( new String[]{message, param1, "none", NOT_FOUND});
     }
 
-    private void sendError(){
-        sendDataBack(new String[]{"500", param1, "none", "ERROR"});
+    private void sendError(String message){
+        sendDataBack(new String[]{message, param1, "none", SERVER_ERROR});
     }
 
     private void sendDataBack(String[] bookData){
