@@ -227,12 +227,22 @@ public class AddNewActivity extends AppCompatActivity {
 
     private void registerMessageReceiver(){
 
+        //maybe check whether there is one or not first?
         messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(SERVICE_EVENT_MOVIE);
         filter.addAction(SERVICE_EVENT_BOOK);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
+    }
+    private void unRegisterMessageReciever(){
+        if(messageReceiver != null){
+            try {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+            }catch(Exception e){
+                Log.v(LOG_TAG, "messageReciever unregisterd already");
+            }
+        }
     }
 
     private class MessageReceiver extends BroadcastReceiver {
@@ -331,7 +341,7 @@ public class AddNewActivity extends AppCompatActivity {
 
     @Override
     public void onStart(){
-        registerMessageReceiver();
+
         super.onStart();
     }
 
@@ -340,6 +350,7 @@ public class AddNewActivity extends AppCompatActivity {
         if (mAdView != null) {
             mAdView.pause();
         }
+        unRegisterMessageReciever();
         super.onPause();
     }
 
@@ -347,6 +358,7 @@ public class AddNewActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        registerMessageReceiver();
         if (mAdView != null) {
             mAdView.resume();
         }
