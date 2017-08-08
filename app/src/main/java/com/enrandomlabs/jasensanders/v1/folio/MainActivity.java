@@ -3,6 +3,8 @@ package com.enrandomlabs.jasensanders.v1.folio;
 import android.Manifest;
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -226,8 +228,10 @@ public class MainActivity extends AppCompatActivity
 
         getMenuInflater().inflate(R.menu.main, menu);
         mSearchItem = menu.findItem(R.id.action_search);
-
+        SearchManager Manager =  (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
+        searchView.setSearchableInfo(Manager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
         if(searchView != null){
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -241,7 +245,7 @@ public class MainActivity extends AppCompatActivity
                     return false;
                 }
             });
-            searchView.setIconifiedByDefault(true);
+
         }
 
         return true;
