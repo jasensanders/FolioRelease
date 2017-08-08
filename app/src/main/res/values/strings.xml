@@ -12,9 +12,9 @@
     <string name="search_hint">Search your Folio</string>
 
     <!--Main Activity Strings-->
-    <string name="movie_view">- Movies</string>
-    <string name="wish_list_view">- Wish List</string>
-    <string name="books_view">- Books</string>
+    <string name="movie_view">Movies</string>
+    <string name="wish_list_view">Wish List</string>
+    <string name="books_view">Books</string>
 
 
     <!--Nav Drawer Strings-->

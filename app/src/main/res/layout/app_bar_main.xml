@@ -19,13 +19,12 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:logo="@drawable/folio_logo"
             app:titleEnabled="false" >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/viewLabel"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"
