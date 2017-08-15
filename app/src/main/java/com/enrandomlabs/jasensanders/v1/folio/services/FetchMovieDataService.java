@@ -46,6 +46,7 @@ public class FetchMovieDataService extends IntentService {
     //Error
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String SERVER_ERROR = "ERROR";
+    private static  Context currentContext;
 
 
 
@@ -62,6 +63,7 @@ public class FetchMovieDataService extends IntentService {
      */
 
     public static void startActionFetchData(Context context, String upc_param) {
+        currentContext = context;
         Intent intent = new Intent(context, FetchMovieDataService.class);
         intent.setAction(FETCH_MOVIE_DETAILS);
         intent.putExtra(UPC_PARAM, upc_param);
@@ -87,9 +89,10 @@ public class FetchMovieDataService extends IntentService {
      * parameters.
      */
     private void handleActionFetchDetails(String upc) {
+
         //This String array MUST BE in the same order as MovieEntry columns!!
-        //We do not include the _ID column because it is auto-generated, so 18 (Not 19) in length
-        String[] FullRow = new String[18];
+        //We do not include the _ID column because it is auto-generated, so 19 (Not 20) in length
+        String[] FullRow = new String[19];
 
         //Variables to hold row data and known variables initialized
         String TMDB_MOVIE_ID = "";
@@ -116,10 +119,15 @@ public class FetchMovieDataService extends IntentService {
 
 
         //FAIL TESTS
-        //Verify input
+        //Verify input UPC
         if(upc == null ||upc.length() != 12){
             Log.e(LOG_TAG, "UPC is null or invalid, nothing will be added to Database");
             sendApologies("UPC is Null or Invalid");
+            return;
+        }
+        //Verify Internet access
+        if(!Utility.isNetworkAvailable(currentContext)){
+            sendApologies("No Internet Access");
             return;
         }
 
@@ -262,7 +270,6 @@ public class FetchMovieDataService extends IntentService {
             urlConnection.connect();
 
             // Read the input stream into a String
-
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {

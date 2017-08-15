@@ -177,6 +177,27 @@ public class Utility {
 
         return new String[]{name, format};
     }
+    public static String processFormats(String input){
+        String format= "";
+        //Finds all formats in productName string and appends to format string
+        String[] match = {"Blu-ray", "DVD", "Digital Copy", "Digital HD"};
+        //Dumps all matches into arraylist
+        ArrayList<String> matched = new ArrayList<>();
+        for(int i = 0; i < match.length; i++){
+            if(input.contains(match[i])){
+                matched.add(match[i]);
+            }
+        }
+        //Turns arraylist into String with dashes adding to format String
+        for(int i = 0; i < matched.size(); i++) {
+            if (i == matched.size() - 1) {
+                format = format + matched.get(i);
+            } else {
+                format = format + matched.get(i) + " - ";
+            }
+        }
+        return format;
+    }
 
     public static String stringArrayToString(String[] inString){
         StringBuilder result = new StringBuilder();
@@ -188,6 +209,7 @@ public class Utility {
     }
 
     public static String dateToYear(String date){
+        if(date.equals(" ")){ return date;}
         String[] temp;
         try{
             temp = date.split("-");
@@ -210,8 +232,20 @@ public class Utility {
         }
 
     }
+    public static boolean validateRating(String rating){
+        rating = rating.toUpperCase();
+        String[] valid = new String[]{"G", "PG", "PG-13", "R", "NC-17", "X"};
+        for(String rate: valid){
+            if(rating.equals(rate)){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    //Adds spaces to the end of the String so that the string is always of length 5
      public static String normalizeRating(String rating){
+         rating = rating.toUpperCase();
         final int standard = 5;
         int len = rating.length();
         String pad = "";

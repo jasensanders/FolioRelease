@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.enrandomlabs.jasensanders.v1.folio.AddNewActivity;
 import com.enrandomlabs.jasensanders.v1.folio.BuildConfig;
+import com.enrandomlabs.jasensanders.v1.folio.Utility;
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -48,6 +49,8 @@ public class FetchBookService extends IntentService {
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String SERVER_ERROR = "ERROR";
 
+    private static  Context currentContext;
+
 
     public FetchBookService() {
         super("FetchBookService");
@@ -61,6 +64,7 @@ public class FetchBookService extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionFetchBook(Context context, String ean) {
+        currentContext = context;
         Intent intent = new Intent(context, FetchBookService.class);
         intent.setAction(FETCH_BOOK);
         intent.putExtra(EAN_PARAM, ean);
@@ -86,9 +90,15 @@ public class FetchBookService extends IntentService {
      * parameters.
      */
     private void handleActionFetchBook(String ean){
+
+        //Verify Internet Access
+        if(!Utility.isNetworkAvailable(currentContext)){
+            sendApologies("No Internet Access");
+            return;
+        }
+
         String[] results = fetchBook(ean);
         String[] baseData = fetchProduct(ean);
-
 
         if(results != null ){
             //If results are good, then send data back.

@@ -3,13 +3,17 @@ package com.enrandomlabs.jasensanders.v1.folio;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,19 +39,22 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+
 import static com.enrandomlabs.jasensanders.v1.folio.R.id.upc;
 
 public class AddNewActivity extends AppCompatActivity {
-    //private static final String LOG_TAG = AddNewActivity.class.getSimpleName();
+
     private static final String ACTIVITY_NAME = "AddNewActivity";
     private static final String LOG_TAG = AddNewActivity.class.getSimpleName();
 
     //Instance State Keys
     private static final String CURRENT_UPC_KEY = "UPC_CURRENT";
     private static final String CURRENT_STATUS_KEY = "STATUS_CURRENT";
-    private static final String CURRENT_STORE_KEY = "STORE_CURRENT";
-    private static final String CURRENT_NOTES_KEY = "NOTES_CURRENT";
     private static final String CURRENT_VIEW_TYPE = "VIEW_TYPE_CURRENT";
+    private static final String CURRENT_ITEM_ARRAY = "CURRENT_ARRAY";
+    private static final String MANUAL_ENTRY_FLAG = "MANUAL_ENTRY";
 
     //Message Receiver Keys
     public static final String SERVICE_EVENT_MOVIE = "SERVICE_EVENT_MOVIE";
@@ -79,6 +86,8 @@ public class AddNewActivity extends AppCompatActivity {
     private int STATE;
     private String currentUPC;
     private String STATUS;
+    //We are always in manual entry mode, but this alerts the user to it.
+    private boolean manualEntry = false;
 
     //Input variables
     private EditText inputText;
@@ -92,15 +101,15 @@ public class AddNewActivity extends AppCompatActivity {
     //Views
     private TextView error;
     private LinearLayout topButtonLayout;
-    private TextView title;
-    private TextView byline;
-    private TextView authors;
+    private EditText title;
+    private EditText byline;
+    private EditText authors;
     private ImageView artImage;
-    private TextView releaseDate;
-    private TextView SubTextOne;
+    private EditText releaseDate;
+    private EditText SubTextOne;
     private EditText SubTextTwo;
     private ImageView branding;
-    private TextView synopsis;
+    private EditText synopsis;
     private EditText store;
     private EditText notes;
     private LinearLayout trailerScroll;
@@ -115,6 +124,7 @@ public class AddNewActivity extends AppCompatActivity {
     AdView mAdView;
 
 
+    //TODO: REFACTOR TO USE DETAILVIEW IN A FRAGMENT instead.
 
 
     @Override
@@ -129,15 +139,22 @@ public class AddNewActivity extends AppCompatActivity {
 
         //If app still in session, Restore State after rotation
         if(savedInstanceState != null){
-            String recover = savedInstanceState.getString(CURRENT_UPC_KEY);
-            currentUPC = recover;
+            currentUPC = savedInstanceState.getString(CURRENT_UPC_KEY);
             if(currentUPC == null || currentUPC.length()== 0){hideViews();}
             else {
                 STATUS = savedInstanceState.getString(CURRENT_STATUS_KEY);
-                store.setText(savedInstanceState.getString(CURRENT_STORE_KEY));
-                notes.setText(savedInstanceState.getString(CURRENT_NOTES_KEY));
+                manualEntry = savedInstanceState.getBoolean(MANUAL_ENTRY_FLAG);
                 inputText.setText(currentUPC);
                 STATE = savedInstanceState.getInt(CURRENT_VIEW_TYPE);
+                if(STATE == STATE_MOVIE){
+                    movie = savedInstanceState.getStringArray(CURRENT_ITEM_ARRAY);
+                    showViews(STATE);
+                    inflateMovieViews(movie);
+                }else{
+                    book = savedInstanceState.getStringArray(CURRENT_ITEM_ARRAY);
+                    showViews(STATE);
+                    inflateBookViews(book);
+                }
                 restoreRadioButtonState(STATE);
             }
         }else {
@@ -145,6 +162,7 @@ public class AddNewActivity extends AppCompatActivity {
             hideViews();
             //Set default state
             STATE = STATE_MOVIE;
+            manualEntry = false;
             restoreRadioButtonState(STATE);
         }
         /*inputText.addTextChangedListener(new TextWatcher() {
@@ -260,7 +278,8 @@ public class AddNewActivity extends AppCompatActivity {
                 String[] received = intent.getStringArrayExtra(SERVICE_EXTRA_MOVIE);
                 if ((received[3].equals(NOT_FOUND)|| received[3].equals(SERVER_ERROR)) && received.length == 4) {
                     Log.e(LOG_TAG, "SendApologies Error Received "+ received[0]);
-                    movieError(received);
+                    currentUPC = received[1];
+                    lookupError(received);
                 }else{
                     movie = received;
                     book = null;
@@ -281,7 +300,8 @@ public class AddNewActivity extends AppCompatActivity {
                 String[] received = intent.getStringArrayExtra(SERVICE_EXTRA_BOOK);
 
                 if ((received[3].contentEquals(NOT_FOUND)|| received[3].contentEquals(SERVER_ERROR)) && received.length == 4) {
-                    bookError(received);
+                    currentUPC = received[1];
+                    lookupError(received);
                 }else {
                     book = received;
                     movie = null;
@@ -330,12 +350,20 @@ public class AddNewActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        //Save recent updates
+        loadStateArray();
+
         // Save the user's current state
         savedInstanceState.putString(CURRENT_UPC_KEY, currentUPC);
-        savedInstanceState.putString(CURRENT_STATUS_KEY, STATUS);
-        savedInstanceState.putString(CURRENT_STORE_KEY, store.getText().toString());
-        savedInstanceState.putString(CURRENT_NOTES_KEY, notes.getText().toString());
         savedInstanceState.putInt(CURRENT_VIEW_TYPE, STATE);
+        savedInstanceState.putBoolean(MANUAL_ENTRY_FLAG, manualEntry);
+        savedInstanceState.putString(CURRENT_STATUS_KEY, STATUS);
+
+        if(STATE == STATE_MOVIE) {
+            savedInstanceState.putStringArray(CURRENT_ITEM_ARRAY, movie);
+        }else{
+            savedInstanceState.putStringArray(CURRENT_ITEM_ARRAY, book);
+        }
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -451,6 +479,93 @@ public class AddNewActivity extends AppCompatActivity {
         }
 
     }
+    //Movie Array format: String[]{TMDB_MOVIE_ID 0, UPC_CODE 1, ART_IMAGE_URL 2, TITLE 3,
+    //FORMATS 4, MOVIE_THUMB 5, BARCODE_URL 6, RELEASE_DATE 7, RUNTIME 8, ADD_DATE 9,
+    //POSTER_URL 10, STORE 11, NOTES 12, STATUS 13, RATING 14, SYNOPSIS 15, TRAILERS 16,
+    // GENRES 17, IMDB_NUMBER 18};
+
+    //Book Array format: String[] {bookId 0, ean 1, imgUrl 2, title 3, subtitle 4, desc 5,
+    // barcode 6, pubDate 7, authors 8, addDate 9, publisher 10, store 11, notes 12,
+    // status 13 , pages 14 , categories 15};
+
+    public void setImageURL(View view){
+        AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
+        final EditText edittext = new EditText(getApplicationContext());
+        alert.setMessage("Enter Image URL");
+        alert.setTitle("Enter Image URL");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Get URL entered fro dialog
+                String userURL = edittext.getText().toString();
+                //Check that its a valid url
+                if(Patterns.WEB_URL.matcher(userURL).matches()){
+                    //Add to data array
+                    if(STATE == STATE_MOVIE) {
+                        movie[2] = userURL;
+                        movie[10] = userURL;
+                    }
+                    if(STATE == STATE_BOOK){
+                        book[2] = userURL;
+                    }
+                    //Update the ImageView
+                    Glide.with(getApplicationContext()).load(userURL)
+                            .fitCenter().error(R.drawable.image_placeholder).into(artImage);
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+                dialog.cancel();
+            }
+        });
+
+        alert.create();
+        alert.show();
+    }
+    public String[] initialStringArray(int size){
+        String[] array = new String[size];
+        for(int i = 0; i<array.length; i++){
+            array[i] = "";
+        }
+        return array;
+    }
+
+    public void ManualEntry(View view){
+        manualEntry = true;
+        String barcode = "http://www.searchupc.com/drawupc.aspx?q=" + currentUPC;
+        DateFormat df = DateFormat.getDateInstance();
+        String addDate = df.format(Calendar.getInstance().getTime());
+        if(STATE == STATE_MOVIE) {
+            movie = initialStringArray(19);
+            movie[1] = currentUPC;
+            movie[6] = barcode;
+            movie[9] =  addDate;
+            movie[13] = STATUS;
+            //clear error view
+            clearErrorView();
+            //show views
+            showViews(STATE);
+            inflateMovieViews(movie);
+        }
+        if(STATE == STATE_BOOK){
+            book = initialStringArray(16);
+            book[1] = currentUPC;
+            book[6] = barcode;
+            book[9] = addDate;
+            book[13] = STATUS;
+            //clear error view
+            clearErrorView();
+            //show views
+            showViews(STATE);
+            inflateBookViews(book);
+
+        }
+    }
 
     public void SetWishOwnStatus(View view){
         CheckBox input = (CheckBox) view;
@@ -485,67 +600,54 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void sendToBrand(View view){
+        Intent result = null;
         if(STATE == STATE_MOVIE){
-            Intent result = new Intent(Intent.ACTION_VIEW, Uri.parse(TMDB_SITE));
-            result.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if(result.resolveActivity(getPackageManager()) != null){
-                startActivity(result);
-            }
-
+            result = new Intent(Intent.ACTION_VIEW, Uri.parse(TMDB_SITE));
         }
         if(STATE == STATE_BOOK){
-            Intent result = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_BOOKS));
+            result = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_BOOKS));
+        }
+        if(result != null){
             result.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if(result.resolveActivity(getPackageManager()) != null){
                 startActivity(result);
             }
-
         }
     }
 
     public void SaveToDataBase(View view){
+        //TODO: loadStateArray() -- load all EditTexts into movie/book array
+        loadStateArray();
 
+        if(STATE == STATE_MOVIE && movie != null) {
+            Uri returned;
 
-        if(STATE == STATE_MOVIE) {
-            if(movie != null) {
-                if (STATUS.endsWith("_WISH")) {
-                    ContentValues insert = Utility.makeWishRowValues(movie);
-                    Uri returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
-                    if (returned != null) {
-                        Toast.makeText(this, movie[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
-                    }
-                    resetFields();
-
-                } else {
-                    ContentValues insert = Utility.makeMovieRowValues(movie);
-                    Uri returned = getContentResolver().insert(DataContract.MovieEntry.CONTENT_URI, insert);
-                    if (returned != null) {
-                        Toast.makeText(this, movie[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
-                    }
-                    resetFields();
-                }
+            if (STATUS.endsWith("_WISH")) {
+                ContentValues insert = Utility.makeWishRowValues(movie);
+                 returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
+            } else {
+                ContentValues insert = Utility.makeMovieRowValues(movie);
+                 returned = getContentResolver().insert(DataContract.MovieEntry.CONTENT_URI, insert);
+            }
+            if (returned != null) {
+                Toast.makeText(this, movie[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
+                resetFields();
             }
         }
-        if(STATE == STATE_BOOK){
-            if(book != null) {
-                if (STATUS.endsWith("_WISH")) {
-                    ContentValues insert = Utility.makeWishRowValues(book);
-                    Uri returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
-                    if (returned != null) {
-                        Toast.makeText(this, book[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
-                    }
-                    resetFields();
 
+        if(STATE == STATE_BOOK && book != null){
+            Uri returned;
 
-                } else {
-                    ContentValues insert = Utility.makeBookRowValues(book);
-                    Uri returned = getContentResolver().insert(DataContract.BookEntry.CONTENT_URI, insert);
-                    if (returned != null) {
-                        Toast.makeText(this, book[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
-                    }
-                    resetFields();
-
-                }
+            if (STATUS.endsWith("_WISH")) {
+                ContentValues insert = Utility.makeWishRowValues(book);
+                returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
+            } else {
+                ContentValues insert = Utility.makeBookRowValues(book);
+                returned = getContentResolver().insert(DataContract.BookEntry.CONTENT_URI, insert);
+            }
+            if (returned != null) {
+                Toast.makeText(this, book[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
+                resetFields();
             }
         }
     }
@@ -556,18 +658,16 @@ public class AddNewActivity extends AppCompatActivity {
 
     private void resetFields(){
 
-        resetStoreAndNotes();
+        resetEditTexts();
         hideViews();
         if(STATE == STATE_MOVIE) {
             clearTrailerViews();
         }
         resetInputText();
         currentUPC = null;
-
     }
 
     private void initializeViews(){
-
 
         //Error Fields
         error = (TextView) findViewById(R.id.error);
@@ -581,21 +681,19 @@ public class AddNewActivity extends AppCompatActivity {
         //Progress Bar
         mProgress = (ProgressBar) findViewById(R.id.ProgressBarWait);
 
-
-
         //Details Area
         detailView = (LinearLayout) findViewById(R.id.details);
         topButtonLayout = (LinearLayout) findViewById(R.id.top_button_layout);
-        title = (TextView) findViewById(R.id.add_view_Title);
-        byline = (TextView) findViewById(R.id.add_view_byline);
-        authors = (TextView) findViewById(R.id.authors);
+        title = (EditText) findViewById(R.id.add_view_Title);
+        byline = (EditText) findViewById(R.id.add_view_byline);
+        authors = (EditText) findViewById(R.id.authors);
         artImage = (ImageView) findViewById(R.id.artView);
-        releaseDate = (TextView) findViewById(R.id.releaseDate);
-        SubTextOne = (TextView) findViewById(R.id.subText1);
+        releaseDate = (EditText) findViewById(R.id.releaseDate);
+        SubTextOne = (EditText) findViewById(R.id.subText1);
         SubTextTwo = (EditText) findViewById(R.id.subText2);
         favButton = (CheckBox) findViewById(R.id.FavButton);
         branding = (ImageView) findViewById(R.id.addNewBranding);
-        synopsis = (TextView) findViewById(R.id.synopsis);
+        synopsis = (EditText) findViewById(R.id.synopsis);
         store = (EditText) findViewById(R.id.store);
         notes = (EditText) findViewById(R.id.notes);
         trailerScroll = (LinearLayout) findViewById(R.id.trailer_scroll);
@@ -605,20 +703,94 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void inflateMovieViews(String[] data){
-        //Todo Generalize this:  ....
+
         //Reminder of how array is loaded for Movies
-//        FullRow = new String[]{TMDB_MOVIE_ID, UPC_CODE, ART_IMAGE_URL, TITLE,
-//        FORMATS, MOVIE_THUMB, BARCODE_URL, RELEASE_DATE, RUNTIME, ADD_DATE,
-//                POSTER_URL, STORE, NOTES, STATUS, RATING, SYNOPSIS, TRAILERS, GENRES};
+//        String[]{TMDB_MOVIE_ID 0, UPC_CODE 1, ART_IMAGE_URL 2, TITLE 3,
+//        FORMATS 4, MOVIE_THUMB 5, BARCODE_URL 6, RELEASE_DATE 7, RUNTIME 8, ADD_DATE 9,
+//                POSTER_URL 10, STORE 11, NOTES 12, STATUS 13, RATING 14, SYNOPSIS 15, TRAILERS 16, GENRES 17,
+//                 IMDB_NUMBER 18};
         if(data != null) {
-            title.setText(data[3]);
-            Glide.with(getApplicationContext()).load(data[2]).into(artImage);
-            releaseDate.setText(Utility.dateToYear(data[7]));
+
+            //Hide book related views
             byline.setVisibility(View.GONE);
             authors.setVisibility(View.GONE);
+
+            //Set branding image
+            branding.setImageResource(R.drawable.tmdb_brand_120_47);
+
+            //Set hints according to state
+            SubTextOne.setHint(R.string.NoRatingRuntime);
+            SubTextTwo.setHint(R.string.NoFormats);
+            //Disable EditText for movie view
+            //SubTextOne.setEnabled(false);
+            SubTextOne.setInputType(InputType.TYPE_NULL);
+
+            //Set onClickListener for SubTextOne to trigger AlertDialog
+            SubTextOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //Create AlertDialog that allows user to input/update the rating and the runtime of movie.
+                    final View ratingRuntimeDialog = getLayoutInflater().inflate(R.layout.rating_runtime_dialog, null);
+                    //Get reference to Rating EditText and load data we have
+                    final EditText Rating = (EditText) ratingRuntimeDialog.findViewById(R.id.dialogRating);
+                    Rating.setText(movie[14]);
+                    //Get reference to Runtime and load data we have
+                    final EditText Runtime = (EditText) ratingRuntimeDialog.findViewById(R.id.dialogRuntime);
+                    Runtime.setText(movie[8]);
+
+                    //Make and Launch AlertDialog
+                    AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
+                    alert.setTitle("Set Rating and Runtime");
+                    alert.setMessage("Enter the Rating and the Runtime");
+                    alert.setView(ratingRuntimeDialog);
+                    alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            //Get rating entered from dialog
+                            String rating = Rating.getText().toString().toUpperCase();
+                            if(Utility.validateRating(rating)){
+                                //If valid Update Movie[] with new data
+                                rating = Utility.normalizeRating(rating);
+                                movie[14] = rating;
+                            }else{
+                                Toast.makeText(getApplicationContext(),  "Please Enter a Valid Rating Ex: PG-13", Toast.LENGTH_LONG).show();
+                            }
+
+                            //Get runtime from dialog
+                            String runtime = Runtime.getText().toString();
+                            runtime = runtime + " min";
+
+                            //Update movie[] with new data
+                            movie[8] = runtime;
+
+                            //Update View with new data
+                            String update = rating + runtime;
+                            SubTextOne.setText(update);
+                        }
+                    });
+
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // what ever you want to do with No option.
+                            dialog.cancel();
+                        }
+                    });
+                    alert.create();
+                    alert.show();
+
+                }
+            });
+
+            //Fill in views with whatever data is available
+            title.setText(data[3]);
+            String url = data[2];
+            if(!url.equals("")) {
+                Glide.with(getApplicationContext()).load(url).fitCenter().placeholder(R.drawable.image_placeholder)
+                        .error(R.drawable.image_placeholder).into(artImage);
+            }
+            releaseDate.setText(Utility.dateToYear(data[7]));
             SubTextOne.setText(data[14]);
             SubTextTwo.setText(data[4]);
-            branding.setImageResource(R.drawable.tmdb_brand_120_47);
             String overview = String.format(getResources().getString(R.string.overview), data[15]);
             synopsis.setText(overview);
             addTrailers(trailerScroll, data[16]);
@@ -629,6 +801,10 @@ public class AddNewActivity extends AppCompatActivity {
             synopsis.setContentDescription("Movie overview " + overview);
             artImage.setContentDescription(data[3] + " Movie Art");
             STATUS = data[13];
+            store.setText(movie[11]);
+            notes.setText(movie[12]);
+
+
         }
 
     }
@@ -636,24 +812,36 @@ public class AddNewActivity extends AppCompatActivity {
     private void inflateBookViews(String[] data){
 
         //Reminder of how array is loaded for Books
-//        returnVal = new String[] {bookId, ean, imgUrl, title, subtitle, desc, barcode, pubDate, authors,
-//                addDate, publisher, store, notes, status, pages, categories};
+//        String[] {bookId 0, ean 1, imgUrl 2, title 3, subtitle 4, desc 5, barcode 6, pubDate 7,
+//                  authors 8,addDate 9 , publisher 10, store 11, notes 12, status 13, pages 14, categories 15};
         if(data != null) {
+
+            //Hide movie related views
+            trailerScroll.setVisibility(View.INVISIBLE);
+
+            //Set hints according to state
+            SubTextOne.setHint(R.string.NoPublisher);
+            SubTextTwo.setHint(R.string.NoPages);
+
+            //Set branding image
+            branding.setImageResource(R.drawable.google_logo);
+
+            //Fill in views
             title.setText(data[3]);
             byline.setText(data[4]);
             String author = "By " + data[8];
             authors.setText(author);
             String url = data[2];
-            Glide.with(getApplicationContext()).load(url).error(R.mipmap.ic_launcher).fitCenter().into(artImage);
+            if(!url.equals("")) {
+                Glide.with(getApplicationContext()).load(url).error(R.drawable.image_placeholder)
+                        .placeholder(R.drawable.image_placeholder).fitCenter().into(artImage);
+            }
             releaseDate.setText(data[7]);
             SubTextOne.setText(data[10]);
-            String pages = data[14] + " pages";
+            String pages = data[14] + " pgs.";
             SubTextTwo.setText(pages);
-            SubTextTwo.setInputType(0);
-            branding.setImageResource(R.drawable.google_logo);
             String overview = String.format(getResources().getString(R.string.overview), data[5]);
             synopsis.setText(overview);
-            trailerScroll.setVisibility(View.INVISIBLE);
 
             //ALLy content descriptions for dynamic content
             String description = data[3] + " " + data[4] + " Released " + data[7] + " " + "By " + data[8];
@@ -661,12 +849,19 @@ public class AddNewActivity extends AppCompatActivity {
             synopsis.setContentDescription("Book overview " + overview);
             artImage.setContentDescription(data[3] + " Cover Art");
             STATUS = data[13];
+            store.setText(book[11]);
+            notes.setText(book[12]);
+
         }
     }
 
     private void clearTrailerViews(){
         trailerScroll.removeAllViews();
         trailerScroll.invalidate();
+    }
+    private void clearErrorView(){
+        error.setText("");
+        error.setVisibility(View.GONE);
     }
 
     private void hideViews(){
@@ -740,9 +935,19 @@ public class AddNewActivity extends AppCompatActivity {
         inputText.setText("");
     }
 
-    private void resetStoreAndNotes(){
+    private void resetEditTexts(){
+        if(STATE == STATE_BOOK){
+            byline.setText("");
+            authors.setText("");
+        }
+        title.setText("");
+        releaseDate.setText("");
+        SubTextOne.setText("");
+        SubTextTwo.setText("");
+        synopsis.setText("");
         store.setText("");
         notes.setText("");
+
     }
 
     private void restoreRadioButtonState(int state){
@@ -761,6 +966,9 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void addTrailers(LinearLayout view, String trailers){
+        if(trailers.equals("")){
+            return;
+        }
 
         LayoutInflater vi = getLayoutInflater();
         final String[] tempTrail;
@@ -807,44 +1015,93 @@ public class AddNewActivity extends AppCompatActivity {
         }
 
     }
+    private void loadStateArray(){
+        //Movie Array format: String[]{TMDB_MOVIE_ID 0, UPC_CODE 1, ART_IMAGE_URL 2, TITLE 3,
+        //FORMATS 4, MOVIE_THUMB 5, BARCODE_URL 6, RELEASE_DATE 7, RUNTIME 8, ADD_DATE 9,
+        //POSTER_URL 10, STORE 11, NOTES 12, STATUS 13, RATING 14, SYNOPSIS 15, TRAILERS 16,
+        // GENRES 17, IMDB_NUMBER 18};
 
-    private void bookError(String[] response){
-        //ToDo set all views below scan to gone and set error message below scan
-        String message;
-        if(response[3].contentEquals(NOT_FOUND)) {
+        //Book Array format: String[] {bookId 0, ean 1, imgUrl 2, title 3, subtitle 4, desc 5,
+        // barcode 6, pubDate 7, authors 8, addDate 9, publisher 10, store 11, notes 12,
+        // status 13 , pages 14 , categories 15};
+
+        //TODO: load edit texts into correct slot in array according to state.
+        //Todo ONLY UPDATE ARRAY ON SAVE!!!!!
+
+        // if movie null then nothing to save
+        if(STATE == STATE_MOVIE && movie != null){
+            //ToDo: Prioritize what's in the edit text, if user changed it, then save changes, otherwise skip.
+            String uTitle = title.getText().toString();
+            if(movie[3]!= null &&  !movie[3].equals(uTitle)) {
+                movie[3] = title.getText().toString();
+            }
+            if(!movie[7].equals(releaseDate.getText().toString())) {
+                movie[7] = releaseDate.getText().toString();
+            }
+            if(!movie[4].equals(SubTextTwo.getText().toString())) {
+                movie[4] = Utility.processFormats(SubTextTwo.getText().toString());
+            }
+            String overview = synopsis.getText().toString().replaceFirst("Overview: \n\n", "");
+            if(!movie[15].equals(overview)) {
+
+                movie[15] = overview;
+            }
+            movie[11] = store.getText().toString();
+            movie[12] = notes.getText().toString();
+
+
+        }
+        // if book null then nothing to save
+        if(STATE == STATE_BOOK && book != null){
+            if(!book[3].equals(title.getText().toString())){
+                book[3] = title.getText().toString();
+            }
+            if(!book[4].equals(byline.getText().toString())){
+                book[4] = byline.getText().toString();
+            }
+            if(!book[8].equals(authors.getText().toString())){
+                book[8] = authors.getText().toString();
+            }
+            if(!book[7].equals(releaseDate.getText().toString())){
+                book[7] = releaseDate.getText().toString();
+            }
+            if(!book[10].equals(SubTextOne.getText().toString())) {
+                book[10] = SubTextOne.getText().toString();
+            }
+            String pages = SubTextTwo.getText().toString().replace(" pgs.", "");
+            if(!book[14].equals(pages)){
+                book[14] = pages;
+            }
+            String bookOverview = synopsis.getText().toString().replaceFirst("Overview: \n\n", "");
+            if(!book[5].equals(bookOverview)){
+                book[5] = bookOverview;
+            }
+            book[11] = store.getText().toString();
+            book[12] = notes.getText().toString();
+
+        }
+    }
+
+
+    private void lookupError(String[] response){
+        String message = "";
+        if(STATE == STATE_MOVIE){
+            message = "Sorry, the movie with UPC: " + response[1] + " is not in our database. \n" +
+                    "Error: " + response[0] + "\n" +
+                    "Tap this message to clear and Enter manually" ;
+            FirebaseCrash.log("Movie NOT FOUND" + response[1]);
+        }
+        if(STATE == STATE_BOOK){
             message = "Sorry, the book with ISBN: " + response[1] + " is not in our database. \n" +
                     "Error: " + response[0] + "\n" +
                     "Tap this message to clear and add a different book. \n" +
                     "Manual entry is coming soon!";
             FirebaseCrash.log("Book NOT FOUND" + response[1]);
-        }else{
-            message = "Sorry, something went wrong in our database. \n" +
-                    "Error: " + response[0] + "\n" +
-                    "Tap this message to clear and add a different book. \n" +
-                    "Manual entry is coming soon!";
         }
         error.setText(message);
         error.setVisibility(View.VISIBLE);
     }
 
-    private void movieError(String[] response){
-        //ToDo set all views below scan to gone and set error message below scan
-        String message;
-        if(response[3].contentEquals(NOT_FOUND)) {
-            message = "Sorry, the movie with UPC: " + response[1] + " is not in our database. \n" +
-                    "Error: " + response[0] + "\n" +
-                    "Tap this message to clear and add a different Movie. \n" +
-                    "Manual entry is coming soon!";
-            FirebaseCrash.log("Movie NOT FOUND" + response[1]);
-        }else{
-            message = "Sorry, something went wrong in our database. \n" +
-                    "Error: " + response[0] + "\n" +
-                    "Tap this message to clear and add a different Movie. \n" +
-                    "Manual entry is coming soon!";
-        }
-        error.setText(message);
-        error.setVisibility(View.VISIBLE);
-    }
 
     private void LogActionEvent(String activity, String actionName, String type ){
         Bundle bundle = new Bundle();

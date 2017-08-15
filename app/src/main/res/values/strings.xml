@@ -20,8 +20,8 @@
     <!--Nav Drawer Strings-->
     <string name="nav_description">Find and Add to your collection!</string>
     <string name="search_retailers_nav">Search Retailers</string>
-    <string name="select_movies_owned">All Movies</string>
-    <string name="select_books">All Books</string>
+    <string name="select_movies_owned">Movies</string>
+    <string name="select_books">Books</string>
     <string name="select_wish_list">Wish List</string>
     <string name="sort_label">Sort By</string>
     <string name="sort_date_added_new">Date Added Newest</string>
@@ -65,11 +65,15 @@
     <string name="NoAuthor">Enter some author.</string>
     <string name="NoDate">Enter release date.</string>
     <string name="NoPublisher">Enter publisher.</string>
-    <string name="NoFormats">Enter formats E.G.: DVD</string>
-    <string name="NoRatingRuntime">Enter rating and runtime: G 100 MIN</string>
+    <string name="NoFormats">Enter formats Ex:DVD - Blu-ray</string>
+    <string name="NoPages">Enter pages EX: 50 pgs.</string>
+    <string name="NoRatingRuntime">Enter Rating/Runtime</string>
     <string name="NoOverview"> Type overview here: </string>
     <string name="wish_list_button">Add to Wish List</string>
     <string name="NoImage">Type valid URL for image</string>
+    <!--Rating and Runtime Dialog Strings-->
+    <string name="EnterRuntime">Enter Runtime in Min Ex: 110</string>
+    <string name="EnterRating">Enter MPAA rating Ex: PG-13</string>
 
     <!--DetailActivity/Fragment Strings-->
     <string name="title_activity_detail">Details</string>

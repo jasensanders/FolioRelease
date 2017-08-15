@@ -21,7 +21,7 @@
         <item name="android:windowReenterTransition">@transition/slide_bottom</item>
     </style>
 
-    <style name="AppTheme.AddNew" >
+    <style name="AppTheme.AddNew" parent="AppTheme">
         <item name="android:windowEnterTransition" >@transition/slide_bottom</item>
     </style>
     <style name="AppTheme.Details" >

@@ -35,7 +35,7 @@
                 android:textColor="@color/primary_text"
                 android:textSize="15sp"
                 android:background="@color/photo_placeholder"
-                android:onClick="ClearFields"/>
+                android:onClick="ManualEntry"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,8 +205,11 @@
                 android:focusable="true"
                 style="@style/Base.Theme.AppCompat.Light"
                 android:weightSum="1">
-                <TextView android:text="@string/NoTitle" android:layout_width="match_parent"
+                <EditText  android:layout_width="match_parent"
                     android:id="@+id/add_view_Title"
+                    android:hint="@string/NoTitle"
+                    android:textColorHint="@color/colorAccentDim"
+                    android:focusable="true"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/colorStarkWhite"
@@ -215,19 +218,25 @@
                     android:padding="@dimen/title_padding"
                     android:background="@color/colorPrimary" />
 
-                <TextView android:text="@string/NoByline" android:layout_width="match_parent"
+                <EditText android:layout_width="match_parent"
                     android:id="@+id/add_view_byline"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:hint="@string/NoByline"
+                    android:textColorHint="@color/colorAccentDim"
+                    android:focusable="true"
                     android:textColor="@color/colorStarkWhite"
                     android:fontFamily="sans-serif-condensed"
                     android:textSize="18sp"
                     android:padding="@dimen/title_padding"
                     android:background="@color/colorPrimaryDark" />
-                <TextView android:text="@string/NoAuthor" android:layout_width="match_parent"
+                <EditText  android:layout_width="match_parent"
                     android:id="@+id/authors"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:hint="@string/NoAuthor"
+                    android:textColorHint="@color/colorAccentDim"
+                    android:focusable="true"
                     android:textColor="@color/colorStarkWhite"
                     android:fontFamily="sans-serif-condensed"
                     android:textSize="18sp"
@@ -247,40 +256,48 @@
                         android:layout_marginRight="@dimen/art_image_horizontal_margin"
                         android:layout_marginEnd="@dimen/art_image_horizontal_margin"
                         android:id="@+id/artView"
-                        android:foregroundGravity="center_vertical|center_horizontal" />
+                        android:src="@drawable/image_placeholder"
+                        android:foregroundGravity="center_vertical|center_horizontal"
+                        android:onClick="setImageURL"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="center"
                         android:gravity="center_horizontal">
-                        <TextView android:text="@string/NoDate"
+                        <EditText
                             android:layout_width="match_parent"
                             android:id="@+id/releaseDate"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/sub_text_margin_top"
+                            android:hint="@string/NoDate"
+                            android:textColorHint="@color/colorAccentDim"
+                            android:focusable="true"
                             android:textColor="@color/colorStarkWhite"
                             android:fontFamily="sans-serif-condensed"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:gravity="center_vertical|center_horizontal" />
 
-                        <TextView android:text="@string/hello_world"
+                        <EditText
                             android:id= "@+id/subText1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/sub_text_margin_top"
                             android:textColor="@color/colorStarkWhite"
+                            android:textColorHint="@color/colorAccentDim"
+                            android:focusable="true"
                             android:fontFamily="sans-serif-condensed"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:gravity="center_vertical|center_horizontal" />
 
-                        <EditText android:text="@string/hello_world"
+                        <EditText
                             android:id= "@+id/subText2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/sub_text_margin_top"
                             android:focusable="true"
                             android:textColor="@color/colorStarkWhite"
+                            android:textColorHint="@color/colorAccentDim"
                             android:fontFamily="sans-serif-condensed"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:gravity="center_vertical|center_horizontal" />
@@ -315,12 +332,15 @@
 
                 <View android:id="@+id/divider" style="@style/Divider" />
 
-                <TextView
+                <EditText
                     android:id="@+id/synopsis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/synopsis_margin"
                     android:textColor="@color/colorStarkWhite"
+                    android:hint="@string/NoOverview"
+                    android:textColorHint="@color/colorAccentDim"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-condensed"
