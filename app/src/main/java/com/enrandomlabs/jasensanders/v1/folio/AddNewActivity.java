@@ -490,12 +490,11 @@ public class AddNewActivity extends AppCompatActivity {
 
     public void setImageURL(View view){
         AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
-        final EditText edittext = new EditText(getApplicationContext());
-        alert.setMessage("Enter Image URL");
-        alert.setTitle("Enter Image URL");
-
-        alert.setView(edittext);
-
+        final View urlInput = getLayoutInflater().inflate(R.layout.add_image_dialog, null);
+        final EditText edittext = (EditText) urlInput.findViewById(R.id.dialogURL);
+        alert.setMessage("Set Image");
+        alert.setTitle("Enter Image URL:");
+        alert.setView(urlInput);
         alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //Get URL entered fro dialog
@@ -617,7 +616,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void SaveToDataBase(View view){
-        //TODO: loadStateArray() -- load all EditTexts into movie/book array
+        //loadStateArray() -- load all EditTexts into movie/book array
         loadStateArray();
 
         if(STATE == STATE_MOVIE && movie != null) {
