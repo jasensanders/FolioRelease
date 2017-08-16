@@ -63,7 +63,7 @@
     <string name="NoTitle">Enter Title!</string>
     <string name="NoByline">Enter the byline.</string>
     <string name="NoAuthor">Enter some author.</string>
-    <string name="NoDate">Enter release date.</string>
+    <string name="NoDate">Enter release year Ex: 2012</string>
     <string name="NoPublisher">Enter publisher.</string>
     <string name="NoFormats">Enter formats Ex:DVD - Blu-ray</string>
     <string name="NoPages">Enter pages EX: 50 pgs.</string>
@@ -74,6 +74,16 @@
     <!--Rating and Runtime Dialog Strings-->
     <string name="EnterRuntime">Enter Runtime in Min Ex: 110</string>
     <string name="EnterRating">Enter MPAA rating Ex: PG-13</string>
+
+    <!--Formats Dialog Strings -->
+    <string-array name="formats">
+        <item>Blu-ray</item>
+        <item>Blu-ray 3D</item>
+        <item>DVD</item>
+        <item>Digital Copy</item>
+        <item>Digital HD</item>
+        <item>4K Ultra HD</item>
+    </string-array>
 
     <!--DetailActivity/Fragment Strings-->
     <string name="title_activity_detail">Details</string>

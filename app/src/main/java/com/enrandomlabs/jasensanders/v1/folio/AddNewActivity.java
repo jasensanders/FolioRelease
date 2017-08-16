@@ -40,6 +40,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import static com.enrandomlabs.jasensanders.v1.folio.R.id.upc;
@@ -94,6 +95,7 @@ public class AddNewActivity extends AppCompatActivity {
     private RadioButton selectMovie;
     private RadioButton selectBook;
     private CheckBox favButton;
+    private ArrayList<Integer> mSelectedItems;
 
     //Progress bars
     private ProgressBar mProgress;
@@ -721,9 +723,9 @@ public class AddNewActivity extends AppCompatActivity {
             //Set hints according to state
             SubTextOne.setHint(R.string.NoRatingRuntime);
             SubTextTwo.setHint(R.string.NoFormats);
-            //Disable EditText for movie view
-            //SubTextOne.setEnabled(false);
+            //Disable EditText for movie view for SubTextOne and Two
             SubTextOne.setInputType(InputType.TYPE_NULL);
+            SubTextTwo.setInputType(InputType.TYPE_NULL);
 
             //Set onClickListener for SubTextOne to trigger AlertDialog
             SubTextOne.setOnClickListener(new View.OnClickListener() {
@@ -778,6 +780,64 @@ public class AddNewActivity extends AppCompatActivity {
                     alert.create();
                     alert.show();
 
+                }
+            });
+
+            SubTextTwo.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddNewActivity.this);
+                    // Set the dialog title
+                    builder.setTitle("Set Formats")
+                            // Specify the list array, the items to be selected by default (null for none),
+                            // and the listener through which to receive callbacks when items are selected
+                            //ToDo: change null to remeber what was is already selected.
+                            .setMultiChoiceItems(R.array.formats, null,
+                                    new DialogInterface.OnMultiChoiceClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which,
+                                                            boolean isChecked) {
+                                            if (isChecked) {
+                                                // If the user checked the item, add it to the selected items
+                                                mSelectedItems.add(which);
+                                            } else if (mSelectedItems.contains(which)) {
+                                                // Else, if the item is already in the array, remove it
+                                                mSelectedItems.remove(Integer.valueOf(which));
+                                            }
+                                        }
+                                    })
+                            // Set the action buttons
+                            .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User clicked OK, so save the mSelectedItems results somewhere
+                                    // or return them to the component that opened the dialog
+                                    String[] formatPicks = getResources().getStringArray(R.array.formats);
+                                    StringBuilder formatSelected = new StringBuilder();
+                                    for(int i= 0; i<mSelectedItems.size(); i++){
+                                        if(i == mSelectedItems.size() -1){
+                                            formatSelected.append(formatPicks[mSelectedItems.get(i)]);
+                                        }else {
+                                            formatSelected.append(formatPicks[mSelectedItems.get(i)]);
+                                            formatSelected.append(" - ");
+                                        }
+                                    }
+                                    String processed = formatSelected.toString();
+                                    movie[4] = processed;
+                                    SubTextTwo.setText(processed);
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            });
+
+                    builder.create();
+                    builder.show();
                 }
             });
 

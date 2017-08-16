@@ -176,6 +176,7 @@
                     android:visibility="visible"
                     />
 
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/save_cancel_button_height"
@@ -271,7 +272,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/sub_text_margin_top"
                             android:hint="@string/NoDate"
+                            android:inputType="number"
                             android:textColorHint="@color/colorAccentDim"
+                            android:maxLength="4"
                             android:focusable="true"
                             android:textColor="@color/colorStarkWhite"
                             android:fontFamily="sans-serif-condensed"

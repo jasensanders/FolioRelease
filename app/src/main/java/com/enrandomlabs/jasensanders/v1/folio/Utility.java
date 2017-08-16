@@ -177,10 +177,11 @@ public class Utility {
 
         return new String[]{name, format};
     }
+
     public static String processFormats(String input){
         String format= "";
         //Finds all formats in productName string and appends to format string
-        String[] match = {"Blu-ray", "DVD", "Digital Copy", "Digital HD"};
+        String[] match = {"Blu-ray","Blu-ray 3D", "DVD", "Digital Copy", "Digital HD", "4K Ultra HD"};
         //Dumps all matches into arraylist
         ArrayList<String> matched = new ArrayList<>();
         for(int i = 0; i < match.length; i++){
@@ -209,7 +210,7 @@ public class Utility {
     }
 
     public static String dateToYear(String date){
-        if(date.equals(" ")){ return date;}
+        if(date.equals("")){ return date;}
         String[] temp;
         try{
             temp = date.split("-");
