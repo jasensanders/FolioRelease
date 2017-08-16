@@ -50,6 +50,7 @@ public class DataContract {
 
 
     //Status Flags
+    public static final String STATUS_NOID = "000";
     public static final String STATUS_MOVIES = "MOVIE";
     public static final String STATUS_BOOK = "BOOK";
     public static final String STATUS_ALBUM = "ALBUM";

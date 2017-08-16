@@ -49,9 +49,6 @@ public class FetchBookService extends IntentService {
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String SERVER_ERROR = "ERROR";
 
-    private static  Context currentContext;
-
-
     public FetchBookService() {
         super("FetchBookService");
     }
@@ -64,7 +61,6 @@ public class FetchBookService extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionFetchBook(Context context, String ean) {
-        currentContext = context;
         Intent intent = new Intent(context, FetchBookService.class);
         intent.setAction(FETCH_BOOK);
         intent.putExtra(EAN_PARAM, ean);
@@ -92,7 +88,7 @@ public class FetchBookService extends IntentService {
     private void handleActionFetchBook(String ean){
 
         //Verify Internet Access
-        if(!Utility.isNetworkAvailable(currentContext)){
+        if(!Utility.isNetworkAvailable(getApplicationContext())){
             sendApologies("No Internet Access");
             return;
         }
@@ -114,8 +110,8 @@ public class FetchBookService extends IntentService {
                 String addDate = df.format(Calendar.getInstance().getTime());
                 String status = DataContract.STATUS_BOOK;
 
-                results = new String[]{"000", ean, baseData[1], baseData[0], " ", " ", barcode,
-                " ", " ", addDate, " ", "", "", status, " ", " "};
+                results = new String[]{DataContract.STATUS_NOID, ean, baseData[1], baseData[0], "", "", barcode,
+                "", "", addDate, "", "", "", status, "", ""};
                 sendDataBack(results);
             }else {
                 //We got nothing. Book not in either database.

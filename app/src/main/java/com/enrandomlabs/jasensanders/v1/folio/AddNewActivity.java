@@ -542,6 +542,7 @@ public class AddNewActivity extends AppCompatActivity {
         String addDate = df.format(Calendar.getInstance().getTime());
         if(STATE == STATE_MOVIE) {
             movie = initialStringArray(19);
+            movie[0] = DataContract.STATUS_NOID;
             movie[1] = currentUPC;
             movie[6] = barcode;
             movie[9] =  addDate;

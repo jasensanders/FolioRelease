@@ -46,7 +46,7 @@ public class FetchMovieDataService extends IntentService {
     //Error
     private static final String NOT_FOUND = "NOT_FOUND";
     private static final String SERVER_ERROR = "ERROR";
-    private static  Context currentContext;
+
 
 
 
@@ -63,7 +63,7 @@ public class FetchMovieDataService extends IntentService {
      */
 
     public static void startActionFetchData(Context context, String upc_param) {
-        currentContext = context;
+
         Intent intent = new Intent(context, FetchMovieDataService.class);
         intent.setAction(FETCH_MOVIE_DETAILS);
         intent.putExtra(UPC_PARAM, upc_param);
@@ -126,7 +126,7 @@ public class FetchMovieDataService extends IntentService {
             return;
         }
         //Verify Internet access
-        if(!Utility.isNetworkAvailable(currentContext)){
+        if(!Utility.isNetworkAvailable(getApplicationContext())){
             sendApologies("No Internet Access");
             return;
         }
