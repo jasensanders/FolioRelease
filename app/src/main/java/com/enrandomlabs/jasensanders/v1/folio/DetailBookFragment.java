@@ -301,7 +301,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
                         new String[]{CurrentUPC});
                 //Notify User
                 if(rowsDeleted == 1){
-                    Toast.makeText(getActivity(), "Item removed from Folio.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.detailItemRemoved), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -326,7 +326,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
                         new String[]{CurrentUPC});
 
                 if(rowsUpdated == 1){
-                    Toast.makeText(getActivity(), "Updates saved to Folio.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.detailItemUpdated), Toast.LENGTH_SHORT).show();
                 }
 
             }
