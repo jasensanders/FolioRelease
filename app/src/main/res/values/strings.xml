@@ -60,6 +60,10 @@
     <string name="notes_hint">\u0020\u0020Enter Notes here: </string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="wish_list_button">Add to Wish List</string>
+    <string name="itemSaved">\u0020Saved to Folio.</string>
+
+    <!-- AddNew EditText hint strings-->
     <string name="NoTitle">Enter Title!</string>
     <string name="NoByline">Enter the byline.</string>
     <string name="NoAuthor">Enter some author.</string>
@@ -69,13 +73,21 @@
     <string name="NoPages">Enter pages EX: 50 pgs.</string>
     <string name="NoRatingRuntime">Enter Rating/Runtime</string>
     <string name="NoOverview"> Type overview here: </string>
-    <string name="wish_list_button">Add to Wish List</string>
     <string name="NoImage">Type valid URL for image</string>
+
+    <!--Dialog Strings-->
+    <string name="updateButton">Update</string>
+    <string name="cancelButton">Cancel</string>
+
     <!--Rating and Runtime Dialog Strings-->
+    <string name="ratingRuntimeDialogTitle">Set Rating and Runtime</string>
+    <string name="ratingRuntimeDialogMessage">Enter the Rating and the Runtime</string>
     <string name="EnterRuntime">Enter Runtime in Min Ex: 110</string>
     <string name="EnterRating">Enter MPAA rating Ex: PG-13</string>
+    <string name="RatingInputError">Please Enter a Valid Rating Ex: PG-13</string>
 
     <!--Formats Dialog Strings -->
+    <string name="formatDialogTitle">Set Formats</string>
     <string-array name="formats">
         <item>Blu-ray</item>
         <item>Blu-ray 3D</item>
@@ -95,6 +107,8 @@
     <string name="placeholder_share">The Folio APP is Awesome!</string>
     <string name="detail_movie_desc">%1$s %2$s released %3$s rated %4$s UPC: %5$s</string>
     <string name="detail_book_desc">%1$s by %2$s published %3$s ISBN: %4$s</string>
+    <string name="detailItemRemoved">Item removed from Folio.</string>
+    <string name="detailItemUpdated">Updates saved to Folio.</string>
 
     <!--Search Retailers Activity-->
     <string name="title_search_retailers">Search Retailers</string>

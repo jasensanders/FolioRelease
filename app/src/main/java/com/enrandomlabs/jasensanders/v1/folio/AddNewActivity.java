@@ -547,7 +547,7 @@ public class AddNewActivity extends AppCompatActivity {
             movie[1] = currentUPC;
             movie[6] = barcode;
             movie[9] =  addDate;
-            movie[13] = STATUS;
+            movie[13] = DataContract.STATUS_MOVIES;
             //clear error view
             clearErrorView();
             //show views
@@ -556,10 +556,11 @@ public class AddNewActivity extends AppCompatActivity {
         }
         if(STATE == STATE_BOOK){
             book = initialStringArray(16);
+            book[0]= DataContract.STATUS_NOID;
             book[1] = currentUPC;
             book[6] = barcode;
             book[9] = addDate;
-            book[13] = STATUS;
+            book[13] = DataContract.STATUS_BOOK;
             //clear error view
             clearErrorView();
             //show views
@@ -632,7 +633,7 @@ public class AddNewActivity extends AppCompatActivity {
                  returned = getContentResolver().insert(DataContract.MovieEntry.CONTENT_URI, insert);
             }
             if (returned != null) {
-                Toast.makeText(this, movie[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, movie[3] + getString(R.string.itemSaved), Toast.LENGTH_LONG).show();
                 resetFields();
             }
         }
@@ -648,7 +649,7 @@ public class AddNewActivity extends AppCompatActivity {
                 returned = getContentResolver().insert(DataContract.BookEntry.CONTENT_URI, insert);
             }
             if (returned != null) {
-                Toast.makeText(this, book[3] + " Saved to Folio", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, book[3] + getString(R.string.itemSaved), Toast.LENGTH_LONG).show();
                 resetFields();
             }
         }
@@ -743,10 +744,10 @@ public class AddNewActivity extends AppCompatActivity {
 
                     //Make and Launch AlertDialog
                     AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
-                    alert.setTitle("Set Rating and Runtime");
-                    alert.setMessage("Enter the Rating and the Runtime");
+                    alert.setTitle(getString(R.string.ratingRuntimeDialogTitle));
+                    alert.setMessage(getString(R.string.ratingRuntimeDialogMessage));
                     alert.setView(ratingRuntimeDialog);
-                    alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    alert.setPositiveButton(getString(R.string.updateButton), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             //Get rating entered from dialog
                             String rating = Rating.getText().toString().toUpperCase();
@@ -755,7 +756,9 @@ public class AddNewActivity extends AppCompatActivity {
                                 rating = Utility.normalizeRating(rating);
                                 movie[14] = rating;
                             }else{
-                                Toast.makeText(getApplicationContext(),  "Please Enter a Valid Rating Ex: PG-13", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),  getString(R.string.RatingInputError), Toast.LENGTH_LONG).show();
+                                Rating.setText("");
+                                dialog.cancel();
                             }
 
                             //Get runtime from dialog
@@ -771,7 +774,7 @@ public class AddNewActivity extends AppCompatActivity {
                         }
                     });
 
-                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    alert.setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             // what ever you want to do with No option.
                             dialog.cancel();
@@ -787,12 +790,12 @@ public class AddNewActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddNewActivity.this);
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(AddNewActivity.this);
                     // Set the dialog title
-                    builder.setTitle("Set Formats")
+                    builder.setTitle(getString(R.string.formatDialogTitle))
                             // Specify the list array, the items to be selected by default (null for none),
                             // and the listener through which to receive callbacks when items are selected
-                            //ToDo: change null to remeber what was is already selected.
+                            //ToDo: change null to remember what was already selected.
                             .setMultiChoiceItems(R.array.formats, null,
                                     new DialogInterface.OnMultiChoiceClickListener() {
                                         @Override
@@ -808,7 +811,7 @@ public class AddNewActivity extends AppCompatActivity {
                                         }
                                     })
                             // Set the action buttons
-                            .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.updateButton), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
                                     // User clicked OK, so save the mSelectedItems results somewhere
@@ -829,9 +832,10 @@ public class AddNewActivity extends AppCompatActivity {
 
                                 }
                             })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
 
                                 }
                             });
@@ -1085,12 +1089,9 @@ public class AddNewActivity extends AppCompatActivity {
         // barcode 6, pubDate 7, authors 8, addDate 9, publisher 10, store 11, notes 12,
         // status 13 , pages 14 , categories 15};
 
-        //TODO: load edit texts into correct slot in array according to state.
-        //Todo ONLY UPDATE ARRAY ON SAVE!!!!!
-
         // if movie null then nothing to save
         if(STATE == STATE_MOVIE && movie != null){
-            //ToDo: Prioritize what's in the edit text, if user changed it, then save changes, otherwise skip.
+            //Prioritize what's in the edit text, if user changed it, then save changes, otherwise skip.
             String uTitle = title.getText().toString();
             if(movie[3]!= null &&  !movie[3].equals(uTitle)) {
                 movie[3] = title.getText().toString();
