@@ -67,7 +67,7 @@ public class AddNewActivity extends AppCompatActivity {
     private static final String GOOGLE_BOOKS = "https://books.google.com/";
     private static final String TMDB_SITE = "https://www.themoviedb.org/";
 
-    //View Sates
+    //View States
     private static final int STATE_MOVIE = 100;
     private static final int STATE_BOOK = 300;
 

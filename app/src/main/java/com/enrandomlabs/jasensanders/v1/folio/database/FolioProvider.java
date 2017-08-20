@@ -60,11 +60,10 @@ public class FolioProvider extends ContentProvider {
     private static final SQLiteQueryBuilder wQueryBuilder;
 
     static{
-        mQueryBuilder = new SQLiteQueryBuilder();
 
         //Set The Tables!!
-        mQueryBuilder.setTables(
-                DataContract.MovieEntry.TABLE_NAME );
+        mQueryBuilder = new SQLiteQueryBuilder();
+        mQueryBuilder.setTables(DataContract.MovieEntry.TABLE_NAME );
 
         bQueryBuilder = new SQLiteQueryBuilder();
         bQueryBuilder.setTables(DataContract.BookEntry.TABLE_NAME);
