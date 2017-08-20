@@ -145,5 +145,11 @@
     <!--Test ad id-->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
+    <!--Ad Ids-->
+    <string name="adAppId">ca-app-pub-8372524945349378~3438927048</string>
+    <string name="mainActivityAdId">ca-app-pub-8372524945349378/4915660248</string>
+    <string name="addNewActivityAdId">ca-app-pub-8372524945349378/5973591045</string>
+    <string name="retailSearchActivityAdId">ca-app-pub-8372524945349378/7450324241</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

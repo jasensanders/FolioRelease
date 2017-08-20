@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -114,20 +115,24 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        //Ads app ID Initialization
-        //MobileAds.initialize(getApplicationContext(), BuildConfig.MY_ADS_APP_ID);
-
-        mAdView = (AdView) findViewById(R.id.adView);
-        //mAdView.setAdUnitId(BuildConfig.HOME_AD_ID);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                //.addTestDevice("F18A92219F2A59F1")  //My Nexus 5x Test Phone
-                .addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED")  //My GS3 Test Phone
-                .build();
-        mAdView.loadAd(adRequest);
+        mAdView = (AdView) findViewById(R.id.adView);
+
+        if(!BuildConfig.DEBUG_BUILD) {
+            //Ads app ID Initialization
+            MobileAds.initialize(getApplicationContext(), getString(R.string.adAppId));
+
+        }
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if(BuildConfig.DEBUG_BUILD) {
+            builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            builder.addTestDevice("F18A92219F2A59F1"); //My Nexus 5x Test Phone
+            builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
+        }
+        AdRequest request= builder.build();
+        mAdView.loadAd(request);
 
         //Initialize recycler view
         itemList = (RecyclerView) findViewById(R.id.content_list);

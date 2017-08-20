@@ -216,7 +216,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id">
+        ads:adUnitId="@string/retailSearchActivityAdId">
     </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

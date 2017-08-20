@@ -61,17 +61,18 @@ public class RetailerSearchActivity extends AppCompatActivity {
         initializeViews();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        mAdView = (AdView) findViewById(R.id.retailerAdView);
-        //mAdView.setAdUnitId(BuildConfig.RETAIL_SEARCH_AD_ID);
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                //.addTestDevice("F18A92219F2A59F1")  //My Nexus 5x Test Phone
-                .addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED")  //My GS3 Test Phone
-                .build();
-        mAdView.loadAd(adRequest);
+        mAdView = (AdView) findViewById(R.id.retailerAdView);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        if(BuildConfig.DEBUG_BUILD) {
+            builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            builder.addTestDevice("F18A92219F2A59F1");  //My Nexus 5x Test Phone
+            builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
+        }
+        AdRequest request = builder.build();
+        mAdView.loadAd(request);
 
         //If we were sent here from Detail Activity/ Fragment update UpcInput
         Uri data = getIntent().getData();

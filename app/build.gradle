@@ -23,19 +23,18 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.ReleaseConfig
+            buildConfigField "boolean", "DEBUG_BUILD", "false"
         }
         debug {
             jniDebuggable true
+            buildConfigField "boolean", "DEBUG_BUILD", "true"
         }
     }
     buildTypes.each{
         it.buildConfigField 'String', 'TMDB_API_KEY', MyTMDBApiKey
         it.buildConfigField 'String', 'SEARCH_UPC_KEY', MySearchUPCKey
         it.buildConfigField 'String', 'GOOGLE_BOOKS_KEY', MyGoogleBooksKey
-        it.buildConfigField 'String', 'HOME_AD_ID', FolioHomeAdID
-        it.buildConfigField 'String', 'ADD_NEW_AD_ID', FolioAddNewAdID
-        it.buildConfigField 'String', 'RETAIL_SEARCH_AD_ID', FolioRetailSearchAdID
-        it.buildConfigField 'String', 'MY_ADS_APP_ID', FolioMyAdID
+
     }
 }
 
