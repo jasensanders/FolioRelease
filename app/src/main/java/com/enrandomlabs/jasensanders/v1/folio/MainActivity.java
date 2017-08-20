@@ -49,26 +49,7 @@ public class MainActivity extends AppCompatActivity
     private static final String LIST_VIEW_STATE = "VIEW";
     private static final String VIEW_LABEL_STATE = "VIEW_LABEL";
     private static final String TWO_PANE_DETAIL_FRAGMENT = "TWO_PANE_DETAIL_FRAG";
-
-
-    //LOADER state represents ViewType State
-    private int FOLIO_LOADER = 0;
-    private String sortOrder;
-    private String ViewLabel;
-    private Fragment mCurrentFragment;
-
     private static final int MY_WRITE_EXT_STORAGE_PERMISSON = 11264;
-    private int mPermission;
-
-    private TextView viewLabel;
-    private SearchView searchView;
-    public final Activity activity = this;
-    private RecyclerView itemList;
-    private ListItemAdapter listItemAdapter;
-    private MenuItem mSearchItem;
-
-    AdView mAdView;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private static final int MOVIE_LOADER = 100;
     private static final int WISHLIST_LOADER = 200;
@@ -82,6 +63,25 @@ public class MainActivity extends AppCompatActivity
     private static final String DESC = " DESC";
 
 
+    //Loader state represents ViewType State
+    private int mFolioLoader = 0;
+
+    //State variables
+    private String mSortOrder;
+    private String mViewLabel;
+    private Fragment mCurrentFragment;
+    private int mPermission;
+
+    //Views
+    private TextView mTitleViewLabel;
+    private SearchView mSearchView;
+    public final Activity activity = this;
+    private RecyclerView itemList;
+    private ListItemAdapter listItemAdapter;
+    AdView mAdView;
+
+    //Firebase
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity
         //((FolioApplication) getApplication()).startTracking();
         //If the app is still in session, Restore State after rotation.
         if (savedInstanceState != null) {
-            sortOrder = savedInstanceState.getString(SORT_ORDER_STATE);
-            FOLIO_LOADER = savedInstanceState.getInt(LIST_VIEW_STATE);
-            ViewLabel = savedInstanceState.getString(VIEW_LABEL_STATE);
+            mSortOrder = savedInstanceState.getString(SORT_ORDER_STATE);
+            mFolioLoader = savedInstanceState.getInt(LIST_VIEW_STATE);
+            mViewLabel = savedInstanceState.getString(VIEW_LABEL_STATE);
 
             //If in TWO PANE mode the re-launch current detail fragment
             if(findViewById(R.id.detail_container) != null){
@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             //Otherwise set view defaults Which is Movies for now.
             //TODO Settings Activity to set defaults. For now they are set here.
-            FOLIO_LOADER = MOVIE_LOADER;
-            sortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";
-            ViewLabel = getString(R.string.movie_view);
+            mFolioLoader = MOVIE_LOADER;
+            mSortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";
+            mViewLabel = getString(R.string.movie_view);
 
         }
 
@@ -136,15 +136,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        viewLabel = (TextView) findViewById(R.id.viewLabel);
-        viewLabel.setText(ViewLabel);
+        mTitleViewLabel = (TextView) findViewById(R.id.viewLabel);
+        mTitleViewLabel.setText(mViewLabel);
 
         //Setup Floating Action Button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle();
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this).toBundle();
                 startActivity(new Intent(getApplicationContext(), AddNewActivity.class), bundle);
             }
         });
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity
             setupPermissions();
         }
 
-        getLoaderManager().initLoader(FOLIO_LOADER, null, this);
+        getLoaderManager().initLoader(mFolioLoader, null, this);
 
     }
 
@@ -200,9 +200,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current state
-        savedInstanceState.putString(SORT_ORDER_STATE, sortOrder);
-        savedInstanceState.putInt(LIST_VIEW_STATE, FOLIO_LOADER);
-        savedInstanceState.putString(VIEW_LABEL_STATE, ViewLabel);
+        savedInstanceState.putString(SORT_ORDER_STATE, mSortOrder);
+        savedInstanceState.putInt(LIST_VIEW_STATE, mFolioLoader);
+        savedInstanceState.putString(VIEW_LABEL_STATE, mViewLabel);
         //Save the fragment's instance if in TWO PANE mode
         if(mCurrentFragment != null) {
             getSupportFragmentManager().putFragment(savedInstanceState, TWO_PANE_DETAIL_FRAGMENT, mCurrentFragment);
@@ -227,13 +227,13 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
 
         getMenuInflater().inflate(R.menu.main, menu);
-        mSearchItem = menu.findItem(R.id.action_search);
+        MenuItem mSearchItem = menu.findItem(R.id.action_search);
         SearchManager Manager =  (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
-        searchView.setSearchableInfo(Manager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(true);
-        if(searchView != null){
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
+        mSearchView.setSearchableInfo(Manager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(true);
+        if(mSearchView != null){
+            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     updateUI(SEARCH_LOADER);
@@ -251,7 +251,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -260,59 +259,59 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_search_retail:
-                LogActionEvent(ACTIVITY_NAME,"nav_search_retail", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_search_retail", "action");
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle();
                 Intent SearchRetailIntent = new Intent(this, RetailerSearchActivity.class);
                 startActivity(SearchRetailIntent, bundle);
                 break;
             case R.id.nav_all_movies:
-                LogActionEvent(ACTIVITY_NAME,"nav_all_movies", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_all_movies", "action");
                 String movieLabel = getString(R.string.movie_view);
-                ViewLabel = movieLabel;
-                viewLabel.setText(ViewLabel);
-                FOLIO_LOADER = MOVIE_LOADER;
+                mViewLabel = movieLabel;
+                mTitleViewLabel.setText(mViewLabel);
+                mFolioLoader = MOVIE_LOADER;
                 getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
                 break;
             case R.id.nav_all_books:
-                LogActionEvent(ACTIVITY_NAME,"nav_all_books", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_all_books", "action");
                 String booksLabel = getString(R.string.books_view);
-                ViewLabel = booksLabel;
-                viewLabel.setText(ViewLabel);
-                FOLIO_LOADER = BOOKS_LOADER;
+                mViewLabel = booksLabel;
+                mTitleViewLabel.setText(mViewLabel);
+                mFolioLoader = BOOKS_LOADER;
                 getLoaderManager().restartLoader(BOOKS_LOADER, null, this);
                 break;
             case R.id.nav_wish_list:
-                LogActionEvent(ACTIVITY_NAME,"nav_wish_list", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_wish_list", "action");
                 String wishListLabel = getString(R.string.wish_list_view);
-                ViewLabel = wishListLabel;
-                viewLabel.setText(ViewLabel);
-                FOLIO_LOADER = WISHLIST_LOADER;
+                mViewLabel = wishListLabel;
+                mTitleViewLabel.setText(mViewLabel);
+                mFolioLoader = WISHLIST_LOADER;
                 getLoaderManager().restartLoader(WISHLIST_LOADER, null, this);
                 break;
             case R.id.nav_title_asc:
                 //call provider and refresh
-                sortOrder = Utility.sortOrderStringMatcher(FOLIO_LOADER, TITLE, ASC);
-                getLoaderManager().restartLoader(FOLIO_LOADER, null, this);
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, TITLE, ASC);
+                getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_title_desc:
                 //call provider and refresh
-                sortOrder = Utility.sortOrderStringMatcher(FOLIO_LOADER, TITLE, DESC);
-                getLoaderManager().restartLoader(FOLIO_LOADER, null, this);
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, TITLE, DESC);
+                getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_date_add_desc:
                 //call provider and refresh
-                sortOrder = Utility.sortOrderStringMatcher(FOLIO_LOADER, ADD_DATE, DESC);
-                getLoaderManager().restartLoader(FOLIO_LOADER, null, this);
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, ADD_DATE, DESC);
+                getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_date_add_asc:
                 //call provider ans refresh
-                sortOrder = Utility.sortOrderStringMatcher(FOLIO_LOADER, ADD_DATE, ASC);
-                getLoaderManager().restartLoader(FOLIO_LOADER, null, this);
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, ADD_DATE, ASC);
+                getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_restore_db:
                 //set Prefrences to restore backup on restart
                 Utility.setPrefRestoreBackup(this, true);
-                LogActionEvent(ACTIVITY_NAME,"nav_restore_db", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_restore_db", "action");
                 //launch snackbar to ask if user wants to restart now
                 final String request = "Backup will be restored on restart";
                 final Snackbar restartMessage = Snackbar.make(findViewById(R.id.root), request, Snackbar.LENGTH_LONG );
@@ -339,7 +338,7 @@ public class MainActivity extends AppCompatActivity
         if(mPermission == PackageManager.PERMISSION_GRANTED) {
             //Do not backup an empty database, you may overwrite a fully backed up database
             if(!Utility.isDBEmpty(this)) {
-                if (Utility.BackupDBtoMobileDevice(getApplicationContext())) {
+                if (Utility.backupDBtoMobileDevice(getApplicationContext())) {
                     //Log.v(LOG_TAG, "Backup Success!");
                     FirebaseCrash.log("Backup Success");
                 } else {
@@ -363,7 +362,7 @@ public class MainActivity extends AppCompatActivity
                         Utility.MOVIE_COLUMNS,
                         null,
                         null,
-                        sortOrder);
+                        mSortOrder);
             }
             case BOOKS_LOADER:
             {
@@ -372,7 +371,7 @@ public class MainActivity extends AppCompatActivity
                         Utility.BOOK_COLUMNS,
                         null,
                         null,
-                        sortOrder);
+                        mSortOrder);
             }
             case WISHLIST_LOADER:
             {
@@ -381,29 +380,28 @@ public class MainActivity extends AppCompatActivity
                         Utility.WISHLIST_COLUMNS,
                         null,
                         null,
-                        sortOrder);
+                        mSortOrder);
             }
             case SEARCH_LOADER:
             {
-
                 //Get the Query from the widget
-                String searchString = searchView.getQuery().toString();
+                String searchString = mSearchView.getQuery().toString();
                 //Log.v("Search Loader Started: ", searchString);
-                LogSearchEvent(ACTIVITY_NAME, "SearchButton", searchString, "SQL");
+                logSearchEvent(ACTIVITY_NAME, "SearchButton", searchString, "SQL");
                 //If there is something to query, determine appropriate cursor and return it
                 if(searchString.length()>0){
                     searchString = "%"+searchString+"%";
-                    final String[] selectionArgs = Utility.selectionArgsMatcher(FOLIO_LOADER, searchString);
-                    final Uri searchUri = Utility.uriSearchStateMatcher(FOLIO_LOADER);
-                    final String selection = Utility.selectionSearchStateMatcher(FOLIO_LOADER);
-                    final String[] projection = Utility.projectionSearchStateMatcher(FOLIO_LOADER);
+                    final String[] selectionArgs = Utility.selectionArgsMatcher(mFolioLoader, searchString);
+                    final Uri searchUri = Utility.uriSearchStateMatcher(mFolioLoader);
+                    final String selection = Utility.selectionSearchStateMatcher(mFolioLoader);
+                    final String[] projection = Utility.projectionSearchStateMatcher(mFolioLoader);
 
                     return new CursorLoader(activity,
                             searchUri,
                             projection,
                             selection,
                             selectionArgs,
-                            sortOrder
+                            mSortOrder
                     );
                 }
 
@@ -419,13 +417,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-
-
-
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         if (data.moveToFirst()) {
             listItemAdapter = new ListItemAdapter(this);
             listItemAdapter.swapCursor(data);
@@ -446,9 +442,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             itemList.setAdapter(null);
             itemList.removeAllViews();
-
         }
-
 
     }
 
@@ -503,7 +497,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void LogSearchEvent(String activity, String buttonName, String term, String type ){
+    private void logSearchEvent(String activity, String buttonName, String term, String type ){
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -512,7 +506,7 @@ public class MainActivity extends AppCompatActivity
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-    private void LogActionEvent(String activity, String buttonName, String type ){
+    private void logActionEvent(String activity, String buttonName, String type ){
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);

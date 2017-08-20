@@ -41,11 +41,11 @@ public class RetailerSearchActivity extends AppCompatActivity {
     private static final int RC_BARCODE_CAPTURE = 9001;
 
     //Views
-    private EditText UpcInput;
-    private EditText TitleInput;
+    private EditText mUpcInput;
+    private EditText mTitleInput;
 
     //Query to share
-    private String QUERY;
+    private String mQuery;
     private ShareActionProvider mShareActionProvider;
 
     //Firebase Analytics
@@ -75,19 +75,19 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
         //If we were sent here from Detail Activity/ Fragment update UpcInput
         Uri data = getIntent().getData();
-        if(data != null){UpcInput.setText(data.getLastPathSegment());}
+        if(data != null){mUpcInput.setText(data.getLastPathSegment());}
 
         //If App is still in session, then restore state data
         if(savedInstanceState != null){
             String restoreUpc = savedInstanceState.getString(SEARCH_CURRENT_UPC);
             if(restoreUpc != null){
-                UpcInput.setText(restoreUpc);
+                mUpcInput.setText(restoreUpc);
             }
             String restoreTitle = savedInstanceState.getString(SEARCH_CURRENT_TITLE);
             if(restoreTitle != null){
-                TitleInput.setText(restoreTitle);
+                mTitleInput.setText(restoreTitle);
             }
-            QUERY = savedInstanceState.getString(SEARCH_CURRENT_QUERY);
+            mQuery = savedInstanceState.getString(SEARCH_CURRENT_QUERY);
         }
     }
 
@@ -123,7 +123,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeActivity.BarcodeObject);
                     //Update the EditText
-                    UpcInput.setText(barcode.displayValue);
+                    mUpcInput.setText(barcode.displayValue);
 
                     //LOG ALL THE THINGS!!!!
                     //Log.d(LOG_TAG, "Barcode read: " + barcode.displayValue);
@@ -149,9 +149,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current state
-        savedInstanceState.putString(SEARCH_CURRENT_UPC, UpcInput.getText().toString());
-        savedInstanceState.putString(SEARCH_CURRENT_TITLE,TitleInput.getText().toString());
-        savedInstanceState.putString(SEARCH_CURRENT_QUERY, QUERY);
+        savedInstanceState.putString(SEARCH_CURRENT_UPC, mUpcInput.getText().toString());
+        savedInstanceState.putString(SEARCH_CURRENT_TITLE,mTitleInput.getText().toString());
+        savedInstanceState.putString(SEARCH_CURRENT_QUERY, mQuery);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -184,16 +184,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
 
-    public void SearchAmazon(View view){
+    public void searchAmazon(View view){
         String query = launchTermPriority();
         if(query != null){
-            LogSearchEvent(ACTIVITY_NAME, "SearchAmazon", query, "url");
+            LogSearchEvent(ACTIVITY_NAME, "searchAmazon", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_AMAZON + query;
+            mQuery = SEARCH_AMAZON + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -205,16 +205,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
         }
 
     }
-    public void SearchTarget(View view){
+    public void searchTarget(View view){
         String query = launchTermPriority();
         if(query != null){
-            LogSearchEvent(ACTIVITY_NAME, "SearchTarget", query, "url");
+            LogSearchEvent(ACTIVITY_NAME, "searchTarget", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_TARGET + query;
+            mQuery = SEARCH_TARGET + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -225,16 +225,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
         }
 
     }
-    public void SearchWalmart(View view){
+    public void searchWalmart(View view){
         String query = launchTermPriority();
         if(query != null){
-            LogSearchEvent(ACTIVITY_NAME, "SearchWalmart", query, "url");
+            LogSearchEvent(ACTIVITY_NAME, "searchWalmart", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_WALMART + query;
+            mQuery = SEARCH_WALMART + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -245,16 +245,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
         }
 
     }
-    public void SearchEbay(View view){
+    public void searchEbay(View view){
         String query = launchTermPriority();
         if(query != null){
-            LogSearchEvent(ACTIVITY_NAME, "SearchEbay", query, "url");
+            LogSearchEvent(ACTIVITY_NAME, "searchEbay", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_EBAY + query;
+            mQuery = SEARCH_EBAY + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -266,16 +266,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
     }
 
-    public void SearchBestBuy(View view){
+    public void searchBestBuy(View view){
         String query = launchTermPriority();
         if(query != null){
-            LogSearchEvent(ACTIVITY_NAME, "SearchBestBuy", query, "url");
+            LogSearchEvent(ACTIVITY_NAME, "searchBestBuy", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_BEST_BUY + query;
+            mQuery = SEARCH_BEST_BUY + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -286,16 +286,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
         }
     }
 
-    public void SearchToysRUS(View view){
+    public void searchToysRUs(View view){
         String query = launchTermPriority();
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "SearchToysRUS", query, "url");
             //update Query Saved State
-            QUERY = SEARCH_TOYSRUS + query;
+            mQuery = SEARCH_TOYSRUS + query;
 
             //update share intent
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareIntent(QUERY));
+                mShareActionProvider.setShareIntent(createShareIntent(mQuery));
             }
 
             //Start the intent
@@ -306,8 +306,8 @@ public class RetailerSearchActivity extends AppCompatActivity {
         }
     }
 
-    public void LaunchBarcodeScanner(View view){
-        LogActionEvent(ACTIVITY_NAME, "LaunchBarcodeScanner", "action");
+    public void launchBarcodeScanner(View view){
+        LogActionEvent(ACTIVITY_NAME, "launchBarcodeScanner", "action");
 
         Intent intent = new Intent(this, BarcodeActivity.class);
         intent.putExtra(BarcodeActivity.AutoFocus, true);
@@ -317,8 +317,8 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private String launchTermPriority(){
-        String upcText = UpcInput.getText().toString();
-        String titleText = TitleInput.getText().toString();
+        String upcText = mUpcInput.getText().toString();
+        String titleText = mTitleInput.getText().toString();
         if(upcText.length() == 12){
             return upcText;
         }else{
@@ -330,8 +330,8 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
     private void initializeViews(){
 
-        UpcInput = (EditText) findViewById(R.id.upc_input);
-        TitleInput = (EditText) findViewById(R.id.title_input);
+        mUpcInput = (EditText) findViewById(R.id.upc_input);
+        mTitleInput = (EditText) findViewById(R.id.title_input);
 
     }
 
@@ -360,8 +360,8 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private void clearViews(){
-        UpcInput.setText("");
-        TitleInput.setText("");
+        mUpcInput.setText("");
+        mTitleInput.setText("");
     }
 
     private void LogSearchEvent(String activity, String buttonName, String term, String type ){

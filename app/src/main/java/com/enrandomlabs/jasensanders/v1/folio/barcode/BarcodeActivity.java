@@ -325,7 +325,7 @@ public class BarcodeActivity extends AppCompatActivity {
         Barcode barcode = null;
         if (graphic != null) {
             barcode = graphic.getBarcode();
-            if (barcode != null && Utility.isValid(barcode.displayValue) ) {
+            if (barcode != null && Utility.isValidUpc(barcode.displayValue) ) {
                 Intent data = new Intent();
                 data.putExtra(BarcodeObject, barcode);
                 setResult(CommonStatusCodes.SUCCESS, data);

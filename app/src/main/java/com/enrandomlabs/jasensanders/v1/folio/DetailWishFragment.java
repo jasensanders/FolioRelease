@@ -44,6 +44,7 @@ import static com.enrandomlabs.jasensanders.v1.folio.database.DataContract.W_COL
 public class DetailWishFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String LOG_TAG = DetailWishFragment.class.getSimpleName();
     private static final String ACTIVITY_NAME = "DetailWishFragment";
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String WISH_DETAIL_URI = "WISH_URI";
     private static final String DETAIL_WISH_CURRENT_STORE = "DETAIL_WISH_CURRENT_STORE";
@@ -52,44 +53,40 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     //Branding send to URLs
     private static final String GOOGLE_BOOKS = "https://books.google.com/";
     private static final String TMDB_SITE = "https://www.themoviedb.org/";
-
     private static final int DETAIL_WISH_LOADER = 202;
 
-    private ShareActionProvider mShareActionProvider;
-
-    private LayoutInflater mInflater;
-    private Resources rs;
-
-    private String STATUS;
-    private String StateSavedStore;
-    private String StateSavedNotes;
-
-    private View rootView;
-    private TextView error;
-    private TextView title;
-    private TextView byline;
-    private TextView authors;
-    private ImageView posterImage;
-    private ImageView branding;
-    private ImageView barcodeImage;
-    private TextView releaseDate;
-    private TextView subTextOne;
-    private TextView subTextTwo;
-    private TextView synopsis;
-    private EditText store;
-    private EditText notes;
-    private LinearLayout trailerScroll;
-    private LinearLayout detailView;
-    private CheckBox favButton;
-    private Button searchRetail;
-    private Button DeleteButton;
-    private Button SaveButton;
-
-    private String DetailShare;
-
     private FirebaseAnalytics mFirebaseAnalytics;
-
+    private ShareActionProvider mShareActionProvider;
     private Uri mParam1;
+    private String mDetailShare;
+    private Resources mResources;
+
+    private String mStatus;
+    private String mStateSavedStore;
+    private String mStateSavedNotes;
+
+    private View mRootView;
+    private TextView mError;
+    private TextView mTitle;
+    private TextView mByline;
+    private TextView mAuthors;
+    private ImageView mPosterImage;
+    private ImageView mBranding;
+    private ImageView mBarcodeImage;
+    private TextView mReleaseDate;
+    private TextView mSubTextOne;
+    private TextView mSubTextTwo;
+    private TextView mSynopsis;
+    private EditText mStore;
+    private EditText mNotes;
+    private LinearLayout mTrailerScroll;
+    private LinearLayout mDetailView;
+    private CheckBox mFavButton;
+    private Button mSearchRetail;
+    private Button mDeleteButton;
+    private Button mSaveButton;
+
+
 
     public DetailWishFragment() {
         // Required empty public constructor
@@ -116,8 +113,8 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
-        LogActionEvent(ACTIVITY_NAME, "ActivityStarted", "action");
-        rs = getResources();
+        logActionEvent(ACTIVITY_NAME, "ActivityStarted", "action");
+        mResources = getResources();
         if (getArguments() != null) {
             mParam1 = getArguments().getParcelable(WISH_DETAIL_URI);
         }
@@ -126,12 +123,12 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mInflater = inflater;
+
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
         initializeViews();
         getLoaderManager().initLoader(DETAIL_WISH_LOADER, null, this);
-        return rootView;
+        return mRootView;
     }
 
     @Override
@@ -139,8 +136,8 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             // Restore last state.
-            StateSavedStore = savedInstanceState.getString(DETAIL_WISH_CURRENT_STORE);
-            StateSavedNotes = savedInstanceState.getString(DETAIL_WISH_CURRENT_NOTES);
+            mStateSavedStore = savedInstanceState.getString(DETAIL_WISH_CURRENT_STORE);
+            mStateSavedNotes = savedInstanceState.getString(DETAIL_WISH_CURRENT_NOTES);
         }
     }
 
@@ -157,11 +154,11 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(createShareIntent(DetailShare));
+            mShareActionProvider.setShareIntent(createShareIntent(mDetailShare));
             mShareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
                 @Override
                 public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
-                    LogShareEvent(ACTIVITY_NAME, "ShareButton", DetailShare);
+                    logShareEvent(ACTIVITY_NAME, "ShareButton", mDetailShare);
                     return false;
                 }
             });
@@ -170,8 +167,8 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(DETAIL_WISH_CURRENT_STORE, store.getText().toString());
-        outState.putString(DETAIL_WISH_CURRENT_NOTES, notes.getText().toString());
+        outState.putString(DETAIL_WISH_CURRENT_STORE, mStore.getText().toString());
+        outState.putString(DETAIL_WISH_CURRENT_NOTES, mNotes.getText().toString());
 
     }
 
@@ -194,28 +191,28 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
 
     private void initializeViews(){
         //Input Area
-        error = (TextView) rootView.findViewById(R.id.error);
-        error.setVisibility(View.GONE);
+        mError = (TextView) mRootView.findViewById(R.id.error);
+        mError.setVisibility(View.GONE);
 
         //Movie Details Area
-        detailView = (LinearLayout) rootView.findViewById(R.id.details);
-        title = (TextView) rootView.findViewById(R.id.detail_view_title);
-        byline = (TextView) rootView.findViewById(R.id.detail_view_byline);
-        authors = (TextView) rootView.findViewById(R.id.detail_view_authors);
-        posterImage = (ImageView) rootView.findViewById(R.id.posterView);
-        branding = (ImageView) rootView.findViewById(R.id.branding);
-        barcodeImage = (ImageView) rootView.findViewById(R.id.upcBarcodeImage);
-        releaseDate = (TextView) rootView.findViewById(R.id.releaseDate);
-        subTextOne = (TextView) rootView.findViewById(R.id.detail_subtext1);
-        subTextTwo = (TextView) rootView.findViewById(R.id.detail_subtext2);
-        favButton = (CheckBox) rootView.findViewById(R.id.FavButton);
-        searchRetail = (Button) rootView.findViewById(R.id.search_retail);
-        synopsis = (TextView) rootView.findViewById(R.id.synopsis);
-        store = (EditText) rootView.findViewById(R.id.store);
-        notes = (EditText) rootView.findViewById(R.id.notes);
-        trailerScroll = (LinearLayout) rootView.findViewById(R.id.trailer_scroll);
-        DeleteButton = (Button) rootView.findViewById(R.id.delete_button);
-        SaveButton = (Button) rootView.findViewById(R.id.save_button);
+        mDetailView = (LinearLayout) mRootView.findViewById(R.id.details);
+        mTitle = (TextView) mRootView.findViewById(R.id.detail_view_title);
+        mByline = (TextView) mRootView.findViewById(R.id.detail_view_byline);
+        mAuthors = (TextView) mRootView.findViewById(R.id.detail_view_authors);
+        mPosterImage = (ImageView) mRootView.findViewById(R.id.posterView);
+        mBranding = (ImageView) mRootView.findViewById(R.id.branding);
+        mBarcodeImage = (ImageView) mRootView.findViewById(R.id.upcBarcodeImage);
+        mReleaseDate = (TextView) mRootView.findViewById(R.id.releaseDate);
+        mSubTextOne = (TextView) mRootView.findViewById(R.id.detail_subtext1);
+        mSubTextTwo = (TextView) mRootView.findViewById(R.id.detail_subtext2);
+        mFavButton = (CheckBox) mRootView.findViewById(R.id.FavButton);
+        mSearchRetail = (Button) mRootView.findViewById(R.id.search_retail);
+        mSynopsis = (TextView) mRootView.findViewById(R.id.synopsis);
+        mStore = (EditText) mRootView.findViewById(R.id.store);
+        mNotes = (EditText) mRootView.findViewById(R.id.notes);
+        mTrailerScroll = (LinearLayout) mRootView.findViewById(R.id.trailer_scroll);
+        mDeleteButton = (Button) mRootView.findViewById(R.id.delete_button);
+        mSaveButton = (Button) mRootView.findViewById(R.id.save_button);
 
     }
 
@@ -223,109 +220,109 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
 
         //A Wish Item in database could be a Book or a Movie
         //Find out which one we have
-        STATUS = row.getString(DataContract.W_COL_STATUS);
-        title.setText(row.getString(DataContract.W_COL_TITLE));
-        if(STATUS.startsWith("MOVIE")) {
+        mStatus = row.getString(DataContract.W_COL_STATUS);
+        mTitle.setText(row.getString(DataContract.W_COL_TITLE));
+        if(mStatus.startsWith("MOVIE")) {
             //Its a movie so load views accordingly
-            Glide.with(getActivity()).load(row.getString(DataContract.W_COL_ELEVEN)).fitCenter().into(posterImage);
-            String ratingRuntime = String.format(rs.getString(R.string.rating_runtime),
+            Glide.with(getActivity()).load(row.getString(DataContract.W_COL_ELEVEN)).fitCenter().into(mPosterImage);
+            String ratingRuntime = String.format(mResources.getString(R.string.rating_runtime),
                     row.getString(DataContract.W_COL_FIFTEEN), row.getString(W_COL_NINE) );
-            subTextOne.setText(ratingRuntime);
-            subTextTwo.setText(row.getString(W_COL_FIVE));
-            branding.setImageResource(R.drawable.tmdb_brand_120_47);
-            branding.setOnClickListener(new View.OnClickListener() {
+            mSubTextOne.setText(ratingRuntime);
+            mSubTextTwo.setText(row.getString(W_COL_FIVE));
+            mBranding.setImageResource(R.drawable.tmdb_brand_120_47);
+            mBranding.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     sendToBrand();
                 }
             });
-            byline.setVisibility(View.GONE);
-            authors.setVisibility(View.GONE);
-            String overview = String.format(rs.getString(R.string.overview), row.getString(DataContract.W_COL_SIXTEEN));
-            synopsis.setText(overview);
-            addTrailers(trailerScroll, row.getString(DataContract.W_COL_SEVENTEEN));
+            mByline.setVisibility(View.GONE);
+            mAuthors.setVisibility(View.GONE);
+            String overview = String.format(mResources.getString(R.string.overview), row.getString(DataContract.W_COL_SIXTEEN));
+            mSynopsis.setText(overview);
+            addTrailers(mTrailerScroll, row.getString(DataContract.W_COL_SEVENTEEN));
 
             //ALLy content descriptions for dynamic content
             String description =getActivity().getResources().getString(R.string.movie_detail_view_description,
                     row.getString(DataContract.W_COL_TITLE), row.getString(W_COL_FIVE), row.getString(DataContract.W_COL_DATE),
                     row.getString(DataContract.W_COL_FIFTEEN));
-            detailView.setContentDescription(description);
-            synopsis.setContentDescription(overview);
+            mDetailView.setContentDescription(description);
+            mSynopsis.setContentDescription(overview);
 
-            DetailShare = rs.getString(R.string.detail_movie_desc, row.getString(DataContract.W_COL_TITLE),
+            mDetailShare = mResources.getString(R.string.detail_movie_desc, row.getString(DataContract.W_COL_TITLE),
                     row.getString(DataContract.W_COL_FIVE), row.getString(DataContract.W_COL_DATE),
                     row.getString(DataContract.W_COL_FIFTEEN), row.getString(DataContract.W_COL_UPC));
         }
         else{
             //Its a book so load views accordingly
-            Glide.with(getActivity()).load(row.getString(DataContract.W_COL_THUMB)).fitCenter().into(posterImage);
-            subTextOne.setText(row.getString(DataContract.W_COL_ELEVEN));
-            subTextTwo.setText(row.getString(DataContract.W_COL_FIFTEEN));
-            branding.setImageResource(R.drawable.google_logo);
-            branding.setOnClickListener(new View.OnClickListener() {
+            Glide.with(getActivity()).load(row.getString(DataContract.W_COL_THUMB)).fitCenter().into(mPosterImage);
+            mSubTextOne.setText(row.getString(DataContract.W_COL_ELEVEN));
+            mSubTextTwo.setText(row.getString(DataContract.W_COL_FIFTEEN));
+            mBranding.setImageResource(R.drawable.google_logo);
+            mBranding.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     sendToBrand();
                 }
             });
-            byline.setText(row.getString(DataContract.W_COL_FIVE));
-            authors.setText(row.getString(W_COL_NINE));
-            String overview = String.format(rs.getString(R.string.overview), row.getString(DataContract.W_COL_SIX));
-            synopsis.setText(overview);
-            trailerScroll.setVisibility(View.GONE);
+            mByline.setText(row.getString(DataContract.W_COL_FIVE));
+            mAuthors.setText(row.getString(W_COL_NINE));
+            String overview = String.format(mResources.getString(R.string.overview), row.getString(DataContract.W_COL_SIX));
+            mSynopsis.setText(overview);
+            mTrailerScroll.setVisibility(View.GONE);
 
 
             //ALLy content descriptions for dynamic content
-            String description =rs.getString(R.string.book_detail_view_description,
+            String description = mResources.getString(R.string.book_detail_view_description,
                     row.getString(DataContract.W_COL_TITLE), row.getString(W_COL_NINE), row.getString(DataContract.W_COL_DATE));
-            detailView.setContentDescription(description);
-            synopsis.setContentDescription(overview);
+            mDetailView.setContentDescription(description);
+            mSynopsis.setContentDescription(overview);
 
-            DetailShare = getActivity().getResources().getString(R.string.detail_book_desc, row.getString(DataContract.W_COL_TITLE),
+            mDetailShare = getActivity().getResources().getString(R.string.detail_book_desc, row.getString(DataContract.W_COL_TITLE),
                     row.getString(W_COL_NINE), row.getString(DataContract.W_COL_DATE), row.getString(DataContract.W_COL_UPC));
 
         }
 
-        Glide.with(this).load(row.getString(DataContract.W_COL_SEVEN)).fitCenter().into(barcodeImage);
-        releaseDate.setText(Utility.dateToYear(row.getString(DataContract.W_COL_DATE)));
+        Glide.with(this).load(row.getString(DataContract.W_COL_SEVEN)).fitCenter().into(mBarcodeImage);
+        mReleaseDate.setText(Utility.dateToYear(row.getString(DataContract.W_COL_DATE)));
 
         //Set the checkbox accordingly.
-        if(!favButton.isChecked()){
-            favButton.setChecked(true);
-            favButton.setEnabled(false);
+        if(!mFavButton.isChecked()){
+            mFavButton.setChecked(true);
+            mFavButton.setEnabled(false);
         }
 
         //Restore from Saved State if necessary.
-        if(StateSavedStore != null ){
-            store.setText(StateSavedStore);
+        if(mStateSavedStore != null ){
+            mStore.setText(mStateSavedStore);
         }else {
-            store.setText(row.getString(DataContract.W_COL_STORE));
+            mStore.setText(row.getString(DataContract.W_COL_STORE));
         }
-        if(StateSavedNotes != null){
-            notes.setText(StateSavedNotes);
+        if(mStateSavedNotes != null){
+            mNotes.setText(mStateSavedNotes);
         }else {
-            notes.setText(row.getString(DataContract.W_COL_NOTES));
+            mNotes.setText(row.getString(DataContract.W_COL_NOTES));
         }
 
         //Rest of A11Y content descriptions
-        String artDesc = rs.getString(R.string.poster_description, row.getString(DataContract.W_COL_TITLE));
-        posterImage.setContentDescription(artDesc);
-        String barcodeDesc = rs.getString(R.string.barcode_description, row.getString(DataContract.W_COL_UPC));
-        barcodeImage.setContentDescription(barcodeDesc);
+        String artDesc = mResources.getString(R.string.poster_description, row.getString(DataContract.W_COL_TITLE));
+        mPosterImage.setContentDescription(artDesc);
+        String barcodeDesc = mResources.getString(R.string.barcode_description, row.getString(DataContract.W_COL_UPC));
+        mBarcodeImage.setContentDescription(barcodeDesc);
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(createShareIntent(DetailShare));
+            mShareActionProvider.setShareIntent(createShareIntent(mDetailShare));
         }
 
         //Setup Delete, Save and Search Retail Buttons for Movie View, Book View and WishList View
         final String CurrentUPC = mParam1.getLastPathSegment();
 
         //Set searchRetail click listener
-        searchRetail.setOnClickListener(new View.OnClickListener() {
+        mSearchRetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogActionEvent(ACTIVITY_NAME, "SearchRetailersButton", "action");
+                logActionEvent(ACTIVITY_NAME, "SearchRetailersButton", "action");
                 Uri send = mParam1;
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity()).toBundle();
                 Intent SearchRetailIntent = new Intent(getActivity(), RetailerSearchActivity.class);
@@ -334,7 +331,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
             }
         });
 
-        DeleteButton.setOnClickListener(new View.OnClickListener(){
+        mDeleteButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
 
                 //Determine from which list we are deleting
@@ -353,12 +350,12 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
             }
         });
 
-        SaveButton.setOnClickListener(new View.OnClickListener(){
+        mSaveButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
 
                 //Get input changes
-                String Store = store.getText().toString();
-                String Notes = notes.getText().toString();
+                String Store = mStore.getText().toString();
+                String Notes = mNotes.getText().toString();
 
                 //Determine from which list we are updating
                 Uri updateMovie = mParam1;;
@@ -382,21 +379,26 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
 
     private void addTrailers(LinearLayout view, String trailers) {
 
-        if (view.getChildCount() > 0) {
-            view.removeAllViews();
+        //Clear any views
+        if (view.getChildCount() > 0) {view.removeAllViews();}
+
+        //If there are no trailers, then nothing to do
+        if(trailers == null || trailers.equals("")){
+            return;
         }
 
+        LayoutInflater vi = getActivity().getLayoutInflater();
         final String[] tempTrail;
         //Log.v("AddNew: ", trailers);
         int i = 0;
         try {
             tempTrail = trailers.split(",");
-            if (tempTrail != null || tempTrail.length > 0) {
+            if (tempTrail.length > 0) {
 
                 for (String url : tempTrail) {
-                    View v = mInflater.inflate(R.layout.trailer_tile, view, false);
+                    View v = vi.inflate(R.layout.trailer_tile, view, false);
                     TextView listText = (TextView) v.findViewById(R.id.list_item_trailer_text);
-                    String text = rs.getString(R.string.trailer_play_description, String.valueOf(i + 1));
+                    String text = mResources.getString(R.string.trailer_play_description, String.valueOf(i + 1));
                     //ALLy Content description for trailers
                     v.setContentDescription(text);
                     v.setFocusable(true);
@@ -428,7 +430,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     }
 
     public void sendToBrand(){
-        if(STATUS.startsWith("MOVIE")){
+        if(mStatus.startsWith("MOVIE")){
             Intent result = new Intent(Intent.ACTION_VIEW, Uri.parse(TMDB_SITE));
             result.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if(result.resolveActivity(getActivity().getPackageManager()) != null){
@@ -436,7 +438,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
             }
 
         }
-        if(STATUS.startsWith("BOOK")){
+        if(mStatus.startsWith("BOOK")){
             Intent result = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_BOOKS));
             result.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if(result.resolveActivity(getActivity().getPackageManager()) != null){
@@ -470,7 +472,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
 
     }
 
-    private void LogShareEvent(String activity, String buttonName, String shareable){
+    private void logShareEvent(String activity, String buttonName, String shareable){
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -479,7 +481,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
     }
 
-    private void LogActionEvent(String activity, String actionName, String type ){
+    private void logActionEvent(String activity, String actionName, String type ){
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, actionName);

@@ -58,7 +58,7 @@
                     android:layout_height="@dimen/scan_button_height"
                     android:layout_weight="2"
                     android:text="@string/scan_button"
-                    android:onClick="LaunchBarcodeScanner"
+                    android:onClick="launchBarcodeScanner"
                     android:drawablePadding="@dimen/scan_button_drawable_padding"
                     android:drawableLeft="@drawable/barcode_scan"
                     android:drawableStart="@drawable/barcode_scan"
@@ -110,7 +110,7 @@
                 android:textStyle="normal|bold"
                 android:typeface="sans"
                 android:textAllCaps="false"
-                android:onClick="SearchAmazon"/>
+                android:onClick="searchAmazon"/>
 
             <Button
                 android:id="@+id/button_target"
@@ -129,7 +129,7 @@
                 android:textSize="30sp"
                 android:textStyle="normal|bold"
                 android:textAllCaps="false"
-                android:onClick="SearchTarget"/>
+                android:onClick="searchTarget"/>
 
             <Button
                 android:id="@+id/button_walmart"
@@ -148,7 +148,7 @@
                 android:textSize="30sp"
                 android:textAllCaps="false"
                 android:textStyle="normal|bold"
-                android:onClick="SearchWalmart"/>
+                android:onClick="searchWalmart"/>
 
             <Button
                 android:id="@+id/button_ebay"
@@ -167,7 +167,7 @@
                 android:textSize="30sp"
                 android:textStyle="normal|bold"
                 android:textColor="?attr/actionModeSplitBackground"
-                android:onClick="SearchEbay"/>
+                android:onClick="searchEbay"/>
 
             <Button
                 android:id="@+id/button_best_buy"
@@ -186,7 +186,7 @@
                 android:textSize="30sp"
                 android:textStyle="normal|bold"
                 android:textColor="@color/walmart_yellow"
-                android:onClick="SearchBestBuy"/>
+                android:onClick="searchBestBuy"/>
 
             <Button
                 android:id="@+id/button_toysrus"
@@ -205,7 +205,7 @@
                 android:textSize="30sp"
                 android:textStyle="normal|bold"
                 android:textColor="@color/walmart_yellow"
-                android:onClick="SearchToysRUS"/>
+                android:onClick="searchToysRUs"/>
         </LinearLayout>
 
     </ScrollView>

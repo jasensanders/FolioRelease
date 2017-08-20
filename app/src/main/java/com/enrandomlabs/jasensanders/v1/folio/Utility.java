@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Jasen Sanders on 002,03/02/16.
+ * Utility file with tools for processing and saving data
  */
 public class Utility {
 
@@ -130,7 +131,7 @@ public class Utility {
     }
 
     //Checks if  the string is numeric and the right length for a UPC barcode.
-    static public boolean isValid(String s) {
+    static public boolean isValidUpc(String s) {
         if(isNum(s)){
             //s.length() == 10 || s.length() == 13
             if(s.length() ==12 || s.length() == 10 || s.length() == 13){
@@ -668,7 +669,7 @@ public class Utility {
         return false;
     }
 
-    public static boolean BackupDBtoMobileDevice(Context context){
+    public static boolean backupDBtoMobileDevice(Context context){
 
         if(isExternalStorageWritable()) {
             try {
@@ -714,7 +715,7 @@ public class Utility {
 
     }
 
-    public static boolean RestoreDBfromMobileDevice(Context context){
+    public static boolean restoreDBfromMobileDevice(Context context){
 
         if(isExternalStorageWritable()) {
             FileChannel src;
