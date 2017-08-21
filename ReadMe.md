@@ -25,5 +25,13 @@ Put both of these keys in the strings.xml file under:
 * Manual Entry
 * SearchView widget works
 * Code is more google style compliant
-* Refactored IntentServices to fail more gracefully ####Easier to debug!
-* Memeory leak fixes
+* Refactored IntentServices to fail more gracefully **Easier to debug!**
+* Memory leak fixes
+
+### It looks like this:
+
+![Main Activity](https://lh3.googleusercontent.com/X2Uwc1FFSY27w1HgAt6KGkFgvPCuc7ucByYGay7fAEz73BTPBZZ641dWAi4ZDw02FA4=h900-rw "Main Activity")
+
+![Nav Drawer](https://lh3.googleusercontent.com/Yfbv_hSf2NfWSE8WNZJVz7qyylIyVqboDnTE_35HX64QIpcf49sXvVGFYgIq9SbvkBQ=h900-rw "Nav Drawer")
+
+![Detail View](https://lh3.googleusercontent.com/o7ZIcxXjgAnMnKZFZliKLeIq-Xi9YH1HFXg0tMzbSBEgWaKFKMTrx2nniMN5aQy0dB8=h900-rw "Detail View")
