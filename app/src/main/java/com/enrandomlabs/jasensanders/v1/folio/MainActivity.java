@@ -27,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,17 +53,20 @@ public class MainActivity extends AppCompatActivity
     private static final String TWO_PANE_DETAIL_FRAGMENT = "TWO_PANE_DETAIL_FRAG";
     private static final int MY_WRITE_EXT_STORAGE_PERMISSON = 11264;
 
+    //Loader flags also act as view state indicators
     private static final int MOVIE_LOADER = 100;
     private static final int WISHLIST_LOADER = 200;
     private static final int BOOKS_LOADER = 300;
+
+    //Triggers a search based on the above Loader/View state
     private static final int SEARCH_LOADER = 3500;
+
 
     private static final String TITLE = "TITLE";
     private static final String ADD_DATE = "ADD_DATE";
     private static final String RELEASE_DATE = "DATE";
     private static final String ASC = " ASC";
     private static final String DESC = " DESC";
-
 
     //Loader state represents ViewType State
     private int mFolioLoader = 0;
@@ -73,10 +77,11 @@ public class MainActivity extends AppCompatActivity
     private Fragment mCurrentFragment;
     private int mPermission;
 
+
     //Views
     private TextView mTitleViewLabel;
     private SearchView mSearchView;
-    public final Activity activity = this;
+    public final Activity mActivity = this;
     private RecyclerView itemList;
     private ListItemAdapter listItemAdapter;
     AdView mAdView;
@@ -107,11 +112,12 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else {
-            //Otherwise set view defaults Which is Movies for now.
-            //TODO Settings Activity to set defaults. For now they are set here.
-            mFolioLoader = MOVIE_LOADER;
-            mSortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";
-            mViewLabel = getString(R.string.movie_view);
+
+                //Otherwise set view defaults Which is Movies for now.
+                //TODO Settings Activity to set defaults. For now they are set here.
+                mFolioLoader = MOVIE_LOADER;
+                mSortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";
+                mViewLabel = getString(R.string.movie_view);
 
         }
 
@@ -128,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         AdRequest.Builder builder = new AdRequest.Builder();
         if(BuildConfig.DEBUG_BUILD) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-            builder.addTestDevice("F18A92219F2A59F1"); //My Nexus 5x Test Phone
+            builder.addTestDevice("9929AC1F80C13986BA10336A6CEE1CF6"); //My Nexus 5x Test Phone
             builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
         }
         AdRequest request= builder.build();
@@ -171,6 +177,7 @@ public class MainActivity extends AppCompatActivity
             setupPermissions();
         }
 
+        //Load available data from FolioProvider
         getLoaderManager().initLoader(mFolioLoader, null, this);
 
     }
@@ -323,7 +330,7 @@ public class MainActivity extends AppCompatActivity
                 restartMessage.setAction("RESTART", new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        Utility.reStart(activity);
+                        Utility.reStart(mActivity);
                     }
                 });
                 restartMessage.show();
@@ -389,19 +396,21 @@ public class MainActivity extends AppCompatActivity
             }
             case SEARCH_LOADER:
             {
-                //Get the Query from the widget
+                //Get the Query from the widget **Google Voice Search launches in a separate activity**
                 String searchString = mSearchView.getQuery().toString();
+
                 //Log.v("Search Loader Started: ", searchString);
                 logSearchEvent(ACTIVITY_NAME, "SearchButton", searchString, "SQL");
                 //If there is something to query, determine appropriate cursor and return it
-                if(searchString.length()>0){
+                if(searchString != null && searchString.length()>0){
+
                     searchString = "%"+searchString+"%";
                     final String[] selectionArgs = Utility.selectionArgsMatcher(mFolioLoader, searchString);
                     final Uri searchUri = Utility.uriSearchStateMatcher(mFolioLoader);
                     final String selection = Utility.selectionSearchStateMatcher(mFolioLoader);
                     final String[] projection = Utility.projectionSearchStateMatcher(mFolioLoader);
 
-                    return new CursorLoader(activity,
+                    return new CursorLoader(this,
                             searchUri,
                             projection,
                             selection,
@@ -428,6 +437,7 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data.moveToFirst()) {
+            Log.e(LOG_TAG, "SearchLoader arrived in onLoadFinished");
             listItemAdapter = new ListItemAdapter(this);
             listItemAdapter.swapCursor(data);
 

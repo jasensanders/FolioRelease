@@ -123,6 +123,10 @@
     <string name="title_hint">Search by Title</string>
     <string name="action_share">Share Last Search</string>
 
+    <!--Search Activity Strings -->
+    <string name="title_search_activity">Search Folio</string>
+
+
 
     <!--widget strings-->
     <string name="title_widget_detail">Folio Details</string>

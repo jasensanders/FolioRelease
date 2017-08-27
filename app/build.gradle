@@ -30,7 +30,7 @@ android {
             buildConfigField "boolean", "DEBUG_BUILD", "true"
         }
     }
-    buildTypes.each{
+    buildTypes.each {
         it.buildConfigField 'String', 'TMDB_API_KEY', MyTMDBApiKey
         it.buildConfigField 'String', 'SEARCH_UPC_KEY', MySearchUPCKey
         it.buildConfigField 'String', 'GOOGLE_BOOKS_KEY', MyGoogleBooksKey
@@ -43,6 +43,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestCompile('com.android.support.test:runner:0.5', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    //compile 'com.opencsv:opencsv:3.8'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.google.firebase:firebase-core:10.0.1'
@@ -52,9 +56,5 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test:runner:0.5', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    //compile 'com.opencsv:opencsv:3.8'
 }
 apply plugin: 'com.google.gms.google-services'

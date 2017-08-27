@@ -46,6 +46,8 @@ public class Utility {
     public static final int BOOK_BY_UPC = 302;
     //For selecting all BOOKS in the DataBase and Deleting/Inserting/Updating all
     static final int BOOKS_ALL = 300;
+    //For selecting a any item type
+    public static final int SEARCH_ALL = 3500;
 
     //Backup preference keys
     public static final String FLAG_RESTORE_BACKUP = "FOLIO_RESTORE_BACKUP";
@@ -203,8 +205,15 @@ public class Utility {
 
     public static String stringArrayToString(String[] inString){
         StringBuilder result = new StringBuilder();
+        int i = 0;
         for(String add: inString){
-            result.append(add + ", ");
+            if(i != inString.length -1) {
+                String toAdd = add + ", ";
+                result.append(toAdd);
+                i++;
+            }else{
+                result.append(add);
+            }
         }
 
         return result.toString();
@@ -292,6 +301,8 @@ public class Utility {
             DataContract.WishEntry.COLUMN_STATUS,
             DataContract.WishEntry.COLUMN_W_FIFTEEN
     };
+
+
 
     public static ContentValues makeMovieRowValues(String[] input){
 
@@ -470,15 +481,21 @@ public class Utility {
     public static Uri uriSearchStateMatcher(int LoaderType){
 
         if(LoaderType == MOVIE_ALL){
+
             return DataContract.MovieEntry.buildSearchUri();
         }
         else if(LoaderType == WISH_LIST_ALL){
+
             return DataContract.WishEntry.buildSearchUri();
         }
-        else if(LoaderType == BOOKS_ALL){
+        else if(LoaderType == BOOKS_ALL) {
+
             return DataContract.BookEntry.buildSearchUri();
+
+        } else{
+
+            return null;
         }
-        else{ return null;}
 
     }
 
@@ -798,7 +815,7 @@ public class Utility {
         boolean W = true;
         boolean M = true;
         boolean B = true;
-        boolean A = true;
+        //boolean A = true;
 
         Cursor WC = c.getContentResolver().query(DataContract.WishEntry.CONTENT_URI,
                 DataContract.WISH_COLUMNS, null,null, DataContract.WishEntry.COLUMN_TITLE + ASC);
@@ -850,50 +867,6 @@ public class Utility {
         activity.finish();
 
     }
-    /**
-     * Compresses a string of repeated printable characters.
-     * @param input String to compress.
-     * @return Returns a compressed string.
-     */
-    public static String compress(String input){
 
-        //Setup variables.
-        StringBuilder prototype = new StringBuilder();
-        int len = input.length();
-        char current = 0;
-        int count = 0;
-
-        //Iterate through String.
-        for(int i =0; i < len; i++){
-
-            //If we have a new char
-            if(current != input.charAt(i)){
-
-                //and its not the beginning of the string,
-                if(count >0){
-
-                    //append the count of  the last char to String.
-                    prototype.append(count);
-                }
-
-                //Then reset current char and append new char to String,
-                current = input.charAt(i);
-                prototype.append(current);
-
-                //and reset count to 1.
-                count = 1;
-
-                //Otherwise its a repeat so increment count.
-            }else{
-                count ++;
-            }
-        }
-
-        //Lastly, append the count of the last char in the input to String.
-        prototype.append(count);
-
-        //Return new compressed String only if it's smaller than the input String.
-        return  prototype.length() >= input.length()? input: prototype.toString();
-    }
 
 }

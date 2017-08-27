@@ -16,11 +16,14 @@
     <style name="AppTheme.AddNew" parent="AppTheme" >
 
     </style>
-    <style name="AppTheme.Details" >
+    <style name="AppTheme.Details" parent="AppTheme" >
 
     </style>
-    <style name="AppTheme.RetailSearch">
+    <style name="AppTheme.RetailSearch" parent="AppTheme">
 
+
+    </style>
+    <style name="AppTheme.SearchActivity" parent="AppTheme">
 
     </style>
 

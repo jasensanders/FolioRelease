@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -16,7 +16,7 @@
         android:value="@integer/google_play_services_version" />
 
     <application
-        android:name="com.enrandomlabs.jasensanders.v1.folio.FolioApplication"
+        android:name=".FolioApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/auto_backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -28,19 +28,19 @@
             android:value="barcode" />
 
         <provider
-            android:name="com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider"
+            android:name=".database.FolioProvider"
             android:authorities="com.enrandomlabs.jasensanders.v1.folio" />
 
         <service
-            android:name="com.enrandomlabs.jasensanders.v1.folio.services.FetchMovieDataService"
+            android:name=".services.FetchMovieDataService"
             android:exported="false" />
         <service
-            android:name="com.enrandomlabs.jasensanders.v1.folio.services.FetchBookService"
-            android:exported="false"/>
+            android:name=".services.FetchBookService"
+            android:exported="false" />
 
         <!-- Detail Widget -->
         <receiver
-            android:name="com.enrandomlabs.jasensanders.v1.folio.widget.DetailWidgetProvider"
+            android:name=".widget.DetailWidgetProvider"
             android:enabled="@bool/widget_detail_enabled"
             android:label="@string/title_widget_detail">
             <intent-filter>
@@ -54,30 +54,29 @@
         </receiver>
 
         <service
-            android:name="com.enrandomlabs.jasensanders.v1.folio.widget.DetailWidgetRemoteViewsService"
+            android:name=".widget.DetailWidgetRemoteViewsService"
             android:enabled="@bool/widget_detail_enabled"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
 
         </activity>
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.AddNewActivity"
+            android:name=".AddNewActivity"
             android:label="@string/title_add_new"
             android:launchMode="standard"
-            android:parentActivityName="com.enrandomlabs.jasensanders.v1.folio.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.AddNew"
             android:windowSoftInputMode="stateHidden">
             <meta-data
@@ -85,22 +84,22 @@
                 android:value="com.enrandomlabs.jasensanders.v1.folio.MainActivity" />
         </activity>
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.DetailActivity"
-            android:launchMode="singleTop"
+            android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName="com.enrandomlabs.jasensanders.v1.folio.MainActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.Details">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.enrandomlabs.jasensanders.v1.folio.MainActivity" />
         </activity>
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.barcode.BarcodeActivity"
+            android:name=".barcode.BarcodeActivity"
             android:label="@string/barcode_activity_label" />
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.RetailerSearchActivity"
+            android:name=".RetailerSearchActivity"
             android:label="@string/title_search_retailers"
-            android:parentActivityName="com.enrandomlabs.jasensanders.v1.folio.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.RetailSearch"
             android:windowSoftInputMode="stateHidden">
             <meta-data
@@ -116,7 +115,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.enrandomlabs.jasensanders.v1.folio.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -124,7 +123,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SearchActivity"
+            android:label="@string/title_search_activity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.SearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.enrandomlabs.jasensanders.v1.folio.MainActivity" />
 
+            <intent-filter>
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

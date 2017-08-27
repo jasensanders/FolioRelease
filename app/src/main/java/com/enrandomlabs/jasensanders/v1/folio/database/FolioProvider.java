@@ -6,9 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
+
+import com.enrandomlabs.jasensanders.v1.folio.Utility;
+
+import java.util.ArrayList;
 
 
 /**
@@ -51,6 +57,8 @@ public class FolioProvider extends ContentProvider {
 
     static final int SEARCH_BOOK = 1300;
 
+    static final int SEARCH_ALL = 3500;
+
 
 
     private static final SQLiteQueryBuilder mQueryBuilder;
@@ -58,6 +66,8 @@ public class FolioProvider extends ContentProvider {
     private static final SQLiteQueryBuilder bQueryBuilder;
 
     private static final SQLiteQueryBuilder wQueryBuilder;
+
+
 
     static{
 
@@ -69,7 +79,8 @@ public class FolioProvider extends ContentProvider {
         bQueryBuilder.setTables(DataContract.BookEntry.TABLE_NAME);
 
         wQueryBuilder = new SQLiteQueryBuilder();
-        wQueryBuilder.setTables( DataContract.WishEntry.TABLE_NAME);
+        wQueryBuilder.setTables(DataContract.WishEntry.TABLE_NAME);
+
     }
 
     //Selection of individual row by Movie ID according to theMovieDataBase.org
@@ -255,6 +266,50 @@ public class FolioProvider extends ContentProvider {
         );
     }
 
+    private Cursor searchAll(Uri uri, String sortOrder){
+        String q = uri.getLastPathSegment();
+        final String query = "%"+q+"%";
+        Log.e("Folio_Provider", "Query: "+query);
+        Log.e("Folio_Provider", "SortOrder: "+ sortOrder);
+        ArrayList<Cursor> returned = new ArrayList<Cursor>();
+        Cursor m = mQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                Utility.projectionSearchStateMatcher(MOVIE_ALL),
+                Utility.selectionSearchStateMatcher(MOVIE_ALL),
+                Utility.selectionArgsMatcher(MOVIE_ALL, query),
+                null,
+                null,
+                sortOrder);
+        if(m != null ){
+            returned.add(m);
+        }
+        Cursor w = wQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                Utility.projectionSearchStateMatcher(WISH_LIST_ALL),
+                Utility.selectionSearchStateMatcher(WISH_LIST_ALL),
+                Utility.selectionArgsMatcher(WISH_LIST_ALL, query),
+                null,
+                null,
+                sortOrder);
+        if(w != null ){
+            returned.add(w);
+        }
+        Cursor b = bQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                Utility.projectionSearchStateMatcher(BOOKS_ALL),
+                Utility.selectionSearchStateMatcher(BOOKS_ALL),
+                Utility.selectionArgsMatcher(BOOKS_ALL, query),
+                null,
+                null,
+                sortOrder);
+        if(b != null ){
+            returned.add(b);
+        }
+        Cursor[] result = returned.toArray(new Cursor[returned.size()]);
+
+
+        return new MergeCursor(result);
+
+
+    }
+
     //URI matcher for states above
     static UriMatcher buildUriMatcher() {
         //Setup the Matcher
@@ -274,6 +329,7 @@ public class FolioProvider extends ContentProvider {
         fURIMatcher.addURI(authority, DataContract.PATH_MOVIE_SEARCH, SEARCH_MOVIE);
         fURIMatcher.addURI(authority, DataContract.PATH_WISHLIST_SEARCH, SEARCH_WISHLIST);
         fURIMatcher.addURI(authority, DataContract.PATH_BOOKS_SEARCH, SEARCH_BOOK);
+        fURIMatcher.addURI(authority, DataContract.PATH_SEARCH_ALL + "/*", SEARCH_ALL);
 
 
 
@@ -321,6 +377,8 @@ public class FolioProvider extends ContentProvider {
                 return DataContract.WishEntry.CONTENT_TYPE;
             case SEARCH_BOOK:
                 return DataContract.BookEntry.CONTENT_TYPE;
+            case SEARCH_ALL:
+                return DataContract.SEARCH_CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -408,6 +466,11 @@ public class FolioProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
+                break;
+            }
+            case SEARCH_ALL:{
+
+                retCursor = searchAll(uri, sortOrder);
                 break;
             }
             default:

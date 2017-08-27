@@ -58,6 +58,19 @@ public class DataContract {
     public static final String STATUS_BOOK_WISH = "BOOK_WISH";
     public static final String STATUS_ALBUM_WISH = "ALBUM_WISH";
 
+    //Search Content Type
+    public static final String SEARCH_CONTENT_TYPE =
+            ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SEARCH_ALL;
+
+    //Search Content URI
+    public static final Uri SEARCH_CONTENT_URI =
+            BASE_CONTENT_URI.buildUpon().appendPath(PATH_SEARCH_ALL).build();
+
+    public static Uri buildSearchUri(String query){
+        return SEARCH_CONTENT_URI.buildUpon().appendPath(query).build();
+    }
+
+
     //Movie Projection full row
     public static final String[] MOVIE_COLUMNS = {
             MovieEntry._ID,
