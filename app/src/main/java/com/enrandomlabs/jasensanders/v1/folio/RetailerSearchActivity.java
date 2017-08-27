@@ -1,3 +1,19 @@
+/*
+ Copyright 2017 Jasen Sanders (EnRandomLabs).
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 package com.enrandomlabs.jasensanders.v1.folio;
 
 import android.content.Intent;
@@ -18,6 +34,13 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+/**
+ * Created by Jasen Sanders on 10/11/2016.
+ * A simple {@link AppCompatActivity} subclass used to search retailers for items that
+ * have been scanned or items from the database.
+ *
+ */
 
 public class RetailerSearchActivity extends AppCompatActivity {
     private static final String LOG_TAG = RetailerSearchActivity.class.getSimpleName();
@@ -68,7 +91,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
         AdRequest.Builder builder = new AdRequest.Builder();
         if(BuildConfig.DEBUG_BUILD) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-            builder.addTestDevice("F18A92219F2A59F1");  //My Nexus 5x Test Phone
+            builder.addTestDevice("9929AC1F80C13986BA10336A6CEE1CF6");  //My Nexus 5x Test Phone
             builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
         }
         AdRequest request = builder.build();
