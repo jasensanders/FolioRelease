@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -883,7 +884,11 @@ public class Utility {
         PendingIntent mPendingIntent = PendingIntent.getActivity(activity, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + delayInMilliseconds, mPendingIntent);
-        activity.finish();
+        if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
+            activity.finish();
+        }else {
+            activity.finishAffinity();
+        }
 
     }
 
