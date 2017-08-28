@@ -375,13 +375,11 @@ public class MainActivity extends AppCompatActivity
         if(mPermission == PackageManager.PERMISSION_GRANTED) {
             //Do not backup an empty database, you may overwrite a fully backed up database
             if(!Utility.isDBEmpty(this)) {
-                if (Utility.backupDBtoMobileDevice(getApplicationContext())) {
-                    //Log.v(LOG_TAG, "Backup Success!");
-                    FirebaseCrash.log("Backup Success");
-                } else {
-                    //Log.v(LOG_TAG, "Backup Failed!");
+                if (!Utility.backupDBtoMobileDevice(getApplicationContext())) {
+                    //Log.v(LOG_TAG, "Backup Failed");
                     FirebaseCrash.log("Backup Failed");
                 }
+
             }
         }
     }
