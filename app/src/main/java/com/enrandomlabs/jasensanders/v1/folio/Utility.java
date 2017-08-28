@@ -872,14 +872,17 @@ public class Utility {
         return M && W && B;
     }
 
-    public static void reStart(Activity activity){
+    public static void reStart(Activity activity, int delayInMilliseconds, Class<?> launcherClass){
+        //Activity to kill and context to start from: activity
+        //Delay in MS: delayInMilliseconds
+        //Launcher Class that starts your app: launcherClass
 
-        Intent mStartActivity = new Intent(activity, SplashActivity.class);
+        Intent mStartActivity = new Intent(activity, launcherClass);
         mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(activity, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + delayInMilliseconds, mPendingIntent);
         activity.finish();
 
     }

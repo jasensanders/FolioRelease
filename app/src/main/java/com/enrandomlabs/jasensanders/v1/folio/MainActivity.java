@@ -343,16 +343,16 @@ public class MainActivity extends AppCompatActivity
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_restore_db:
-                //set Prefrences to restore backup on restart
+                //Set Prefrences to restore backup on restart
                 Utility.setPrefRestoreBackup(this, true);
                 logActionEvent(ACTIVITY_NAME,"nav_restore_db", "action");
-                //launch snackbar to ask if user wants to restart now
+                //Launch snackbar to ask if user wants to restart now
                 final String request = "Backup will be restored on restart";
                 final Snackbar restartMessage = Snackbar.make(findViewById(R.id.root), request, Snackbar.LENGTH_LONG );
                 restartMessage.setAction("RESTART", new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        Utility.reStart(mActivity);
+                        Utility.reStart(mActivity, 100, SplashActivity.class);
                     }
                 });
                 restartMessage.show();
