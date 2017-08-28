@@ -320,9 +320,9 @@ public class FolioProvider extends ContentProvider {
         if(b != null ){
             returned.add(b);
         }
+
+
         Cursor[] result = returned.toArray(new Cursor[returned.size()]);
-
-
         return new MergeCursor(result);
 
 
@@ -494,7 +494,9 @@ public class FolioProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return retCursor;
     }
 

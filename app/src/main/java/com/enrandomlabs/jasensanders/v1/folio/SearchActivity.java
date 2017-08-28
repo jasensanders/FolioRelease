@@ -28,6 +28,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 
@@ -53,6 +55,7 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
     private static final String DESC = " DESC";
 
     private RecyclerView itemList;
+    private TextView mEmptyView;
     private ListItemAdapter listItemAdapter;
     private Fragment mCurrentFragment;
     private Uri mSearchUri;
@@ -74,6 +77,9 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
             }
 
         }
+
+        //Initialize empty view
+        mEmptyView = (TextView) findViewById(R.id.sRecyclerView_empty);
 
         //Initialize recycler view
         itemList = (RecyclerView) findViewById(R.id.content_list);
@@ -120,7 +126,9 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()) {
+        if (data != null && data.moveToFirst() && !data.isNull(0)) {
+            mEmptyView.setVisibility(View.GONE);
+            itemList.setVisibility(View.VISIBLE);
 
             listItemAdapter = new ListItemAdapter(this);
             listItemAdapter.swapCursor(data);
@@ -137,10 +145,14 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
             list.setOrientation(LinearLayoutManager.VERTICAL);
             itemList.setLayoutManager(list);
             itemList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.drawable.line_divider));
+//
 
         } else {
             itemList.setAdapter(null);
             itemList.removeAllViews();
+            itemList.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyView.setText(R.string.search_is_empty);
 
         }
 

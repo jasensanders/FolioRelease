@@ -15,6 +15,9 @@
     <string name="movie_view">Movies</string>
     <string name="wish_list_view">Wish List</string>
     <string name="books_view">Books</string>
+    <string name="empty_list">No items added yet.</string>
+    <string name="empty_movies">Add some awesome movies!</string>
+    <string name="empty_books">Add some fascinating books!</string>
 
 
     <!--Nav Drawer Strings-->
@@ -125,6 +128,7 @@
 
     <!--Search Activity Strings -->
     <string name="title_search_activity">Search Folio</string>
+    <string name="search_is_empty">Sorry, we couldn\'t find anything.</string>
 
 
 

@@ -43,7 +43,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,6 +102,7 @@ public class MainActivity extends AppCompatActivity
     //Views
     private TextView mTitleViewLabel;
     private SearchView mSearchView;
+    private TextView mEmptyView;
     public final Activity mActivity = this;
     private RecyclerView itemList;
     private ListItemAdapter listItemAdapter;
@@ -161,6 +161,9 @@ public class MainActivity extends AppCompatActivity
         }
         AdRequest request= builder.build();
         mAdView.loadAd(request);
+
+        //Initialize empty view
+        mEmptyView = (TextView) findViewById(R.id.recyclerView_empty);
 
         //Initialize recycler view
         itemList = (RecyclerView) findViewById(R.id.content_list);
@@ -391,6 +394,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case MOVIE_LOADER:
             {
+                mEmptyView.setText(R.string.empty_movies);
                 return new CursorLoader(this,
                         DataContract.MovieEntry.buildUriAll(),
                         Utility.MOVIE_COLUMNS,
@@ -400,6 +404,7 @@ public class MainActivity extends AppCompatActivity
             }
             case BOOKS_LOADER:
             {
+                mEmptyView.setText(R.string.empty_books);
                 return new CursorLoader(this,
                         DataContract.BookEntry.buildUriAll(),
                         Utility.BOOK_COLUMNS,
@@ -409,6 +414,7 @@ public class MainActivity extends AppCompatActivity
             }
             case WISHLIST_LOADER:
             {
+                mEmptyView.setText(R.string.empty_list);
                 return new CursorLoader(this,
                         DataContract.WishEntry.buildUriAll(),
                         Utility.WISHLIST_COLUMNS,
@@ -459,7 +465,8 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data.moveToFirst()) {
-            Log.e(LOG_TAG, "SearchLoader arrived in onLoadFinished");
+            mEmptyView.setVisibility(View.GONE);
+            itemList.setVisibility(View.VISIBLE);
             listItemAdapter = new ListItemAdapter(this);
             listItemAdapter.swapCursor(data);
 
@@ -479,6 +486,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             itemList.setAdapter(null);
             itemList.removeAllViews();
+            itemList.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.VISIBLE);
         }
 
     }
