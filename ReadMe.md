@@ -21,7 +21,10 @@ Put both of these keys in the strings.xml file under:
 [Admob Setup](https://www.google.com/admob/)
 
 
-### In This Version (1.03):
+### In This Version (1.04):
+* Google Assistant app search works! (Ok, google, search Folio for.....)
+* Privacy Policy, Apache License, code style fixes.
+###Version 1.03 features
 * Manual Entry
 * SearchView widget works
 * Code is more google style compliant
