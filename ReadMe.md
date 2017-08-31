@@ -12,7 +12,7 @@ The app acts as a way to catalog all of your Blu-ray and DVD movies using only t
 2. A key from Search UPC data base which you can get here:
 	http://searchupc.com/developers/ -and Sign up.
 	
-3. A google API key which you can get here: [Google Books API](https://developers.google.com/books/docs/v1/getting_started)
+3. A google books API key which you can get here: [Google Books API](https://developers.google.com/books/docs/v1/getting_started)
 
 Put all three of these keys in the strings.xml file under:
 
