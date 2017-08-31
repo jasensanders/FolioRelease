@@ -11,13 +11,18 @@ The app acts as a way to catalog all of your Blu-ray and DVD movies using only t
 	Then Click on the "API" link from the left hand sidebar within your account page.
 2. A key from Search UPC data base which you can get here:
 	http://searchupc.com/developers/ -and Sign up.
+	
+3. A google API key which you can get here: [Google Books API](https://developers.google.com/books/docs/v1/getting_started)
 
-Put both of these keys in the strings.xml file under:
-	<string name="search_upc_key".....>
+Put all three of these keys in the strings.xml file under:
+
+	<string name = "search_upc_key".....>
 	    and
-	<string name="tmdb_key".....>
+	<string name = "tmdb_key".....>
+	    and
+	<string name = "google_books_key"....>
 
-3. You can use my Ads app IDs, but then I will get paid for them, you can make your own here:
+4. You can use my Ads app IDs, but then I will get paid for them, you can make your own here:
 [Admob Setup](https://www.google.com/admob/)
 
 
