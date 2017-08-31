@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -69,11 +70,11 @@ public class MainActivity extends AppCompatActivity
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String ACTIVITY_NAME = "MainActivity";
 
-    public static final String MAIN_PREFS = "MAIN_PREFS";
     private static final String SORT_ORDER_STATE = "SORT";
     private static final String LIST_VIEW_STATE = "VIEW";
     private static final String VIEW_LABEL_STATE = "VIEW_LABEL";
     private static final String TWO_PANE_DETAIL_FRAGMENT = "TWO_PANE_DETAIL_FRAG";
+    private static final String TWO_PANE_SETTINGS_FRAGMENT = "TWO_PANE_SETTINGS_FRAG";
     private static final int MY_WRITE_EXT_STORAGE_PERMISSION = 11264;
 
     //Loader flags also act as view state indicators
@@ -99,7 +100,9 @@ public class MainActivity extends AppCompatActivity
     private String mSortOrder;
     private String mViewLabel;
     private Fragment mCurrentFragment;
+    private PreferenceFragment mTwoPanePrefFrag;
     private int mPermission;
+    private boolean mTwoPaneMode = false;
 
 
     //Views
@@ -118,6 +121,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        mTwoPaneMode = (findViewById(R.id.detail_container) != null);
 
         //Start Tracking events
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -128,12 +132,22 @@ public class MainActivity extends AppCompatActivity
             mFolioLoader = savedInstanceState.getInt(LIST_VIEW_STATE);
             mViewLabel = savedInstanceState.getString(VIEW_LABEL_STATE);
 
-            //If in TWO PANE mode the re-launch current detail fragment
-            if(findViewById(R.id.detail_container) != null){
-                mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, TWO_PANE_DETAIL_FRAGMENT);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.detail_container, mCurrentFragment)
-                        .commit();
+            //If in TWO PANE mode the re-launch current detail fragment or PreferenceFragment
+            if(mTwoPaneMode){
+                if(savedInstanceState.containsKey(TWO_PANE_DETAIL_FRAGMENT)) {
+                    mTwoPanePrefFrag = null;
+                    mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, TWO_PANE_DETAIL_FRAGMENT);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.detail_container, mCurrentFragment)
+                            .commit();
+                }
+                if(savedInstanceState.containsKey(TWO_PANE_SETTINGS_FRAGMENT)){
+                    mCurrentFragment = null;
+                    mTwoPanePrefFrag = (PreferenceFragment) getFragmentManager().getFragment(savedInstanceState, TWO_PANE_SETTINGS_FRAGMENT);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.detail_container, mTwoPanePrefFrag)
+                            .commit();
+                }
             }
 
         } else {
@@ -258,9 +272,14 @@ public class MainActivity extends AppCompatActivity
         savedInstanceState.putString(SORT_ORDER_STATE, mSortOrder);
         savedInstanceState.putInt(LIST_VIEW_STATE, mFolioLoader);
         savedInstanceState.putString(VIEW_LABEL_STATE, mViewLabel);
+
         //Save the fragment's instance if in TWO PANE mode
         if(mCurrentFragment != null) {
             getSupportFragmentManager().putFragment(savedInstanceState, TWO_PANE_DETAIL_FRAGMENT, mCurrentFragment);
+        }
+
+        if(mTwoPanePrefFrag != null){
+            getFragmentManager().putFragment(savedInstanceState, TWO_PANE_SETTINGS_FRAGMENT, mTwoPanePrefFrag);
         }
 
         // Always call the superclass so it can save the view hierarchy state
@@ -364,9 +383,16 @@ public class MainActivity extends AppCompatActivity
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(this, DetailActivity.class);
-                intent.setData(SettingsFragment.SETTINGS_URI);
-                startActivity(intent);
+                if(!mTwoPaneMode) {
+                    Intent intent = new Intent(this, DetailActivity.class);
+                    intent.setData(SettingsFragment.SETTINGS_URI);
+                    startActivity(intent);
+                }else{
+                    PreferenceFragment fragment = SettingsFragment.newInstance();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.detail_container, fragment)
+                            .commit();
+                }
                 break;
 
 
@@ -387,6 +413,7 @@ public class MainActivity extends AppCompatActivity
             Boolean backup = settings.getBoolean(getString(R.string.local_backup_switch_key), true);
 
             //Do not backup an empty database, you may overwrite a fully backed up database
+            //ToDo: This is sketchy. Partial empty database overwriting big database would suck. Fix!
             if(!Utility.isDBEmpty(this) && backup) {
                 if (!Utility.backupDBtoMobileDevice(getApplicationContext())) {
                     //Log.v(LOG_TAG, "Backup Failed");

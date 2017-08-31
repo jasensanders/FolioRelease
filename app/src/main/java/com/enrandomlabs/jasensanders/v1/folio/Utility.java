@@ -703,10 +703,8 @@ public class Utility {
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     public static boolean backupDBtoMobileDevice(Context context){
@@ -747,7 +745,7 @@ public class Utility {
 
             } catch (IOException e) {
                 //Log.e("Folio_Backup", "Backup DataBase Failed", e);
-                //e.printStackTrace();
+                e.printStackTrace();
                 FirebaseCrash.logcat(Log.ERROR,"Folio_Backup", "Backup DataBase Failed");
             }
         }
@@ -799,25 +797,44 @@ public class Utility {
 
             } catch (IOException e) {
                 //Log.e("Folio_Backup", "Restore from Backup DataBase Failed", e);
-                //e.printStackTrace();
+                e.printStackTrace();
                 FirebaseCrash.logcat(Log.ERROR,"Folio_Backup", "Restore from Backup DataBase Failed");
             }
         }
         return false;
     }
 
-    public static void copyFile(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
+    public static boolean copyFile(File src, File dst){
 
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+        try {
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dst);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }catch (IOException e ){
+            e.printStackTrace();
+            return false;
         }
-        in.close();
-        out.close();
+        return true;
+    }
+
+    public static boolean deleteFile(File filePathIncludingFilename) {
+        boolean result;
+        try {
+            result = filePathIncludingFilename.delete();
+        }catch (SecurityException e){
+            e.printStackTrace();
+            return false;
+        }
+        return result;
+
     }
 
     public static boolean isDBEmpty(Context c){

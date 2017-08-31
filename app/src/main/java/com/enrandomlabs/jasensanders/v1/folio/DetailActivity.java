@@ -36,8 +36,10 @@ import android.support.v7.app.AppCompatActivity;
 public class DetailActivity extends AppCompatActivity {
     private Fragment mContent;
     private SettingsFragment mSettingsFragment;
+    private String mTitle = "";
     private static final String DETAIL_VIEW_KEY = "mContent";
     private static final String SETTINGS_KEY ="mSettingsFragment";
+    private static final String DETAIL_TITLE_KEY = "mDETAIL_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +52,19 @@ public class DetailActivity extends AppCompatActivity {
         //Log.v("DetailActivity", data.toString() + " Match #: "+ String.valueOf(match));
         //If there is already a fragment loaded (Rotation)
         if (savedInstanceState != null) {
+            //Restore the Title
+            mTitle = savedInstanceState.getString(DETAIL_TITLE_KEY);
+
             //Restore the fragment's instance
             if(savedInstanceState.containsKey(DETAIL_VIEW_KEY)) {
+                setTitle(mTitle);
                 mContent = getSupportFragmentManager().getFragment(savedInstanceState, DETAIL_VIEW_KEY);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.small_detail_container, mContent)
                         .commit();
             }
             if(savedInstanceState.containsKey(SETTINGS_KEY)){
+                setTitle(mTitle);
                 mSettingsFragment = (SettingsFragment) getFragmentManager().getFragment(savedInstanceState, SETTINGS_KEY);
                 getFragmentManager().beginTransaction().replace(R.id.small_detail_container, mSettingsFragment)
                         .commit();
@@ -67,7 +74,8 @@ public class DetailActivity extends AppCompatActivity {
             switch (match) {
                 case Utility.MOVIE_BY_UPC: {
 
-                    setTitle(getString(R.string.title_movie_detail));
+                    mTitle = getString(R.string.title_movie_detail);
+                    setTitle(mTitle);
                     mSettingsFragment = null;
                     DetailMovieFragment fragment = DetailMovieFragment.newInstance(data);
                     mContent = fragment;
@@ -78,6 +86,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 case Utility.WISH_ITEM_BY_UPC: {
 
+                    mTitle = getString(R.string.title_activity_detail);
                     mSettingsFragment = null;
                     DetailWishFragment fragment = DetailWishFragment.newInstance(data);
                     mContent = fragment;
@@ -89,7 +98,8 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 case Utility.BOOK_BY_UPC: {
 
-                    setTitle(getString(R.string.title_book_detail));
+                    mTitle = getString(R.string.title_book_detail);
+                    setTitle(mTitle);
                     mSettingsFragment = null;
                     DetailBookFragment fragment = DetailBookFragment.newInstance(data);
                     mContent = fragment;
@@ -100,7 +110,8 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 case Utility.SETTINGS:{
 
-                    setTitle(getString(R.string.settings_title));
+                    mTitle = getString(R.string.settings_title);
+                    setTitle(mTitle);
                     mContent = null;
                     SettingsFragment fragment = SettingsFragment.newInstance();
                     mSettingsFragment = fragment;
@@ -118,10 +129,17 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        //Save the Title on rotation
+        outState.putString(DETAIL_TITLE_KEY, mTitle);
+
+        //Save the fragment's instance on rotation
         if(mSettingsFragment != null){
+
             getFragmentManager().putFragment(outState, SETTINGS_KEY, mSettingsFragment);
+
         }else {
-            //Save the fragment's instance
+
             getSupportFragmentManager().putFragment(outState, DETAIL_VIEW_KEY, mContent);
         }
     }
