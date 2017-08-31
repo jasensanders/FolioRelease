@@ -29,11 +29,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.enrandomlabs.jasensanders.v1.folio.database.DataContract;
 import com.enrandomlabs.jasensanders.v1.folio.database.FolioDBHelper;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.File;
@@ -62,9 +65,11 @@ public class Utility {
     //For Selecting one Movie by upc code in list
     public static final int BOOK_BY_UPC = 302;
     //For selecting all BOOKS in the DataBase and Deleting/Inserting/Updating all
-    static final int BOOKS_ALL = 300;
+    public static final int BOOKS_ALL = 300;
     //For selecting a any item type
     public static final int SEARCH_ALL = 3500;
+    //For selecting the settings fragment
+    public static final int SETTINGS = 111;
 
     //Backup preference keys
     public static final String FLAG_RESTORE_BACKUP = "FOLIO_RESTORE_BACKUP";
@@ -76,24 +81,25 @@ public class Utility {
     private static final String TITLE = "TITLE";
     private static final String ADD_DATE = "ADD_DATE";
     private static final String RELEASE_DATE = "DATE";
-    private static final String ASC = " ASC";
-    private static final String DESC = " DESC";
+    private static final String ASC = "ASC";
+    private static final String DESC = "DESC";
+    private static final String SPACE = " ";
 
     static public void setStringPreference(Context c, String key, String value){
-        SharedPreferences settings = c.getSharedPreferences(MainActivity.MAIN_PREFS,0);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
         editor.commit();
     }
 
     static public String getStringPreference(Context c, String key, String deFault){
-        SharedPreferences settings = c.getSharedPreferences(MainActivity.MAIN_PREFS, 0);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
 
         return settings.getString(key, deFault);
     }
 
     public static boolean isFirstRun(Context context){
-        SharedPreferences settings = context.getSharedPreferences(MainActivity.MAIN_PREFS,0);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         if(settings.getBoolean(FLAG_FIRST_RUN, true)){
             editor.putBoolean(FLAG_FIRST_RUN, false).commit();
@@ -103,15 +109,17 @@ public class Utility {
     }
 
     public static boolean getPrefRestoreBackup(Context context){
-        SharedPreferences settings = context.getSharedPreferences(MainActivity.MAIN_PREFS, 0);
 
-        return settings.getBoolean(FLAG_RESTORE_BACKUP, false);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return settings.getBoolean(context.getString(R.string.local_restore_backup_init_key), false);
     }
 
     public static void setPrefRestoreBackup(Context context, boolean value){
-        SharedPreferences settings = context.getSharedPreferences(MainActivity.MAIN_PREFS,0);
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(FLAG_RESTORE_BACKUP, value).commit();
+        editor.putBoolean(context.getString(R.string.local_restore_backup_init_key), value).commit();
     }
 
     public static boolean backupExists(){
@@ -568,9 +576,7 @@ public class Utility {
         fURIMatcher.addURI(authority, DataContract.PATH_MOVIES_UPC + "/#",MOVIE_BY_UPC);
         fURIMatcher.addURI(authority, DataContract.PATH_WISH_LIST_UPC + "/#",WISH_ITEM_BY_UPC);
         fURIMatcher.addURI(authority, DataContract.PATH_BOOKS_UPC + "/#",BOOK_BY_UPC);
-
-
-
+        fURIMatcher.addURI(authority, SettingsFragment.PATH_SETTINGS, SETTINGS);
 
         return fURIMatcher;
     }
@@ -582,23 +588,23 @@ public class Utility {
             case MOVIE_ALL:{
                 if(column.contentEquals(TITLE)) {
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.MovieEntry.COLUMN_TITLE + ASC;
+                        result = DataContract.MovieEntry.COLUMN_TITLE + SPACE + ASC;
                     }else{
-                        result = DataContract.MovieEntry.COLUMN_TITLE + DESC;
+                        result = DataContract.MovieEntry.COLUMN_TITLE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(ADD_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.MovieEntry.COLUMN_ADD_DATE + ASC;
+                        result = DataContract.MovieEntry.COLUMN_ADD_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.MovieEntry.COLUMN_ADD_DATE + DESC;
+                        result = DataContract.MovieEntry.COLUMN_ADD_DATE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(RELEASE_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.MovieEntry.COLUMN_M_DATE + ASC;
+                        result = DataContract.MovieEntry.COLUMN_M_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.MovieEntry.COLUMN_M_DATE + DESC;
+                        result = DataContract.MovieEntry.COLUMN_M_DATE + SPACE +DESC;
                     }
                 }
                 break;
@@ -606,23 +612,23 @@ public class Utility {
             case WISH_LIST_ALL:{
                 if(column.contentEquals(TITLE)) {
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.WishEntry.COLUMN_TITLE + ASC;
+                        result = DataContract.WishEntry.COLUMN_TITLE + SPACE +ASC;
                     }else{
-                        result = DataContract.WishEntry.COLUMN_TITLE + DESC;
+                        result = DataContract.WishEntry.COLUMN_TITLE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(ADD_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.WishEntry.COLUMN_ADD_DATE + ASC;
+                        result = DataContract.WishEntry.COLUMN_ADD_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.WishEntry.COLUMN_ADD_DATE + DESC;
+                        result = DataContract.WishEntry.COLUMN_ADD_DATE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(RELEASE_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.WishEntry.COLUMN_W_DATE + ASC;
+                        result = DataContract.WishEntry.COLUMN_W_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.WishEntry.COLUMN_W_DATE + DESC;
+                        result = DataContract.WishEntry.COLUMN_W_DATE + SPACE +DESC;
                     }
                 }
                 break;
@@ -631,23 +637,23 @@ public class Utility {
             case BOOKS_ALL: {
                 if(column.contentEquals(TITLE)) {
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.BookEntry.COLUMN_TITLE + ASC;
+                        result = DataContract.BookEntry.COLUMN_TITLE + SPACE +ASC;
                     }else{
-                        result = DataContract.BookEntry.COLUMN_TITLE + DESC;
+                        result = DataContract.BookEntry.COLUMN_TITLE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(ADD_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.BookEntry.COLUMN_ADD_DATE + ASC;
+                        result = DataContract.BookEntry.COLUMN_ADD_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.BookEntry.COLUMN_ADD_DATE + DESC;
+                        result = DataContract.BookEntry.COLUMN_ADD_DATE + SPACE +DESC;
                     }
                 }
                 else if (column.contentEquals(RELEASE_DATE)){
                     if (dir.contentEquals(ASC)){
-                        result = DataContract.BookEntry.COLUMN_B_DATE + ASC;
+                        result = DataContract.BookEntry.COLUMN_B_DATE + SPACE +ASC;
                     }else{
-                        result = DataContract.BookEntry.COLUMN_B_DATE + DESC;
+                        result = DataContract.BookEntry.COLUMN_B_DATE + SPACE +DESC;
                     }
                 }
                 break;
@@ -835,7 +841,7 @@ public class Utility {
         //boolean A = true;
 
         Cursor WC = c.getContentResolver().query(DataContract.WishEntry.CONTENT_URI,
-                DataContract.WISH_COLUMNS, null,null, DataContract.WishEntry.COLUMN_TITLE + ASC);
+                DataContract.WISH_COLUMNS, null,null, DataContract.WishEntry.COLUMN_TITLE + SPACE + ASC);
         if(WC != null  ){
             if(WC.moveToFirst()) {
                 W = false;
@@ -844,7 +850,7 @@ public class Utility {
         }
 
         Cursor MC = c.getContentResolver().query(DataContract.MovieEntry.CONTENT_URI,
-                DataContract.MOVIE_COLUMNS, null,null, DataContract.MovieEntry.COLUMN_TITLE + ASC);
+                DataContract.MOVIE_COLUMNS, null,null, DataContract.MovieEntry.COLUMN_TITLE + SPACE + ASC);
         if(MC != null  ){
             if(MC.moveToFirst()) {
                 M = false;
@@ -853,7 +859,7 @@ public class Utility {
         }
 
         Cursor BC = c.getContentResolver().query(DataContract.BookEntry.CONTENT_URI,
-                DataContract.BOOK_COLUMNS, null,null, DataContract.BookEntry.COLUMN_TITLE + ASC);
+                DataContract.BOOK_COLUMNS, null,null, DataContract.BookEntry.COLUMN_TITLE + SPACE + ASC);
         if(BC != null  ){
             if(BC.moveToFirst()) {
                 B = false;
@@ -890,6 +896,23 @@ public class Utility {
             activity.finishAffinity();
         }
 
+    }
+
+    public static void logSearchEvent(String activity, String buttonName, String term, String type, FirebaseAnalytics analytics ){
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
+        bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, term);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    public static void logActionEvent(String activity, String buttonName, String type, FirebaseAnalytics analytics ){
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
 

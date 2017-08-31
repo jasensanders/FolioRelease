@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -25,10 +24,11 @@ import static org.junit.Assert.assertNotNull;
 public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
+          // Context of the app under test.
+          Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.enrandomlabs.jasensanders.v1.folio", appContext.getPackageName());
+
+          assertEquals("com.enrandomlabs.jasensanders.v1.folio", appContext.getPackageName());
 
           final String[] MOVIE_COLUMNS = {
                 DataContract.MovieEntry.COLUMN_UPC,
@@ -38,7 +38,7 @@ public class ExampleInstrumentedTest {
                 DataContract.MovieEntry.COLUMN_FORMATS,
                 DataContract.MovieEntry.COLUMN_STATUS,
                 DataContract.MovieEntry.COLUMN_RATING,
-        };
+          };
 
         //Set Defaults for loader
         String sortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";

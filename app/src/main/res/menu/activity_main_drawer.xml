@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
         <item
@@ -48,9 +49,9 @@
     <item android:title="@string/admin_nav">
         <menu>
             <item
-                android:id="@+id/nav_restore_db"
-                android:icon="@drawable/backup_restore"
-                android:title="@string/select_restore_backup"/>
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/select_settings_activity" />
         </menu>
     </item>
 

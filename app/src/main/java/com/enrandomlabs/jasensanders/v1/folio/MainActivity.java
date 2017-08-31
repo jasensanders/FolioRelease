@@ -17,20 +17,20 @@
 package com.enrandomlabs.jasensanders.v1.folio;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -55,6 +55,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
+import static com.enrandomlabs.jasensanders.v1.folio.Utility.logActionEvent;
+
 /**
  * Created by Jasen Sanders on 10/11/2016.
  * A simple {@link AppCompatActivity} subclass used to display items from the database.
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     private static final String LIST_VIEW_STATE = "VIEW";
     private static final String VIEW_LABEL_STATE = "VIEW_LABEL";
     private static final String TWO_PANE_DETAIL_FRAGMENT = "TWO_PANE_DETAIL_FRAG";
-    private static final int MY_WRITE_EXT_STORAGE_PERMISSON = 11264;
+    private static final int MY_WRITE_EXT_STORAGE_PERMISSION = 11264;
 
     //Loader flags also act as view state indicators
     private static final int MOVIE_LOADER = 100;
@@ -86,8 +88,9 @@ public class MainActivity extends AppCompatActivity
     private static final String TITLE = "TITLE";
     private static final String ADD_DATE = "ADD_DATE";
     private static final String RELEASE_DATE = "DATE";
-    private static final String ASC = " ASC";
-    private static final String DESC = " DESC";
+    private static final String ASC = "ASC";
+    private static final String DESC = "DESC";
+    private static final String SPACE = " ";
 
     //Loader state represents ViewType State
     private int mFolioLoader = 0;
@@ -103,7 +106,6 @@ public class MainActivity extends AppCompatActivity
     private TextView mTitleViewLabel;
     private SearchView mSearchView;
     private TextView mEmptyView;
-    public final Activity mActivity = this;
     private RecyclerView itemList;
     private ListItemAdapter listItemAdapter;
     AdView mAdView;
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         //Start Tracking events
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -135,13 +138,28 @@ public class MainActivity extends AppCompatActivity
 
         } else {
 
-                //Otherwise set view defaults Which is Movies for now.
-                //TODO Settings Activity to set defaults. For now they are set here.
+            //Otherwise set view preferences from settings.
+            String view = Utility.getStringPreference(this, getString(R.string.main_view_key), getString(R.string.pref_view_movies));
+            String sortType = Utility.getStringPreference(this, getString(R.string.sort_type_key), getString(R.string.pref_sort_by_add_date));
+            String order = Utility.getStringPreference(this, getString(R.string.sort_order_key), getString(R.string.pref_sort_order_dsc));
+
+            if(view.equals(DataContract.PATH_MOVIES)) {
                 mFolioLoader = MOVIE_LOADER;
-                mSortOrder = DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC";
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
                 mViewLabel = getString(R.string.movie_view);
+            }else if(view.equals(DataContract.PATH_BOOKS)){
+                mFolioLoader = BOOKS_LOADER;
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
+                mViewLabel = getString(R.string.books_view);
+            }else{
+                mFolioLoader = WISHLIST_LOADER;
+                mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
+                mViewLabel = getString(R.string.wish_list_view);
+            }
 
         }
+
+
 
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
@@ -159,7 +177,7 @@ public class MainActivity extends AppCompatActivity
             builder.addTestDevice("9929AC1F80C13986BA10336A6CEE1CF6"); //My Nexus 5x Test Phone
             builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
         }
-        AdRequest request= builder.build();
+        AdRequest request = builder.build();
         mAdView.loadAd(request);
 
         //Initialize empty view
@@ -296,13 +314,13 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_search_retail:
-                logActionEvent(ACTIVITY_NAME,"nav_search_retail", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_search_retail", "action", mFirebaseAnalytics);
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle();
                 Intent SearchRetailIntent = new Intent(this, RetailerSearchActivity.class);
                 startActivity(SearchRetailIntent, bundle);
                 break;
             case R.id.nav_all_movies:
-                logActionEvent(ACTIVITY_NAME,"nav_all_movies", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_all_movies", "action", mFirebaseAnalytics);
                 String movieLabel = getString(R.string.movie_view);
                 mViewLabel = movieLabel;
                 mTitleViewLabel.setText(mViewLabel);
@@ -310,7 +328,7 @@ public class MainActivity extends AppCompatActivity
                 getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
                 break;
             case R.id.nav_all_books:
-                logActionEvent(ACTIVITY_NAME,"nav_all_books", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_all_books", "action", mFirebaseAnalytics);
                 String booksLabel = getString(R.string.books_view);
                 mViewLabel = booksLabel;
                 mTitleViewLabel.setText(mViewLabel);
@@ -318,7 +336,7 @@ public class MainActivity extends AppCompatActivity
                 getLoaderManager().restartLoader(BOOKS_LOADER, null, this);
                 break;
             case R.id.nav_wish_list:
-                logActionEvent(ACTIVITY_NAME,"nav_wish_list", "action");
+                logActionEvent(ACTIVITY_NAME,"nav_wish_list", "action", mFirebaseAnalytics);
                 String wishListLabel = getString(R.string.wish_list_view);
                 mViewLabel = wishListLabel;
                 mTitleViewLabel.setText(mViewLabel);
@@ -345,20 +363,10 @@ public class MainActivity extends AppCompatActivity
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, ADD_DATE, ASC);
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
-            case R.id.nav_restore_db:
-                //Set Prefrences to restore backup on restart
-                Utility.setPrefRestoreBackup(this, true);
-                logActionEvent(ACTIVITY_NAME,"nav_restore_db", "action");
-                //Launch snackbar to ask if user wants to restart now
-                final String request = "Backup will be restored on restart";
-                final Snackbar restartMessage = Snackbar.make(findViewById(R.id.root), request, Snackbar.LENGTH_LONG );
-                restartMessage.setAction("RESTART", new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        Utility.reStart(mActivity, 100, SplashActivity.class);
-                    }
-                });
-                restartMessage.show();
+            case R.id.nav_settings:
+                Intent intent = new Intent(this, DetailActivity.class);
+                intent.setData(SettingsFragment.SETTINGS_URI);
+                startActivity(intent);
                 break;
 
 
@@ -373,8 +381,13 @@ public class MainActivity extends AppCompatActivity
     public void onStop(){
         super.onStop();
         if(mPermission == PackageManager.PERMISSION_GRANTED) {
+
+            //Check if Local Backup Setting is enabled
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+            Boolean backup = settings.getBoolean(getString(R.string.local_backup_switch_key), true);
+
             //Do not backup an empty database, you may overwrite a fully backed up database
-            if(!Utility.isDBEmpty(this)) {
+            if(!Utility.isDBEmpty(this) && backup) {
                 if (!Utility.backupDBtoMobileDevice(getApplicationContext())) {
                     //Log.v(LOG_TAG, "Backup Failed");
                     FirebaseCrash.log("Backup Failed");
@@ -426,7 +439,7 @@ public class MainActivity extends AppCompatActivity
                 String searchString = mSearchView.getQuery().toString();
 
                 //Log.v("Search Loader Started: ", searchString);
-                logSearchEvent(ACTIVITY_NAME, "SearchButton", searchString, "SQL");
+                Utility.logSearchEvent(ACTIVITY_NAME, "SearchButton", searchString, "SQL", mFirebaseAnalytics);
                 //If there is something to query, determine appropriate cursor and return it
                 if(searchString != null && searchString.length()>0){
 
@@ -453,7 +466,7 @@ public class MainActivity extends AppCompatActivity
                         Utility.MOVIE_COLUMNS,
                         null,
                         null,
-                        DataContract.MovieEntry.COLUMN_ADD_DATE + " DESC");
+                        DataContract.MovieEntry.COLUMN_ADD_DATE + SPACE + DESC);
             }
         }
 
@@ -537,24 +550,9 @@ public class MainActivity extends AppCompatActivity
     private void setupPermissions(){
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                MY_WRITE_EXT_STORAGE_PERMISSON);
+                MY_WRITE_EXT_STORAGE_PERMISSION);
 
     }
 
-    private void logSearchEvent(String activity, String buttonName, String term, String type ){
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
-        bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, term);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-    }
 
-    private void logActionEvent(String activity, String buttonName, String type ){
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-    }
 }

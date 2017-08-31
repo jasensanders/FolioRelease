@@ -26,6 +26,9 @@
     <style name="AppTheme.SearchActivity" parent="AppTheme">
 
     </style>
+    <style name="AppTheme.SettingsFragment" parent="AppTheme">
+        <item name="android:textColor">@color/hintColorGray</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <PreferenceCategory
+        android:title="@string/title_default_view">
+
+        <ListPreference
+            android:key="@string/main_view_key"
+            android:title="@string/pref_view_type_label"
+            android:entries="@array/pref_view_type_options"
+            android:entryValues="@array/pref_view_type_values"
+            android:defaultValue="@string/pref_view_movies"
+            android:dialogTitle="@string/pref_dialog_view_type_lable"/>
+
+        <ListPreference
+            android:key="@string/sort_type_key"
+            android:title="@string/pref_sort_by_label"
+            android:entries="@array/pref_sort_type_options"
+            android:entryValues="@array/pref_sort_type_values"
+            android:defaultValue="@string/pref_sort_by_add_date"
+            android:dialogTitle="@string/pref_dialog_sort_by_label"/>
+
+        <ListPreference
+            android:key="@string/sort_order_key"
+            android:title="@string/pref_sort_order_label"
+            android:entries="@array/pref_sort_order_options"
+            android:entryValues="@array/pref_sort_order_values"
+            android:defaultValue="@string/pref_sort_order_dsc"
+            android:dialogTitle="@string/pref_dialog_sort_order_label"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_backup_prefs">
+
+        <SwitchPreference
+            android:key="@string/local_backup_switch_key"
+            android:title="@string/pref_local_backup_label"
+            android:defaultValue="true"
+            android:summary="@string/pref_backup_switch_summary"/>
+        <Preference android:title="@string/pref_load_local_backup"
+            android:key="@string/local_restore_backup_init_key"
+            android:summary="@string/pref_backup_summary"/>
+
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

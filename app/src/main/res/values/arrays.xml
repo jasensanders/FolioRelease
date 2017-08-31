@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_view_type_options">
+        <item>@string/pref_label_view_movies</item>
+        <item>@string/pref_label_view_books</item>
+        <item>@string/pref_label_view_wishlist</item>
+    </string-array>
+
+    <string-array name="pref_view_type_values">
+        <item>@string/pref_view_movies</item>
+        <item>@string/pref_view_books</item>
+        <item>@string/pref_view_wishlist</item>
+    </string-array>
+
+    <string-array name="pref_sort_type_options">
+        <item>@string/pref_label_sort_by_title</item>
+        <item>@string/pref_label_sort_by_add_date</item>
+        <item>@string/pref_label_sort_by_release_date</item>
+    </string-array>
+
+    <string-array name="pref_sort_type_values">
+        <item>@string/pref_sort_by_title</item>
+        <item>@string/pref_sort_by_add_date</item>
+        <item>@string/pref_sort_by_release_date</item>
+    </string-array>
+
+    <string-array name="pref_sort_order_options">
+        <item>@string/pref_label_sort_order_asc</item>
+        <item>@string/pref_label_sort_order_dsc</item>
+    </string-array>
+
+    <string-array name="pref_sort_order_values">
+        <item>@string/pref_sort_order_asc</item>
+        <item>@string/pref_sort_order_dsc</item>
+    </string-array>
+</resources>

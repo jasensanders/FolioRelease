@@ -25,14 +25,19 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by Jasen Sanders on 10/11/2016.
- * A simple {@link AppCompatActivity} subclass used to display items from thedatabase.
+ * A simple {@link AppCompatActivity} subclass used to display either items from the database
+ * or a Settings Fragment.
  * Use the {@link DetailBookFragment#newInstance}
- * or {@link DetailMovieFragment#newInstance} or {@link DetailWishFragment#newInstance}factory method to
- * create an instance of the appropriate fragment and load it into the view container.
+ * or {@link DetailMovieFragment#newInstance} or {@link DetailWishFragment#newInstance} or
+ * {@link SettingsFragment#newInstance}factory method to create an instance of the appropriate
+ * fragment and load it into the view container.
  */
 
 public class DetailActivity extends AppCompatActivity {
     private Fragment mContent;
+    private SettingsFragment mSettingsFragment;
+    private static final String DETAIL_VIEW_KEY = "mContent";
+    private static final String SETTINGS_KEY ="mSettingsFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +51,24 @@ public class DetailActivity extends AppCompatActivity {
         //If there is already a fragment loaded (Rotation)
         if (savedInstanceState != null) {
             //Restore the fragment's instance
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.small_detail_container, mContent)
-                    .commit();
+            if(savedInstanceState.containsKey(DETAIL_VIEW_KEY)) {
+                mContent = getSupportFragmentManager().getFragment(savedInstanceState, DETAIL_VIEW_KEY);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.small_detail_container, mContent)
+                        .commit();
+            }
+            if(savedInstanceState.containsKey(SETTINGS_KEY)){
+                mSettingsFragment = (SettingsFragment) getFragmentManager().getFragment(savedInstanceState, SETTINGS_KEY);
+                getFragmentManager().beginTransaction().replace(R.id.small_detail_container, mSettingsFragment)
+                        .commit();
+            }
         }else {
 
             switch (match) {
                 case Utility.MOVIE_BY_UPC: {
-                    //Log.v("DetailActivity", "MovieByUPC -Fragment");
+
+                    setTitle(getString(R.string.title_movie_detail));
+                    mSettingsFragment = null;
                     DetailMovieFragment fragment = DetailMovieFragment.newInstance(data);
                     mContent = fragment;
                     getSupportFragmentManager().beginTransaction()
@@ -63,7 +77,8 @@ public class DetailActivity extends AppCompatActivity {
                     break;
                 }
                 case Utility.WISH_ITEM_BY_UPC: {
-                    //Log.v("DetailActivity", "WishByUPC -Fragment");
+
+                    mSettingsFragment = null;
                     DetailWishFragment fragment = DetailWishFragment.newInstance(data);
                     mContent = fragment;
                     getSupportFragmentManager().beginTransaction()
@@ -73,13 +88,27 @@ public class DetailActivity extends AppCompatActivity {
 
                 }
                 case Utility.BOOK_BY_UPC: {
-                    //Log.v("DetailActivity", "BookByUPC -Fragment");
+
+                    setTitle(getString(R.string.title_book_detail));
+                    mSettingsFragment = null;
                     DetailBookFragment fragment = DetailBookFragment.newInstance(data);
                     mContent = fragment;
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.small_detail_container, fragment)
                             .commit();
                     break;
+                }
+                case Utility.SETTINGS:{
+
+                    setTitle(getString(R.string.settings_title));
+                    mContent = null;
+                    SettingsFragment fragment = SettingsFragment.newInstance();
+                    mSettingsFragment = fragment;
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.small_detail_container, fragment)
+                            .commit();
+                    break;
+
                 }
             }
         }
@@ -89,8 +118,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        //Save the fragment's instance
-        getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+        if(mSettingsFragment != null){
+            getFragmentManager().putFragment(outState, SETTINGS_KEY, mSettingsFragment);
+        }else {
+            //Save the fragment's instance
+            getSupportFragmentManager().putFragment(outState, DETAIL_VIEW_KEY, mContent);
+        }
     }
 }

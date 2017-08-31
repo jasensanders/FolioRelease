@@ -33,6 +33,7 @@
     <string name="sort_title_ZA">Title Z->A</string>
     <string name="admin_nav">Administration</string>
     <string name="select_restore_backup">Restore Database</string>
+    <string name="select_settings_activity">Settings and Backup</string>
 
 
     <!-- Barcode Capture Strings-->
@@ -102,6 +103,8 @@
 
     <!--DetailActivity/Fragment Strings-->
     <string name="title_activity_detail">Details</string>
+    <string name="title_movie_detail">Movie Details</string>
+    <string name="title_book_detail">Book Details</string>
     <string name="overview"><b>Overview:</b> \n\n %1$s</string>
     <string name="rating_runtime">%1$s %2$s</string>
     <string name="delete_button">Delete</string>
@@ -130,6 +133,49 @@
     <string name="title_search_activity">Search Folio</string>
     <string name="search_is_empty">Sorry, we couldn\'t find anything.</string>
 
+    <!--Settings Activity Strings-->
+    <string name="settings_title">Settings</string>
+    <string name="title_default_view">Default View Settings</string>
+    <string name="title_backup_prefs">Backup Settings</string>
+
+    <string name="pref_dialog_view_type_lable">Choose the default view:</string>
+    <string name="pref_view_type_label">Default View:</string>
+    <string name="pref_label_view_movies">Movies</string>
+    <string name="pref_label_view_books">Books</string>
+    <string name="pref_label_view_wishlist">Wish List</string>
+    <string name="pref_label_view_cd">CD Albums</string>
+    <string name="pref_view_movies">movie</string>
+    <string name="pref_view_books">books</string>
+    <string name="pref_view_wishlist">wish</string>
+    <string name="pref_view_cd_albums">albums</string>
+
+    <string name="pref_dialog_sort_by_label">Choose how to sort:</string>
+    <string name="pref_sort_by_label">Sort By:</string>
+    <string name="pref_label_sort_by_title">Title</string>
+    <string name="pref_label_sort_by_add_date">Date Added</string>
+    <string name="pref_label_sort_by_release_date">Release Date</string>
+    <string name="pref_sort_by_title">TITLE</string>
+    <string name="pref_sort_by_add_date">ADD_DATE</string>
+    <string name="pref_sort_by_release_date">DATE</string>
+
+    <string name="pref_dialog_sort_order_label">Choose sort order:</string>
+    <string name="pref_sort_order_label">Sort Order:</string>
+    <string name="pref_label_sort_order_asc">Ascending</string>
+    <string name="pref_label_sort_order_dsc">Descending</string>
+    <string name="pref_sort_order_asc">ASC</string>
+    <string name="pref_sort_order_dsc">DESC</string>
+
+    <string name="pref_local_backup_label">Backup Data to Phone</string>
+    <string name="pref_load_local_backup">Restore Data from Phone</string>
+    <string name="pref_backup_summary">Touch to restore data from phone storage</string>
+    <string name="pref_backup_switch_summary">Turn on to backup to local storage</string>
+
+    <!--Preference Key Strings-->
+    <string name="main_view_key">MAIN_VIEW_TYPE</string>
+    <string name="sort_order_key">SORT_ORDER</string>
+    <string name="sort_type_key">SORT_TYPE</string>
+    <string name="local_backup_switch_key">LOCAL_BACKUP</string>
+    <string name="local_restore_backup_init_key">RESTORE_LOCAL</string>
 
 
     <!--widget strings-->
@@ -146,10 +192,6 @@
     <string name="barcode_description">Barcode %1$s</string>
     <string name="trailer_play_description">Play Trailer number %1$s</string>
 
-    <!--Preference Key Strings-->
-    <string name="provider_call_key">MAIN_VIEW</string>
-    <string name="sort_order_key">SORT_ORDER</string>
-
     <!--Test ad id-->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
@@ -159,5 +201,6 @@
     <string name="addNewActivityAdId">ca-app-pub-8372524945349378/5973591045</string>
     <string name="retailSearchActivityAdId">ca-app-pub-8372524945349378/7450324241</string>
 
+    <!--Test Strings -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
