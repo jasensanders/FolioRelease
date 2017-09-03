@@ -5,19 +5,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_search_retail"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@drawable/ic_action_search"
             android:title="@string/search_retailers_nav"/>
         <item
             android:id="@+id/nav_all_movies"
-            android:icon="@drawable/filmstrip"
+            android:icon="@drawable/ic_filmstrip_black"
             android:title="@string/select_movies_owned" />
         <item
             android:id="@+id/nav_all_books"
-            android:icon="@drawable/book_open_variant"
+            android:icon="@drawable/ic_book_open_variant_black"
             android:title="@string/select_books" />
         <item
             android:id="@+id/nav_wish_list"
-            android:icon="@drawable/wishlist"
+            android:icon="@drawable/ic_bookmark_plus_outline_black"
             android:title="@string/select_wish_list" />
     </group>
 
@@ -27,19 +27,19 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/nav_date_add_desc"
-                    android:icon="@drawable/arrow_down_bold"
+                    android:icon="@drawable/ic_arrow_down"
                     android:title="@string/sort_date_added_new" />
                 <item
                     android:id="@+id/nav_date_add_asc"
-                    android:icon="@drawable/arrow_up_bold"
+                    android:icon="@drawable/ic_arrow_up"
                     android:title="@string/sort_date_added_old" />
                 <item
                     android:id="@+id/nav_title_asc"
-                    android:icon="@drawable/arrow_up_bold"
+                    android:icon="@drawable/ic_arrow_up"
                     android:title="@string/sort_title_AZ" />
                 <item
                     android:id="@+id/nav_title_desc"
-                    android:icon="@drawable/arrow_down_bold"
+                    android:icon="@drawable/ic_arrow_down"
                     android:title="@string/sort_title_ZA" />
 
             </group>
@@ -50,7 +50,7 @@
         <menu>
             <item
                 android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_settings_black_24dp"
+                android:icon="@drawable/ic_action_settings"
                 android:title="@string/select_settings_activity" />
         </menu>
     </item>

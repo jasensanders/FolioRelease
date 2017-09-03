@@ -124,7 +124,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                         ArtImage = Glide.with(DetailWidgetRemoteViewsService.this)
                                 .load(ArtResourceUrl)
                                 .asBitmap()
-                                .error(R.drawable.filmstrip)
+                                .error(R.drawable.ic_filmstrip_black)
                                 .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
                     } catch (InterruptedException | ExecutionException e) {
                         Log.e(LOG_TAG, "Error retrieving large icon from " + ArtResourceUrl, e);
@@ -142,7 +142,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 if (ArtImage != null) {
                     views.setImageViewBitmap(R.id.thumbnail, ArtImage);
                 } else {
-                    views.setImageViewResource(R.id.thumbnail, R.drawable.filmstrip);
+                    views.setImageViewResource(R.id.thumbnail, R.drawable.ic_filmstrip_black);
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     setRemoteContentDescription(views, description);

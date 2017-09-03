@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -125,15 +126,18 @@ public class MainActivity extends AppCompatActivity
 
         //Start Tracking events
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         //((FolioApplication) getApplication()).startTracking();
         //If the app is still in session, Restore State after rotation.
         if (savedInstanceState != null) {
+
             mSortOrder = savedInstanceState.getString(SORT_ORDER_STATE);
             mFolioLoader = savedInstanceState.getInt(LIST_VIEW_STATE);
             mViewLabel = savedInstanceState.getString(VIEW_LABEL_STATE);
 
             //If in TWO PANE mode the re-launch current detail fragment or PreferenceFragment
             if(mTwoPaneMode){
+
                 if(savedInstanceState.containsKey(TWO_PANE_DETAIL_FRAGMENT)) {
                     mTwoPanePrefFrag = null;
                     mCurrentFragment = getSupportFragmentManager().getFragment(savedInstanceState, TWO_PANE_DETAIL_FRAGMENT);
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity
                             .replace(R.id.detail_container, mCurrentFragment)
                             .commit();
                 }
+
                 if(savedInstanceState.containsKey(TWO_PANE_SETTINGS_FRAGMENT)){
                     mCurrentFragment = null;
                     mTwoPanePrefFrag = (PreferenceFragment) getFragmentManager().getFragment(savedInstanceState, TWO_PANE_SETTINGS_FRAGMENT);
@@ -161,14 +166,17 @@ public class MainActivity extends AppCompatActivity
                 mFolioLoader = MOVIE_LOADER;
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
                 mViewLabel = getString(R.string.movie_view);
+
             }else if(view.equals(DataContract.PATH_BOOKS)){
                 mFolioLoader = BOOKS_LOADER;
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
                 mViewLabel = getString(R.string.books_view);
+
             }else{
                 mFolioLoader = WISHLIST_LOADER;
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, sortType, order);
                 mViewLabel = getString(R.string.wish_list_view);
+
             }
 
         }
@@ -181,16 +189,20 @@ public class MainActivity extends AppCompatActivity
         mAdView = (AdView) findViewById(R.id.adView);
 
         if(!BuildConfig.DEBUG_BUILD) {
+
             //Ads app ID Initialization
             MobileAds.initialize(getApplicationContext(), getString(R.string.adAppId));
 
         }
+
         AdRequest.Builder builder = new AdRequest.Builder();
+
         if(BuildConfig.DEBUG_BUILD) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
             builder.addTestDevice("9929AC1F80C13986BA10336A6CEE1CF6"); //My Nexus 5x Test Phone
             builder.addTestDevice("ECF8814A2889BB1528CE0F6E1BCFA7ED");  //My GS3 Test Phone
         }
+
         AdRequest request = builder.build();
         mAdView.loadAd(request);
 
@@ -231,6 +243,7 @@ public class MainActivity extends AppCompatActivity
         // permission is not granted yet, request permission.
          mPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (mPermission != PackageManager.PERMISSION_GRANTED) {
+
             setupPermissions();
         }
 
@@ -242,6 +255,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPause() {
+
         if (mAdView != null) {
             mAdView.pause();
         }
@@ -251,6 +265,7 @@ public class MainActivity extends AppCompatActivity
     /** Called when returning to the activity */
     @Override
     public void onResume() {
+
         super.onResume();
         if (mAdView != null) {
             mAdView.resume();
@@ -268,6 +283,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+
         // Save the user's current state
         savedInstanceState.putString(SORT_ORDER_STATE, mSortOrder);
         savedInstanceState.putInt(LIST_VIEW_STATE, mFolioLoader);
@@ -288,6 +304,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -298,8 +315,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
 
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem mSearchItem = menu.findItem(R.id.action_search);
         SearchManager Manager =  (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -338,6 +355,7 @@ public class MainActivity extends AppCompatActivity
                 Intent SearchRetailIntent = new Intent(this, RetailerSearchActivity.class);
                 startActivity(SearchRetailIntent, bundle);
                 break;
+
             case R.id.nav_all_movies:
                 logActionEvent(ACTIVITY_NAME,"nav_all_movies", "action", mFirebaseAnalytics);
                 String movieLabel = getString(R.string.movie_view);
@@ -346,6 +364,7 @@ public class MainActivity extends AppCompatActivity
                 mFolioLoader = MOVIE_LOADER;
                 getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
                 break;
+
             case R.id.nav_all_books:
                 logActionEvent(ACTIVITY_NAME,"nav_all_books", "action", mFirebaseAnalytics);
                 String booksLabel = getString(R.string.books_view);
@@ -354,6 +373,7 @@ public class MainActivity extends AppCompatActivity
                 mFolioLoader = BOOKS_LOADER;
                 getLoaderManager().restartLoader(BOOKS_LOADER, null, this);
                 break;
+
             case R.id.nav_wish_list:
                 logActionEvent(ACTIVITY_NAME,"nav_wish_list", "action", mFirebaseAnalytics);
                 String wishListLabel = getString(R.string.wish_list_view);
@@ -362,26 +382,31 @@ public class MainActivity extends AppCompatActivity
                 mFolioLoader = WISHLIST_LOADER;
                 getLoaderManager().restartLoader(WISHLIST_LOADER, null, this);
                 break;
+
             case R.id.nav_title_asc:
                 //call provider and refresh
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, TITLE, ASC);
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
+
             case R.id.nav_title_desc:
                 //call provider and refresh
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, TITLE, DESC);
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
+
             case R.id.nav_date_add_desc:
                 //call provider and refresh
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, ADD_DATE, DESC);
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
+
             case R.id.nav_date_add_asc:
                 //call provider ans refresh
                 mSortOrder = Utility.sortOrderStringMatcher(mFolioLoader, ADD_DATE, ASC);
                 getLoaderManager().restartLoader(mFolioLoader, null, this);
                 break;
+
             case R.id.nav_settings:
                 if(!mTwoPaneMode) {
                     Intent intent = new Intent(this, DetailActivity.class);
@@ -405,6 +430,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onStop(){
+
         super.onStop();
         if(mPermission == PackageManager.PERMISSION_GRANTED) {
 
@@ -430,6 +456,7 @@ public class MainActivity extends AppCompatActivity
 
         //Get the sort order
         switch (id) {
+
             case MOVIE_LOADER:
             {
                 mEmptyView.setText(R.string.empty_movies);
@@ -440,6 +467,7 @@ public class MainActivity extends AppCompatActivity
                         null,
                         mSortOrder);
             }
+
             case BOOKS_LOADER:
             {
                 mEmptyView.setText(R.string.empty_books);
@@ -450,6 +478,7 @@ public class MainActivity extends AppCompatActivity
                         null,
                         mSortOrder);
             }
+
             case WISHLIST_LOADER:
             {
                 mEmptyView.setText(R.string.empty_list);
@@ -460,6 +489,7 @@ public class MainActivity extends AppCompatActivity
                         null,
                         mSortOrder);
             }
+
             case SEARCH_LOADER:
             {
                 //Get the Query from the widget **Google Voice Search launches in a separate activity**
@@ -486,6 +516,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
             }
+
             default:
             {
                 return new CursorLoader(this,
@@ -503,6 +534,7 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data.moveToFirst()) {
+
             mEmptyView.setVisibility(View.GONE);
             itemList.setVisibility(View.VISIBLE);
             listItemAdapter = new ListItemAdapter(this);
@@ -522,6 +554,7 @@ public class MainActivity extends AppCompatActivity
             itemList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.drawable.line_divider));
 
         } else {
+
             itemList.setAdapter(null);
             itemList.removeAllViews();
             itemList.setVisibility(View.GONE);
@@ -532,6 +565,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
         if(listItemAdapter != null) {
             listItemAdapter.swapCursor(null);
         }
@@ -549,6 +583,7 @@ public class MainActivity extends AppCompatActivity
 
         //If this is not a wish view Item
         if(!status.contains("_WISH")) {
+
             //If its a movie load the Movie fragment
             if(status.contains("MOVIE")) {
                 DetailMovieFragment fragment = DetailMovieFragment.newInstance(data);
@@ -556,6 +591,7 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.detail_container, fragment)
                         .commit();
+
             }else{
                 //otherwise its a Book so load the book fragment
                 DetailBookFragment fragment = DetailBookFragment.newInstance(data);
@@ -564,6 +600,7 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.detail_container, fragment)
                         .commit();
             }
+
         }else{
             //its a Wish item so load the wish fragment
             DetailWishFragment fragment = DetailWishFragment.newInstance(data);
@@ -575,6 +612,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupPermissions(){
+
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 MY_WRITE_EXT_STORAGE_PERMISSION);
