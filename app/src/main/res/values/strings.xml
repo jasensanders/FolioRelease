@@ -93,13 +93,19 @@
     <!--Formats Dialog Strings -->
     <string name="formatDialogTitle">Set Formats</string>
     <string-array name="formats">
-        <item>Blu-ray</item>
-        <item>Blu-ray 3D</item>
-        <item>DVD</item>
-        <item>Digital Copy</item>
-        <item>Digital HD</item>
-        <item>4K Ultra HD</item>
+        <item>@string/blu_ray</item>
+        <item>@string/blu_ray_3d</item>
+        <item>@string/dvd</item>
+        <item>@string/digital_copy</item>
+        <item>@string/digital_hd</item>
+        <item>@string/k4_ultra_hd</item>
     </string-array>
+    <string name="blu_ray" translatable="false">Blu-ray</string>
+    <string name="blu_ray_3d" translatable="false">Blu-ray 3D</string>
+    <string name="dvd" translatable="false">DVD</string>
+    <string name="digital_copy" translatable="false">Digital Copy</string>
+    <string name="digital_hd" translatable="false">Digital HD</string>
+    <string name="k4_ultra_hd" translatable="false">4K Ultra HD</string>
 
     <!--DetailActivity/Fragment Strings-->
     <string name="title_activity_detail">Details</string>
@@ -144,26 +150,26 @@
     <string name="pref_label_view_books">Books</string>
     <string name="pref_label_view_wishlist">Wish List</string>
     <string name="pref_label_view_cd">CD Albums</string>
-    <string name="pref_view_movies">movie</string>
-    <string name="pref_view_books">books</string>
-    <string name="pref_view_wishlist">wish</string>
-    <string name="pref_view_cd_albums">albums</string>
+    <string name="pref_view_movies" translatable="false">movie</string>
+    <string name="pref_view_books" translatable="false">books</string>
+    <string name="pref_view_wishlist" translatable="false">wish</string>
+    <string name="pref_view_cd_albums" translatable="false">albums</string>
 
     <string name="pref_dialog_sort_by_label">Choose how to sort:</string>
     <string name="pref_sort_by_label">Sort By:</string>
     <string name="pref_label_sort_by_title">Title</string>
     <string name="pref_label_sort_by_add_date">Date Added</string>
     <string name="pref_label_sort_by_release_date">Release Date</string>
-    <string name="pref_sort_by_title">TITLE</string>
-    <string name="pref_sort_by_add_date">ADD_DATE</string>
-    <string name="pref_sort_by_release_date">DATE</string>
+    <string name="pref_sort_by_title" translatable="false">TITLE</string>
+    <string name="pref_sort_by_add_date" translatable="false">ADD_DATE</string>
+    <string name="pref_sort_by_release_date" translatable="false">DATE</string>
 
     <string name="pref_dialog_sort_order_label">Choose sort order:</string>
     <string name="pref_sort_order_label">Sort Order:</string>
     <string name="pref_label_sort_order_asc">Ascending</string>
     <string name="pref_label_sort_order_dsc">Descending</string>
-    <string name="pref_sort_order_asc">ASC</string>
-    <string name="pref_sort_order_dsc">DESC</string>
+    <string name="pref_sort_order_asc" translatable="false">ASC</string>
+    <string name="pref_sort_order_dsc" translatable="false">DESC</string>
 
     <string name="pref_local_backup_label">Backup Data to Phone</string>
     <string name="pref_load_local_backup">Restore Data from Phone</string>
@@ -171,11 +177,11 @@
     <string name="pref_backup_switch_summary">Turn on to backup to local storage</string>
 
     <!--Preference Key Strings-->
-    <string name="main_view_key">MAIN_VIEW_TYPE</string>
-    <string name="sort_order_key">SORT_ORDER</string>
-    <string name="sort_type_key">SORT_TYPE</string>
-    <string name="local_backup_switch_key">LOCAL_BACKUP</string>
-    <string name="local_restore_backup_init_key">RESTORE_LOCAL</string>
+    <string name="main_view_key" translatable="false">MAIN_VIEW_TYPE</string>
+    <string name="sort_order_key" translatable="false">SORT_ORDER</string>
+    <string name="sort_type_key" translatable="false">SORT_TYPE</string>
+    <string name="local_backup_switch_key" translatable="false">LOCAL_BACKUP</string>
+    <string name="local_restore_backup_init_key" translatable="false">RESTORE_LOCAL</string>
 
 
     <!--widget strings-->
@@ -193,13 +199,13 @@
     <string name="trailer_play_description">Play Trailer number %1$s</string>
 
     <!--Test ad id-->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
     <!--Ad Ids-->
-    <string name="adAppId">ca-app-pub-8372524945349378~3438927048</string>
-    <string name="mainActivityAdId">ca-app-pub-8372524945349378/4915660248</string>
-    <string name="addNewActivityAdId">ca-app-pub-8372524945349378/5973591045</string>
-    <string name="retailSearchActivityAdId">ca-app-pub-8372524945349378/7450324241</string>
+    <string name="adAppId" translatable="false">ca-app-pub-8372524945349378~3438927048</string>
+    <string name="mainActivityAdId" translatable="false">ca-app-pub-8372524945349378/4915660248</string>
+    <string name="addNewActivityAdId" translatable="false">ca-app-pub-8372524945349378/5973591045</string>
+    <string name="retailSearchActivityAdId" translatable="false">ca-app-pub-8372524945349378/7450324241</string>
 
     <!--Test Strings -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
