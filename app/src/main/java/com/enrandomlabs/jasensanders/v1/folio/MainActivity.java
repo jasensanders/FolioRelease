@@ -358,8 +358,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_all_movies:
                 logActionEvent(ACTIVITY_NAME,"nav_all_movies", "action", mFirebaseAnalytics);
-                String movieLabel = getString(R.string.movie_view);
-                mViewLabel = movieLabel;
+
+                mViewLabel = getString(R.string.movie_view);
                 mTitleViewLabel.setText(mViewLabel);
                 mFolioLoader = MOVIE_LOADER;
                 getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
@@ -367,8 +367,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_all_books:
                 logActionEvent(ACTIVITY_NAME,"nav_all_books", "action", mFirebaseAnalytics);
-                String booksLabel = getString(R.string.books_view);
-                mViewLabel = booksLabel;
+
+                mViewLabel = getString(R.string.books_view);
                 mTitleViewLabel.setText(mViewLabel);
                 mFolioLoader = BOOKS_LOADER;
                 getLoaderManager().restartLoader(BOOKS_LOADER, null, this);
@@ -376,8 +376,8 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_wish_list:
                 logActionEvent(ACTIVITY_NAME,"nav_wish_list", "action", mFirebaseAnalytics);
-                String wishListLabel = getString(R.string.wish_list_view);
-                mViewLabel = wishListLabel;
+
+                mViewLabel = getString(R.string.wish_list_view);
                 mTitleViewLabel.setText(mViewLabel);
                 mFolioLoader = WISHLIST_LOADER;
                 getLoaderManager().restartLoader(WISHLIST_LOADER, null, this);
@@ -408,15 +408,17 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_settings:
-                if(!mTwoPaneMode) {
-                    Intent intent = new Intent(this, DetailActivity.class);
-                    intent.setData(SettingsFragment.SETTINGS_URI);
-                    startActivity(intent);
-                }else{
+                //If two pane mode swap fragment else launch detail activity and pass settings uri
+                if(mTwoPaneMode) {
                     PreferenceFragment fragment = SettingsFragment.newInstance();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.detail_container, fragment)
                             .commit();
+
+                }else{
+                    Intent intent = new Intent(this, DetailActivity.class);
+                    intent.setData(SettingsFragment.SETTINGS_URI);
+                    startActivity(intent);
                 }
                 break;
 
@@ -436,11 +438,11 @@ public class MainActivity extends AppCompatActivity
 
             //Check if Local Backup Setting is enabled
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-            Boolean backup = settings.getBoolean(getString(R.string.local_backup_switch_key), true);
+            Boolean backupLocally = settings.getBoolean(getString(R.string.local_backup_switch_key), true);
 
             //Do not backup an empty database, you may overwrite a fully backed up database
             //ToDo: This is sketchy. Partial empty database overwriting big database would suck. Fix!
-            if(!Utility.isDBEmpty(this) && backup) {
+            if(!Utility.isDBEmpty(this) && backupLocally) {
                 if (!Utility.backupDBtoMobileDevice(getApplicationContext())) {
                     //Log.v(LOG_TAG, "Backup Failed");
                     FirebaseCrash.log("Backup Failed");
