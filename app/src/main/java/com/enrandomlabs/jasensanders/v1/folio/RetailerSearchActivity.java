@@ -103,14 +103,17 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
         //If App is still in session, then restore state data
         if(savedInstanceState != null){
+
             String restoreUpc = savedInstanceState.getString(SEARCH_CURRENT_UPC);
             if(restoreUpc != null){
                 mUpcInput.setText(restoreUpc);
             }
+
             String restoreTitle = savedInstanceState.getString(SEARCH_CURRENT_TITLE);
             if(restoreTitle != null){
                 mTitleInput.setText(restoreTitle);
             }
+
             mQuery = savedInstanceState.getString(SEARCH_CURRENT_QUERY);
         }
     }
@@ -143,7 +146,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_BARCODE_CAPTURE) {
+
             if (resultCode == CommonStatusCodes.SUCCESS) {
+
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeActivity.BarcodeObject);
                     //Update the EditText
@@ -152,12 +157,14 @@ public class RetailerSearchActivity extends AppCompatActivity {
                     //LOG ALL THE THINGS!!!!
                     //Log.d(LOG_TAG, "Barcode read: " + barcode.displayValue);
                 } else {
+
                     //Tell the user the Scan Failed, then log event.
                     ((TextView) findViewById(R.id.error)).setText(R.string.barcode_failure);
                     ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
                     //Log.d(LOG_TAG, "No barcode captured, intent data is null");
                 }
             } else {
+
                 //Tell the user the Activity Failed
                 ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.error)).setText(String.format(getString(R.string.barcode_error),
@@ -172,6 +179,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+
         // Save the user's current state
         savedInstanceState.putString(SEARCH_CURRENT_UPC, mUpcInput.getText().toString());
         savedInstanceState.putString(SEARCH_CURRENT_TITLE,mTitleInput.getText().toString());
@@ -209,7 +217,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
 
     public void searchAmazon(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "searchAmazon", query, "url");
             //update Query Saved State
@@ -230,7 +240,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
     }
     public void searchTarget(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "searchTarget", query, "url");
             //update Query Saved State
@@ -250,7 +262,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
     }
     public void searchWalmart(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "searchWalmart", query, "url");
             //update Query Saved State
@@ -270,7 +284,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
     }
     public void searchEbay(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "searchEbay", query, "url");
             //update Query Saved State
@@ -291,7 +307,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     public void searchBestBuy(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "searchBestBuy", query, "url");
             //update Query Saved State
@@ -311,7 +329,9 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     public void searchToysRUs(View view){
+
         String query = launchTermPriority();
+
         if(query != null){
             LogSearchEvent(ACTIVITY_NAME, "SearchToysRUS", query, "url");
             //update Query Saved State
@@ -331,6 +351,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     public void launchBarcodeScanner(View view){
+
         LogActionEvent(ACTIVITY_NAME, "launchBarcodeScanner", "action");
 
         Intent intent = new Intent(this, BarcodeActivity.class);
@@ -341,6 +362,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private String launchTermPriority(){
+
         String upcText = mUpcInput.getText().toString();
         String titleText = mTitleInput.getText().toString();
         if(upcText.length() == 12){
@@ -367,13 +389,16 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private Intent createShareIntent(String queryUrl) {
+
         if(queryUrl != null) {
+
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, queryUrl);
             return shareIntent;
         }else{
+
             String placeHolder = SEARCH_AMAZON + launchTermPriority();
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -384,11 +409,13 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private void clearViews(){
+
         mUpcInput.setText("");
         mTitleInput.setText("");
     }
 
     private void LogSearchEvent(String activity, String buttonName, String term, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -398,6 +425,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private void LogActionEvent(String activity, String buttonName, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -406,6 +434,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
 
     private void LogShareEvent(String activity, String buttonName, String shareable){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);

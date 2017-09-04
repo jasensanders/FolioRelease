@@ -239,7 +239,9 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
         //Find out which one we have
         mStatus = row.getString(DataContract.W_COL_STATUS);
         mTitle.setText(row.getString(DataContract.W_COL_TITLE));
+
         if(mStatus.startsWith("MOVIE")) {
+
             //Its a movie so load views accordingly
             Glide.with(getActivity()).load(row.getString(DataContract.W_COL_ELEVEN)).fitCenter().into(mPosterImage);
             String ratingRuntime = String.format(mResources.getString(R.string.rating_runtime),
@@ -271,6 +273,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
                     row.getString(DataContract.W_COL_FIFTEEN), row.getString(DataContract.W_COL_UPC));
         }
         else{
+
             //Its a book so load views accordingly
             Glide.with(getActivity()).load(row.getString(DataContract.W_COL_THUMB)).fitCenter().into(mPosterImage);
             mSubTextOne.setText(row.getString(DataContract.W_COL_ELEVEN));
@@ -315,6 +318,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
         }else {
             mStore.setText(row.getString(DataContract.W_COL_STORE));
         }
+
         if(mStateSavedNotes != null){
             mNotes.setText(mStateSavedNotes);
         }else {
@@ -490,6 +494,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void logShareEvent(String activity, String buttonName, String shareable){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -499,6 +504,7 @@ public class DetailWishFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void logActionEvent(String activity, String actionName, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, actionName);

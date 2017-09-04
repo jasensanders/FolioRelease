@@ -122,11 +122,14 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         logActionEvent(ACTIVITY_NAME, "ActivityStarted", "action");
         mResources = getResources();
+
         //If we were launched by fragment transaction, get arguments
         if (getArguments() != null) {
             mParam1 = getArguments().getParcelable(MOVIE_DETAIL_URI);
@@ -136,7 +139,9 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
         super.onActivityCreated(savedInstanceState);
+
         if (savedInstanceState != null) {
             // Restore last state.
             mStateSavedStore = savedInstanceState.getString(DETAIL_CURRENT_STORE);
@@ -152,7 +157,9 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
         // Inflate the layout for this fragment
          mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
         initializeViews();
+
         getLoaderManager().initLoader(DETAIL_MOVIE_LOADER, null, this);
 
         return mRootView;
@@ -171,6 +178,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mShareActionProvider != null) {
+
             mShareActionProvider.setShareIntent(createShareIntent(mDetailMovieShare));
             mShareActionProvider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
                 @Override
@@ -186,13 +194,16 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
     }
 
     private Intent createShareIntent(String movieDesc) {
+
         if(movieDesc != null) {
+
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, movieDesc);
             return shareIntent;
         }else{
+
             String placeHolder = getString(R.string.placeholder_share);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -205,6 +216,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
 
     private void initializeViews(){
+
         //Input Area
         mError = (TextView) mRootView.findViewById(R.id.error);
         mError.setVisibility(View.GONE);
@@ -296,8 +308,10 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
         //Set searchRetail click listener
         mSearchRetail.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 logActionEvent(ACTIVITY_NAME, "SearchRetailersButton", "action");
                 Uri send = mParam1;
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity()).toBundle();
@@ -413,6 +427,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
         super.onSaveInstanceState(outState);
         outState.putString(DETAIL_CURRENT_STORE, mStore.getText().toString());
         outState.putString(DETAIL_CURRENT_NOTES, mNotes.getText().toString());
@@ -431,6 +446,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         if(data.moveToFirst()) {
 
             inflateViews(data);
@@ -441,6 +457,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader) { }
 
     private void logShareEvent(String activity, String buttonName, String shareable){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -450,6 +467,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
     }
 
     private void logActionEvent(String activity, String actionName, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, actionName);

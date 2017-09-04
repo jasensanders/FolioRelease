@@ -49,6 +49,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Uri data = intent.getData();
         int match = detailMatcher.match(data);
+
         //Log.v("DetailActivity", data.toString() + " Match #: "+ String.valueOf(match));
         //If there is already a fragment loaded (Rotation)
         if (savedInstanceState != null) {
@@ -63,6 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                         .replace(R.id.small_detail_container, mContent)
                         .commit();
             }
+
             if(savedInstanceState.containsKey(SETTINGS_KEY)){
                 setTitle(mTitle);
                 mSettingsFragment = (SettingsFragment) getFragmentManager().getFragment(savedInstanceState, SETTINGS_KEY);

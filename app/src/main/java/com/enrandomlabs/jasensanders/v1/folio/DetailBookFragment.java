@@ -121,8 +121,10 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         logActionEvent(ACTIVITY_NAME, "ActivityStarted", "action");
+
         mResources = getResources();
         if (getArguments() != null) {
             mParam1 = getArguments().getParcelable(DETAIL_BOOK_URI);
@@ -132,8 +134,11 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
         super.onActivityCreated(savedInstanceState);
+
         if (savedInstanceState != null) {
+
             // Restore last state.
             mStateSavedStore = savedInstanceState.getString(DETAIL_BOOK_CURRENT_STORE);
             mStateSavedNotes = savedInstanceState.getString(DETAIL_BOOK_CURRENT_NOTES);
@@ -143,9 +148,12 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         mRootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
         initializeViews();
+
         getLoaderManager().initLoader(DETAIL_BOOK_LOADER, null, this);
 
         return mRootView;
@@ -179,13 +187,16 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     private Intent createShareIntent(String itemDesc) {
+
         if(itemDesc != null) {
+
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, itemDesc);
             return shareIntent;
         }else{
+
             String placeHolder = getString(R.string.placeholder_share);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -196,6 +207,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void initializeViews(){
+
         //Input Area
         mError = (TextView) mRootView.findViewById(R.id.error);
         mError.setVisibility(View.GONE);
@@ -355,6 +367,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
         super.onSaveInstanceState(outState);
         outState.putString(DETAIL_BOOK_CURRENT_STORE, mStore.getText().toString());
         outState.putString(DETAIL_BOOK_CURRENT_NOTES, mNotes.getText().toString());
@@ -363,6 +376,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         return new CursorLoader(getActivity(),
                 mParam1,
                 DataContract.BOOK_COLUMNS,
@@ -373,6 +387,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         if(data.moveToFirst()){
             inflateViews(data);
         }
@@ -385,6 +400,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void logShareEvent(String activity, String buttonName, String shareable){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
@@ -394,6 +410,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void logActionEvent(String activity, String actionName, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, actionName);

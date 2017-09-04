@@ -63,10 +63,13 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Intent intent = getIntent();
+
         if(intent.getAction().equals(GOOGLE_VOICE_ACTION)){
+
             String currentQuery = intent.getStringExtra(SearchManager.QUERY);
             if(currentQuery != null) {
                 //Build the URI
@@ -148,6 +151,7 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
 //
 
         } else {
+
             itemList.setAdapter(null);
             itemList.removeAllViews();
             itemList.setVisibility(View.GONE);
@@ -171,14 +175,17 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
 
         //If this is not a wish view Item
         if(!status.contains("_WISH")) {
+
             //If its a movie load the Movie fragment
             if(status.contains("MOVIE")) {
+
                 DetailMovieFragment fragment = DetailMovieFragment.newInstance(data);
                 mCurrentFragment = fragment;
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.detail_container, fragment)
                         .commit();
             }else{
+
                 //otherwise its a Book so load the book fragment
                 DetailBookFragment fragment = DetailBookFragment.newInstance(data);
                 mCurrentFragment = fragment;
@@ -187,6 +194,7 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
                         .commit();
             }
         }else{
+
             //its a Wish item so load the wish fragment
             DetailWishFragment fragment = DetailWishFragment.newInstance(data);
             mCurrentFragment = fragment;

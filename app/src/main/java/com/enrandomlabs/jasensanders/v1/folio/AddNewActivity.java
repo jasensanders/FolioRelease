@@ -167,9 +167,15 @@ public class AddNewActivity extends AppCompatActivity {
 
         //If app still in session, Restore State after rotation
         if(savedInstanceState != null){
+
             mCurrentUpc = savedInstanceState.getString(CURRENT_UPC_KEY);
-            if(mCurrentUpc == null || mCurrentUpc.length()== 0){hideViews();}
+
+            if(mCurrentUpc == null || mCurrentUpc.length()== 0)
+            {
+                hideViews();
+            }
             else {
+
                 mStatus = savedInstanceState.getString(CURRENT_STATUS_KEY);
                 mManualEntry = savedInstanceState.getBoolean(MANUAL_ENTRY_FLAG);
                 mInputText.setText(mCurrentUpc);
@@ -184,14 +190,18 @@ public class AddNewActivity extends AppCompatActivity {
                     inflateBookViews(mBook);
                 }
                 restoreRadioButtonState(mState);
+
             }
+
         }else {
+
             //otherwise hide all views and wait for user input
             hideViews();
             //Set default state
             mState = STATE_MOVIE;
             mManualEntry = false;
             restoreRadioButtonState(mState);
+
         }
         /*mInputText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -276,13 +286,15 @@ public class AddNewActivity extends AppCompatActivity {
         if(mMessageReceiver == null) {
             mMessageReceiver = new MessageReceiver();
         }
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(SERVICE_EVENT_MOVIE);
         filter.addAction(SERVICE_EVENT_BOOK);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
 
     }
-    private void unRegisterMessageReciever(){
+    private void unRegisterMessageReceiver(){
+
         if(mMessageReceiver != null){
             try {
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
@@ -293,6 +305,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private class MessageReceiver extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -307,7 +320,9 @@ public class AddNewActivity extends AppCompatActivity {
                     Log.e(LOG_TAG, "SendApologies Error Received "+ received[0]);
                     mCurrentUpc = received[1];
                     lookupError(received);
+
                 }else{
+
                     mMovie = received;
                     mBook = null;
                     if(mError.getVisibility() == View.VISIBLE){
@@ -316,25 +331,33 @@ public class AddNewActivity extends AppCompatActivity {
                     //We got Data! Lets show what we got!!!
                     showViews(mState);
                     inflateMovieViews(mMovie);
+
                 }
+
             }
+
             if(intent.getStringArrayExtra(SERVICE_EXTRA_BOOK)!= null && mState == STATE_BOOK){
                 //Kill the progress bar
                 if(mProgress != null) {
+
                     mProgress.setVisibility(View.GONE);
                 }
                 //Report to user with results
                 String[] received = intent.getStringArrayExtra(SERVICE_EXTRA_BOOK);
 
                 if ((received[3].contentEquals(NOT_FOUND)|| received[3].contentEquals(SERVER_ERROR)) && received.length == 4) {
+
                     mCurrentUpc = received[1];
                     lookupError(received);
+
                 }else {
+
                     mBook = received;
                     mMovie = null;
                     if(mError.getVisibility() == View.VISIBLE){
                         mError.setVisibility(View.GONE);
                     }
+
                     //We got Data! Lets show what we got!!!
                     showViews(mState);
                     inflateBookViews(mBook);
@@ -348,14 +371,18 @@ public class AddNewActivity extends AppCompatActivity {
         if (requestCode == RC_BARCODE_CAPTURE) {
 
             if (resultCode == CommonStatusCodes.SUCCESS) {
+
                 if (data != null) {
+
                     Barcode barcode = data.getParcelableExtra(BarcodeActivity.BarcodeObject);
                     //Update the EditText
                     mInputText.setText(barcode.displayValue);
 
                     //LOG ALL THE THINGS!!!!
                     //Log.d(LOG_TAG, "Barcode read: " + barcode.displayValue);
+
                 } else {
+
                     //Tell the user the Scan Failed, then log event.
                     ((TextView) findViewById(R.id.error)).setText(R.string.barcode_failure);
                     ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
@@ -364,6 +391,7 @@ public class AddNewActivity extends AppCompatActivity {
 
                 }
             } else {
+
                 //Tell the user the Activity Failed
                 ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.error)).setText(String.format(getString(R.string.barcode_error),
@@ -387,8 +415,11 @@ public class AddNewActivity extends AppCompatActivity {
         savedInstanceState.putString(CURRENT_STATUS_KEY, mStatus);
 
         if(mState == STATE_MOVIE) {
+
             savedInstanceState.putStringArray(CURRENT_ITEM_ARRAY, mMovie);
+
         }else{
+
             savedInstanceState.putStringArray(CURRENT_ITEM_ARRAY, mBook);
         }
 
@@ -407,7 +438,7 @@ public class AddNewActivity extends AppCompatActivity {
         if (mAdView != null) {
             mAdView.pause();
         }
-        unRegisterMessageReciever();
+        unRegisterMessageReceiver();
         super.onPause();
     }
 
@@ -439,6 +470,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void launchBarcodeScanner(View view){
+
         //If an error message hasn't cleared, then clear it.
         logActionEvent(ACTIVITY_NAME, "launchBarcodeScanner", "action");
         if(mError.getVisibility() == View.VISIBLE){
@@ -452,6 +484,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void onRadioButtonClicked(View view){
+
         if(view.getId() == R.id.selectMovie){
             mState = STATE_MOVIE;
         }
@@ -461,8 +494,10 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void onSubmit(View view){
+
         String upc = mInputText.getText().toString();
         mCurrentUpc = upc;
+
         if(upc.length()>9) {
             if (upc.length() == 12 && mState == STATE_MOVIE) {
                 //Start the progress bar
@@ -523,10 +558,13 @@ public class AddNewActivity extends AppCompatActivity {
 
 
     public void manualEntry(View view){
+
         mManualEntry = true;
+
         String barcode = "http://www.searchupc.com/drawupc.aspx?q=" + mCurrentUpc;
         DateFormat df = DateFormat.getDateInstance();
         String addDate = df.format(Calendar.getInstance().getTime());
+
         if(mState == STATE_MOVIE) {
             //Initialize movie array
             mMovie = initialStringArray(19);
@@ -541,6 +579,7 @@ public class AddNewActivity extends AppCompatActivity {
             showViews(mState);
             inflateMovieViews(mMovie);
         }
+
         if(mState == STATE_BOOK){
             //Initialize book array
             mBook = initialStringArray(16);
@@ -563,11 +602,14 @@ public class AddNewActivity extends AppCompatActivity {
         logActionEvent(ACTIVITY_NAME,"SetToWishListbutton", "action");
 
         if(mState == STATE_MOVIE) {
+
             if (mStatus.contentEquals(DataContract.STATUS_MOVIES) && input.isChecked()) {
                 mStatus = DataContract.STATUS_MOVIE_WISH;
                 mMovie[13] = mStatus;
                 Toast.makeText(this, mStatus, Toast.LENGTH_SHORT).show();
+
             } else {
+
                 mStatus = DataContract.STATUS_MOVIES;
                 mMovie[13] = mStatus;
                 input.setChecked(false);
@@ -575,12 +617,16 @@ public class AddNewActivity extends AppCompatActivity {
 
             }
         }
+
         if(mState == STATE_BOOK){
+
             if (mStatus.contentEquals(DataContract.STATUS_BOOK) && input.isChecked()) {
                 mStatus = DataContract.STATUS_BOOK_WISH;
                 mBook[13] = mStatus;
                 Toast.makeText(this, mStatus, Toast.LENGTH_SHORT).show();
+
             } else {
+
                 mStatus = DataContract.STATUS_BOOK;
                 mBook[13] = mStatus;
                 input.setChecked(false);
@@ -591,14 +637,19 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void sendToBrand(View view){
+
         Intent result = null;
+
         if(mState == STATE_MOVIE){
+
             result = new Intent(Intent.ACTION_VIEW, Uri.parse(TMDB_SITE));
         }
         if(mState == STATE_BOOK){
+
             result = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_BOOKS));
         }
         if(result != null){
+
             result.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             if(result.resolveActivity(getPackageManager()) != null){
                 startActivity(result);
@@ -607,6 +658,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public void saveToDataBase(View view){
+
         //loadStateArray() -- load all EditTexts into movie/book array
         loadStateArray();
 
@@ -614,13 +666,16 @@ public class AddNewActivity extends AppCompatActivity {
             Uri returned;
 
             if (mStatus.endsWith("_WISH")) {
+
                 ContentValues insert = Utility.makeWishRowValues(mMovie);
                  returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
             } else {
+
                 ContentValues insert = Utility.makeMovieRowValues(mMovie);
                  returned = getContentResolver().insert(DataContract.MovieEntry.CONTENT_URI, insert);
             }
             if (returned != null) {
+
                 Toast.makeText(this, mMovie[3] + getString(R.string.itemSaved), Toast.LENGTH_LONG).show();
                 resetFields();
             }
@@ -630,13 +685,18 @@ public class AddNewActivity extends AppCompatActivity {
             Uri returned;
 
             if (mStatus.endsWith("_WISH")) {
+
                 ContentValues insert = Utility.makeWishRowValues(mBook);
                 returned = getContentResolver().insert(DataContract.WishEntry.CONTENT_URI, insert);
+
             } else {
+
                 ContentValues insert = Utility.makeBookRowValues(mBook);
                 returned = getContentResolver().insert(DataContract.BookEntry.CONTENT_URI, insert);
+
             }
             if (returned != null) {
+
                 Toast.makeText(this, mBook[3] + getString(R.string.itemSaved), Toast.LENGTH_LONG).show();
                 resetFields();
             }
@@ -650,11 +710,15 @@ public class AddNewActivity extends AppCompatActivity {
     private void resetFields(){
 
         resetEditTexts();
+
         hideViews();
+
         if(mState == STATE_MOVIE) {
             clearTrailerViews();
         }
+
         resetInputText();
+
         mCurrentUpc = null;
     }
 
@@ -961,15 +1025,18 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void clearTrailerViews(){
+
         mTrailerScroll.removeAllViews();
         mTrailerScroll.invalidate();
     }
     private void clearErrorView(){
+
         mError.setText("");
         mError.setVisibility(View.GONE);
     }
 
     private void hideViews(){
+
         mError.setVisibility(View.GONE);
         mDetailView.setVisibility(View.INVISIBLE);
         mTopButtonLayout.setVisibility(View.GONE);
@@ -989,6 +1056,7 @@ public class AddNewActivity extends AppCompatActivity {
         mNotes.setVisibility(View.INVISIBLE);
         mUserInput.setVisibility(View.INVISIBLE);
         mButtonLayout.setVisibility(View.INVISIBLE);
+
     }
 
     private void showViews(int state){
@@ -1041,10 +1109,12 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void resetEditTexts(){
+
         if(mState == STATE_BOOK){
             mByline.setText("");
             mAuthors.setText("");
         }
+
         mTitle.setText("");
         mReleaseDate.setText("");
         mSubTextOne.setText("");
@@ -1056,7 +1126,9 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void restoreRadioButtonState(int state){
+
         switch (state){
+
             case STATE_MOVIE:{
                 this.mState = STATE_MOVIE;
                 mSelectMovie.setChecked(true);
@@ -1071,6 +1143,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void addTrailers(LinearLayout view, String trailers){
+
         //Clear any old views that still exist
         if(view.getChildCount() > 0){ view.removeAllViews();}
         //If there are no trailers, then nothing to do
@@ -1186,6 +1259,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     public String[] initialStringArray(int size){
+
         String[] array = new String[size];
         for(int i = 0; i<array.length; i++){
             array[i] = "";
@@ -1194,6 +1268,7 @@ public class AddNewActivity extends AppCompatActivity {
     }
 
     private void lookupError(String[] response){
+
         String message = "";
         if(mState == STATE_MOVIE){
             message = "Sorry, the movie with UPC: " + response[1] + " is not in our database. \n" +
@@ -1201,6 +1276,7 @@ public class AddNewActivity extends AppCompatActivity {
                     "Tap this message to clear and Enter manually" ;
             FirebaseCrash.log("Movie NOT FOUND" + response[1]);
         }
+
         if(mState == STATE_BOOK){
             message = "Sorry, the book with ISBN: " + response[1] + " is not in our database. \n" +
                     "Error: " + response[0] + "\n" +
@@ -1210,10 +1286,12 @@ public class AddNewActivity extends AppCompatActivity {
         }
         mError.setText(message);
         mError.setVisibility(View.VISIBLE);
+
     }
 
 
     private void logActionEvent(String activity, String actionName, String type ){
+
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, activity);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, actionName);

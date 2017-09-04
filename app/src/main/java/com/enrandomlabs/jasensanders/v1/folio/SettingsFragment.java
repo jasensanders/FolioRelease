@@ -67,6 +67,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
+
         //Start Tracking events
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
@@ -80,13 +81,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+
         Preference mRestoreDataLocallyButton = findPreference(getString(R.string.local_restore_backup_init_key));
         mRestoreDataLocallyButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
             @Override
             public boolean onPreferenceClick(Preference preference) {
+
                 //code for what you want it to do
                 Utility.setPrefRestoreBackup(getActivity(), true);
                 logActionEvent(LOG_TAG,"nav_restore_db", "action", mFirebaseAnalytics);
+
                 //Launch snackbar to ask if user wants to restart now
                 final String request = "Backup will be restored on restart";
                 final Snackbar restartMessage = Snackbar.make(getView(), request, Snackbar.LENGTH_LONG );
@@ -97,6 +102,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     }
                 });
                 restartMessage.show();
+
                 return true;
             }
         });
@@ -108,6 +114,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         //We only need to set the summary on the ListPreferences.
         if (preference instanceof ListPreference) {
+
             // For list preferences, look up the correct display value in
             // the preference's 'entries' list (since they have separate labels/values).
             ListPreference listPreference = (ListPreference) preference;
@@ -137,6 +144,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+
         setPreferenceSummary(preference, newValue);
         return true;
     }

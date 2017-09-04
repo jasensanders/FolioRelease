@@ -37,6 +37,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration{
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
     private Drawable mDivider;
     private int mOrientation;
+
+
     public DividerItemDecoration(Context context, int orientation, int xmlDrawable) {
 
         mDivider = context.getResources().getDrawable(xmlDrawable);
@@ -58,6 +60,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration{
         }
     }
     public void drawVertical(Canvas c, RecyclerView parent) {
+
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
         final int childCount = parent.getChildCount();
@@ -73,6 +76,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration{
         }
     }
     public void drawHorizontal(Canvas c, RecyclerView parent) {
+
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
         final int childCount = parent.getChildCount();
@@ -87,6 +91,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration{
             mDivider.draw(c);
         }
     }
+
     @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
         if (mOrientation == VERTICAL_LIST) {
