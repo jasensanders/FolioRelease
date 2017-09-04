@@ -179,11 +179,11 @@
                     android:fontFamily="sans-serif-condensed"
                     android:layout_weight="0.94" />
 
-                <include layout="@layout/trailers_layout"/>
+                <include layout="@layout/content_trailers_layout"/>
 
             </LinearLayout>
 
-            <include layout="@layout/user_input" />
+            <include layout="@layout/content_user_input" />
 
 
             <LinearLayout

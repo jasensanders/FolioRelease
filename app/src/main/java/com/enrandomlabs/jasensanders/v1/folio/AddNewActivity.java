@@ -811,7 +811,7 @@ public class AddNewActivity extends AppCompatActivity {
     private void imageDialog(){
 
         AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
-        final View urlInput = getLayoutInflater().inflate(R.layout.add_image_dialog, null);
+        final View urlInput = getLayoutInflater().inflate(R.layout.dialog_add_image, null);
         final EditText edittext = (EditText) urlInput.findViewById(R.id.dialogURL);
         alert.setMessage("Set Image");
         alert.setTitle("Enter Image URL:");
@@ -851,7 +851,7 @@ public class AddNewActivity extends AppCompatActivity {
     private void ratingRuntimeDialog(){
 
         //Create AlertDialog that allows user to input/update the rating and the runtime of movie.
-        final View ratingRuntimeDialog = getLayoutInflater().inflate(R.layout.rating_runtime_dialog, null);
+        final View ratingRuntimeDialog = getLayoutInflater().inflate(R.layout.dialog_rating_runtime, null);
         //Get reference to Rating EditText and load data we have
         final EditText Rating = (EditText) ratingRuntimeDialog.findViewById(R.id.dialogRating);
         Rating.setText(mMovie[14]);
@@ -1088,7 +1088,7 @@ public class AddNewActivity extends AppCompatActivity {
                 mTrailerArray = tempTrail;
 
                 for(String url: tempTrail){
-                    View v =  vi.inflate(R.layout.trailer_tile, view, false);
+                    View v =  vi.inflate(R.layout.content_trailer_list_item, view, false);
                     TextView listText = (TextView) v.findViewById(R.id.list_item_trailer_text);
                     String text = "Play Trailer number"+ String.valueOf(i+1);
                     //ALLy Content description for trailers

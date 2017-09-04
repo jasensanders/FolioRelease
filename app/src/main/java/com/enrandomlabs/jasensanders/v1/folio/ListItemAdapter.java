@@ -98,7 +98,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
 
         //Inflate the new view
         if(parent instanceof RecyclerView){
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_main, parent, false);
             view.setFocusable(true);
             return new ViewHolder(view);
         }else{

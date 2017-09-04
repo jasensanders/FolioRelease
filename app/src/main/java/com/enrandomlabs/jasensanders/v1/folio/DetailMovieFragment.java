@@ -369,7 +369,7 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
             if(tempTrail.length > 0) {
 
                 for(String url: tempTrail){
-                    View v =  vi.inflate(R.layout.trailer_tile, view, false);
+                    View v =  vi.inflate(R.layout.content_trailer_list_item, view, false);
                     TextView listText = (TextView) v.findViewById(R.id.list_item_trailer_text);
                     String text = mResources.getString(R.string.trailer_play_description, String.valueOf(i+1));
                     //ALLy Content description for trailers
