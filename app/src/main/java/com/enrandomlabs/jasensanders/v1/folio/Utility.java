@@ -48,6 +48,8 @@ import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
+import static com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider.ACTION_DATA_UPDATED;
+
 /**
  * Created by Jasen Sanders on 002,03/02/16.
  * Utility file with tools for processing and saving data
@@ -930,6 +932,14 @@ public class Utility {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, buttonName);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
         analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    public static void updateWidgets(Context context) {
+
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
 

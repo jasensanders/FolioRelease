@@ -23,13 +23,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.enrandomlabs.jasensanders.v1.folio.DetailActivity;
-import com.enrandomlabs.jasensanders.v1.folio.MainActivity;
 import com.enrandomlabs.jasensanders.v1.folio.R;
 import com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider;
 
@@ -40,32 +39,39 @@ import com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DetailWidgetProvider extends AppWidgetProvider {
+
+    public static final String DETAIL_ACTION = "com.enrandomlabs.jasensanders.v1.folio.widget.DETAIL_ACTION";
+    public static final String UPC_ITEM_URI = "com.enrandomlabs.jasensanders.v1.folio.widget.UPC_ITEM";
+
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_detail);
 
-            // Create an Intent to launch MainActivity
-            Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
-            // Set up the collection
+            // Create an Intent to bind RemoteViews Service to views
+            Intent intent = new Intent(context, DetailWidgetRemoteViewsService.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
+            // Set up the collection adapter based on SDK_INT
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                setRemoteAdapter(context, views);
+                setRemoteAdapter(views, intent);
             } else {
-                setRemoteAdapterV11(context, views);
+                setRemoteAdapterV11(views, intent);
             }
-//            boolean useDetailActivity = context.getResources()
-//                    .getBoolean(R.bool.use_detail_activity);
-            boolean useDetailActivity = false;
-            Intent clickIntentTemplate = useDetailActivity
-                    ? new Intent(context, DetailActivity.class)
-                    : new Intent(context, MainActivity.class);
-            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
-                    .addNextIntentWithParentStack(clickIntentTemplate)
-                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //Setup pending intent template to be overridden by filin intent
+            Intent clickDetailIntent = new Intent(context, DetailWidgetProvider.class);
+            clickDetailIntent.setAction(DETAIL_ACTION);
+            clickDetailIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            PendingIntent clickPendingIntentTemplate = PendingIntent.getBroadcast(context, 0, clickDetailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+//                    .addNextIntentWithParentStack(clickDetailIntent)
+//                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
+
+            //Set EmptyView
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
@@ -82,6 +88,19 @@ public class DetailWidgetProvider extends AppWidgetProvider {
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
         }
+
+        //This is where we receive the combined pending/fillin intent and launch  the Detail activity
+        //with data from the remote views service item.
+        if(DetailWidgetProvider.DETAIL_ACTION.equals(intent.getAction())){
+            Uri data = Uri.parse(intent.getStringExtra(UPC_ITEM_URI));
+            if(data != null){
+                Intent DetailIntent = new Intent(context, DetailActivity.class)
+                        .setData(data);
+                context.startActivity(DetailIntent);
+
+            }
+        }
+
     }
 
     /**
@@ -90,9 +109,8 @@ public class DetailWidgetProvider extends AppWidgetProvider {
      * @param views RemoteViews to set the RemoteAdapter
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(R.id.widget_list,
-                new Intent(context, DetailWidgetRemoteViewsService.class));
+    private void setRemoteAdapter(@NonNull final RemoteViews views, Intent adapterIntent) {
+        views.setRemoteAdapter(R.id.widget_list, adapterIntent);
     }
 
     /**
@@ -101,8 +119,7 @@ public class DetailWidgetProvider extends AppWidgetProvider {
      * @param views RemoteViews to set the RemoteAdapter
      */
     @SuppressWarnings("deprecation")
-    private void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(0, R.id.widget_list,
-                new Intent(context, DetailWidgetRemoteViewsService.class));
+    private void setRemoteAdapterV11(@NonNull final RemoteViews views, Intent adapterIntent) {
+        views.setRemoteAdapter(0, R.id.widget_list, adapterIntent);
     }
 }

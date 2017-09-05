@@ -497,6 +497,7 @@ public class FolioProvider extends ContentProvider {
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
 
+        updateWidgets();
         return retCursor;
     }
 

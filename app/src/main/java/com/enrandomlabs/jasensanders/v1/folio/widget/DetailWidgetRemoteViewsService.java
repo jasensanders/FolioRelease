@@ -82,6 +82,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 // However, our ContentProvider is not exported so it doesn't have access to the
                 // data. Therefore we need to clear (and finally restore) the calling identity so
                 // that calls use our process and permission
+                //Todo: set query based on widget settings or Config.
                 final long identityToken = Binder.clearCallingIdentity();
 
                 Uri getOwnedMovies = DataContract.MovieEntry.buildUriAll();
@@ -110,12 +111,13 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
             public RemoteViews getViewAt(int position) {
                 if (position == AdapterView.INVALID_POSITION ||
                         data == null || !data.moveToPosition(position)) {
+                    Log.e(LOG_TAG, "No Data Received");
                     return null;
                 }
                 RemoteViews views = new RemoteViews(getPackageName(),
                         R.layout.widget_detail_list_item);
 
-                //TODO Load Views for each List Item
+
                 //This is the artImage download with glide
                 Bitmap ArtImage = null;
 
@@ -152,8 +154,11 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.date_added, addDate);
                 views.setTextViewText(R.id.sub_text, rating);
 
-                //TODO Update this to launch main activity
                 final Intent fillInIntent = new Intent();
+                //Todo: switch this based on setting
+                String detailsData = DataContract.MovieEntry.buildUPCUri(data.getString(0)).toString();
+                fillInIntent.putExtra(DetailWidgetProvider.UPC_ITEM_URI, detailsData);
+                //make a uri for the Item and add it to the intent passed
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 return views;
             }

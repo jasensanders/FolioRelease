@@ -563,6 +563,8 @@ public class MainActivity extends AppCompatActivity
             mEmptyView.setVisibility(View.VISIBLE);
         }
 
+        Utility.updateWidgets(this);
+
     }
 
     @Override
