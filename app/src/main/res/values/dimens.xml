@@ -74,5 +74,7 @@
     <dimen name="widget_detail_default_height">180dp</dimen>
     <dimen name="widget_detail_min_resize_width">220dp</dimen>
     <dimen name="widget_detail_min_resize_height">@dimen/widget_detail_default_height</dimen>
+    <dimen name="action_bar_default_height_material">64dp</dimen>
+    <dimen name="spinner_padding">8dp</dimen>
 
 </resources>

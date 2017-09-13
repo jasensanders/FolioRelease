@@ -52,8 +52,8 @@
     <string name="tap_directions">Tap to capture. Pinch/Stretch to zoom</string>
 
     <!-- Error Message Strings-->
-    <string name="no_internet">No Internet Connection</string>
-    <string name="empty_database_list">No Information Available</string>
+    <string name="no_internet">No Internet Connection.</string>
+    <string name="empty_database_list">No Information Available.</string>
 
     <!-- AddNew Strings-->
     <string name="title_add_new">Add</string>
@@ -186,6 +186,12 @@
 
     <!--widget strings-->
     <string name="title_widget_detail">Folio Details</string>
+    <string name="widget_configure_dialog_label">View Settings:</string>
+    <string name="widget_config_view_type_label">Choose default view: </string>
+    <string name="widget_config_sort_type_label">Choose Sort Type: </string>
+    <string name="widget_config_sort_order_label">Choose Sort Order: </string>
+    <string name="widget_config_save">Save</string>
+    <string name="widget_config_cancel">Cancel</string>
 
     <!-- A11y Strings-->
     <string name="wish_list_checkbox_desc">Check this to add to wish list</string>
@@ -209,4 +215,5 @@
 
     <!--Test Strings -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_widget_configure">WidgetConfigureActivity</string>
 </resources>

@@ -30,6 +30,7 @@ import android.widget.RemoteViews;
 
 import com.enrandomlabs.jasensanders.v1.folio.DetailActivity;
 import com.enrandomlabs.jasensanders.v1.folio.R;
+import com.enrandomlabs.jasensanders.v1.folio.Utility;
 import com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider;
 
 
@@ -43,11 +44,16 @@ public class DetailWidgetProvider extends AppWidgetProvider {
     public static final String DETAIL_ACTION = "com.enrandomlabs.jasensanders.v1.folio.widget.DETAIL_ACTION";
     public static final String UPC_ITEM_URI = "com.enrandomlabs.jasensanders.v1.folio.widget.UPC_ITEM";
 
+    public static final String PREF_VIEW_TYPE_KEY = "com.enrandomlabs.jasensanders.v1.folio.widget.VIEW_TYPE/";
+    public static final String PREF_SORT_TYPE_KEY = "com.enrandomlabs.jasensanders.v1.folio.widget.SORT_TYPE/";
+    public static final String PREF_SORT_ORDER_KEY = "com.enrandomlabs.jasensanders.v1.folio.widget.SORT_ORDER/";
+
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_detail);
 
+            //Get Views
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_detail);
 
             // Create an Intent to bind RemoteViews Service to views
             Intent intent = new Intent(context, DetailWidgetRemoteViewsService.class);
@@ -61,18 +67,25 @@ public class DetailWidgetProvider extends AppWidgetProvider {
                 setRemoteAdapterV11(views, intent);
             }
 
+            //Create Pending Intent and set onClick method for config button.
+            Intent configActivityIntent = new Intent(context, WidgetConfigureActivity.class);
+            configActivityIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            final PendingIntent configIntent = PendingIntent.getActivity(context, 0, configActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_config_button, configIntent);
+
             //Setup pending intent template to be overridden by filin intent
             Intent clickDetailIntent = new Intent(context, DetailWidgetProvider.class);
             clickDetailIntent.setAction(DETAIL_ACTION);
             clickDetailIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             PendingIntent clickPendingIntentTemplate = PendingIntent.getBroadcast(context, 0, clickDetailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
-//                    .addNextIntentWithParentStack(clickDetailIntent)
-//                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
 
             //Set EmptyView
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
+
+            //Set Title based on viewType
+            String viewLabel = Utility.widgetViewLabel(appWidgetId, context);
+            views.setTextViewText(R.id.widget_label, viewLabel);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -100,6 +113,25 @@ public class DetailWidgetProvider extends AppWidgetProvider {
 
             }
         }
+
+    }
+
+    //Use this method to delete widget settings based on appWidgetID
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+
+        super.onDeleted(context, appWidgetIds);
+        //Delete the settings for each widgetID
+        //Convention: com.enrandomlabs.jasensanders.v1.folio.widget + "." + (VIEW_TYPE_KEY) + String.valueOf(appWidgetId)
+        for(int appwidgetId: appWidgetIds){
+            String viewKey = PREF_VIEW_TYPE_KEY + String.valueOf(appwidgetId);
+            String sortKey = PREF_SORT_TYPE_KEY + String.valueOf(appwidgetId);
+            String orderKey = PREF_SORT_ORDER_KEY + String.valueOf(appwidgetId);
+            Utility.deletePreference(context, viewKey);
+            Utility.deletePreference(context, sortKey);
+            Utility.deletePreference(context, orderKey);
+        }
+
 
     }
 

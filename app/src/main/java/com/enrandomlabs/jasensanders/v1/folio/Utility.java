@@ -49,6 +49,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import static com.enrandomlabs.jasensanders.v1.folio.database.FolioProvider.ACTION_DATA_UPDATED;
+import static com.enrandomlabs.jasensanders.v1.folio.widget.DetailWidgetProvider.PREF_VIEW_TYPE_KEY;
 
 /**
  * Created by Jasen Sanders on 002,03/02/16.
@@ -87,14 +88,21 @@ public class Utility {
     private static final String DESC = "DESC";
     private static final String SPACE = " ";
 
-    static public void setStringPreference(Context c, String key, String value){
+    public static void setStringPreference(Context c, String key, String value){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
-    static public String getStringPreference(Context c, String key, String deFault){
+    public static void deletePreference(Context c, String key){
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove(key);
+        editor.apply();
+    }
+
+    public static String getStringPreference(Context c, String key, String deFault){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(c);
 
         return settings.getString(key, deFault);
@@ -104,7 +112,7 @@ public class Utility {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = settings.edit();
         if(settings.getBoolean(FLAG_FIRST_RUN, true)){
-            editor.putBoolean(FLAG_FIRST_RUN, false).commit();
+            editor.putBoolean(FLAG_FIRST_RUN, false).apply();
             return true;
         }
         return false;
@@ -490,6 +498,32 @@ public class Utility {
         return result;
     }
 
+    public static Uri detailUriMatcher(int LoaderType, String upc) {
+
+        if (LoaderType == MOVIE_ALL) {
+
+            return DataContract.MovieEntry.buildUPCUri(upc);
+        } else if (LoaderType == WISH_LIST_ALL) {
+
+            return DataContract.WishEntry.buildUPCUri(upc);
+        } else {
+
+            return DataContract.BookEntry.buildUPCUri(upc);
+
+        }
+    }
+
+    public static Uri uriPathMatcher(String path){
+        if(path.equals(DataContract.PATH_MOVIES)){
+            return DataContract.MovieEntry.buildUriAll();
+        }else if(path.equals(DataContract.PATH_BOOKS)){
+            return DataContract.BookEntry.buildUriAll();
+        }else if(path.equals(DataContract.PATH_WISH_LIST)){
+            return DataContract.WishEntry.buildUriAll();
+        }
+        return null;
+    }
+
     public static String columnSelectionMatcher(String status){
         String result;
         if(status.endsWith("_WISH")){
@@ -524,6 +558,40 @@ public class Utility {
             return null;
         }
 
+    }
+
+    public static int errorImageMatcher(int loader_type){
+        if(loader_type == MOVIE_ALL){
+            return R.drawable.ic_filmstrip_black;
+        }else if(loader_type == BOOKS_ALL){
+            return R.drawable.ic_book_open_variant_black;
+        }else if (loader_type == WISH_LIST_ALL){
+            return R.drawable.ic_bookmark_plus_outline_black;
+        }else{
+            return R.drawable.image_placeholder;
+        }
+    }
+
+    public static String widgetViewLabel(int widgetId, Context context){
+        String key = PREF_VIEW_TYPE_KEY + widgetId;
+        String viewType = getStringPreference(context, key, context.getString(R.string.pref_view_movies));
+        if(viewType.equals(DataContract.PATH_MOVIES)){
+            return context.getString(R.string.movie_view);
+        }else if(viewType.equals(DataContract.PATH_BOOKS)){
+            return context.getString(R.string.books_view);
+        }else{
+            return context.getString(R.string.wish_list_view);
+        }
+    }
+
+    public static int indexOf(String[] values, String item){
+        int result =0;
+        for(int i =0; i< values.length; i++){
+            if(item.equals(values[i])){
+                result = i;
+            }
+        }
+        return result;
     }
 
     public static String selectionSearchStateMatcher(int LoaderType){
@@ -566,6 +634,17 @@ public class Utility {
             return BOOK_COLUMNS;
         }
         else{ return null;}
+    }
+
+    public static int stateMatcher(String path){
+        if(path.equals(DataContract.PATH_MOVIES)){
+            return MOVIE_ALL;
+        }
+        else if(path.equals(DataContract.PATH_BOOKS)){
+            return BOOKS_ALL;
+        }else{
+            return WISH_LIST_ALL;
+        }
     }
 
     //URI matcher for states above

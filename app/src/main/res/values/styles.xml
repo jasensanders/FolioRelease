@@ -9,23 +9,28 @@
 
 
     </style>
+
     <style name="SplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
-    <style name="AppTheme.AddNew" parent="AppTheme" >
+    <style name="AppTheme.AddNew" parent="AppTheme">
 
     </style>
-    <style name="AppTheme.Details" parent="AppTheme" >
+
+    <style name="AppTheme.Details" parent="AppTheme">
 
     </style>
+
     <style name="AppTheme.RetailSearch" parent="AppTheme">
 
 
     </style>
+
     <style name="AppTheme.SearchActivity" parent="AppTheme">
 
     </style>
+
     <style name="AppTheme.SettingsFragment" parent="AppTheme">
         <item name="android:textColor">@color/hintColorGray</item>
     </style>
@@ -47,6 +52,7 @@
         <item name="android:layout_marginRight">20dp</item>
         <item name="android:layout_marginTop">20dp</item>
     </style>
+
     <style name="VerticalDivider">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -64,6 +70,7 @@
         <item name="android:layout_marginRight">20dp</item>
 
     </style>
+
     <style name="DividerLightFull">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>

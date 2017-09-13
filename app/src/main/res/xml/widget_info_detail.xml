@@ -24,6 +24,7 @@
     android:minWidth="@dimen/widget_detail_default_width"
     android:previewImage="@drawable/folio_widget_preview"
     android:resizeMode="horizontal|vertical"
+    android:configure="com.enrandomlabs.jasensanders.v1.folio.widget.WidgetConfigureActivity"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen|keyguard"
     tools:ignore="UnusedAttribute" />
