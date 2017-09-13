@@ -14,8 +14,8 @@ android {
         applicationId "com.enrandomlabs.jasensanders.v1.folio"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.05"
+        versionCode 7
+        versionName "1.06"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
