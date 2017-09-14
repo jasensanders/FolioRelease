@@ -26,7 +26,13 @@ Put all three of these keys in the strings.xml file under:
 [Admob Setup](https://www.google.com/admob/)
 
 
-### In This Version (1.04):
+### In This Version (1.06):
+* Save your settings, both Widget settings, and App settings.
+* Widget now launches Detail View of list item.
+* New App Icon.
+* Standardized toolbar icons.
+
+### Version 1.04 features
 * Google Assistant app search works! (Ok, google, search Folio for.....)
 * Privacy Policy, Apache License, code style fixes.
 
