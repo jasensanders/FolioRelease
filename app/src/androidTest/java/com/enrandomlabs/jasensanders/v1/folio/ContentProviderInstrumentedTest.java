@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class ContentProviderInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
           // Context of the app under test.
@@ -68,8 +68,10 @@ public class ExampleInstrumentedTest {
 //        appContext.getContentResolver().insert(DataContract.MovieEntry.CONTENT_URI, values3);
 
         Cursor cursor = appContext.getContentResolver().query(providerCall, MOVIE_COLUMNS, null, null, sortOrder);
-        cursor.moveToFirst();
-        String upcTest = cursor.getString(0);
+        String upcTest = null;
+        if(cursor.moveToFirst()) {
+            upcTest = cursor.getString(0);
+        }
 
         assertNotNull("Cursor", cursor);
         assertNotNull("UPC", upcTest);
