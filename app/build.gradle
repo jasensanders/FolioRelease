@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         ReleaseConfig {
-            keyAlias 'ReleaseKeystore'
-            keyPassword 'EatMyApp2786'
-            storeFile file('E:/KeyStoreAndroid/ReleaseKeystore.jks')
-            storePassword 'EatMyApp2786'
+            keyAlias = PlayStoreAlias
+            keyPassword = KeyPassowrd
+            storeFile file("D:/KeyStoreAndroid/ReleaseKeystore.jks")
+            storePassword = StorePassword
         }
     }
     compileSdkVersion 27
