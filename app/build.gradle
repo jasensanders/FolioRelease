@@ -1,11 +1,18 @@
 apply plugin: 'com.android.application'
 android {
+
+    // Reference Keys and add to signing config.
+    def alias = PlayStoreAlias
+    def password = KeyPassowrd
+    def storeFilePath = storeFilePath
+    def playStorePassword = StorePassword
+
     signingConfigs {
         ReleaseConfig {
-            keyAlias = PlayStoreAlias
-            keyPassword = KeyPassowrd
-            storeFile file("D:/KeyStoreAndroid/ReleaseKeystore.jks")
-            storePassword = StorePassword
+            keyAlias = alias
+            keyPassword = password
+            storeFile = file(storeFilePath)
+            storePassword = playStorePassword
         }
     }
     compileSdkVersion 27
