@@ -68,7 +68,7 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_search);
         Intent intent = getIntent();
 
-        if(intent.getAction().equals(GOOGLE_VOICE_ACTION)){
+        if(intent.getAction() != null && intent.getAction().equals(GOOGLE_VOICE_ACTION)){
 
             String currentQuery = intent.getStringExtra(SearchManager.QUERY);
             if(currentQuery != null) {
@@ -82,10 +82,10 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         //Initialize empty view
-        mEmptyView = (TextView) findViewById(R.id.sRecyclerView_empty);
+        mEmptyView = findViewById(R.id.sRecyclerView_empty);
 
         //Initialize recycler view
-        itemList = (RecyclerView) findViewById(R.id.content_list);
+        itemList = findViewById(R.id.content_list);
 
         //If in TWO PANE mode the re-launch current detail fragment
         if(findViewById(R.id.detail_container) != null){

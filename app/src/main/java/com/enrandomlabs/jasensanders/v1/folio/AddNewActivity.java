@@ -266,7 +266,7 @@ public class AddNewActivity extends AppCompatActivity {
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        mAdView = (AdView) findViewById(R.id.addNewAdView);
+        mAdView = findViewById(R.id.addNewAdView);
         AdRequest.Builder builder = new AdRequest.Builder();
         if(BuildConfig.DEBUG_BUILD) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
@@ -385,7 +385,7 @@ public class AddNewActivity extends AppCompatActivity {
 
                     //Tell the user the Scan Failed, then log event.
                     ((TextView) findViewById(R.id.error)).setText(R.string.barcode_failure);
-                    ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
+                    findViewById(R.id.error).setVisibility(View.VISIBLE);
                     //Log.d(LOG_TAG, "No barcode captured, intent data is null");
 
 
@@ -393,7 +393,7 @@ public class AddNewActivity extends AppCompatActivity {
             } else {
 
                 //Tell the user the Activity Failed
-                ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
+                findViewById(R.id.error).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.error)).setText(String.format(getString(R.string.barcode_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
             }
@@ -725,36 +725,36 @@ public class AddNewActivity extends AppCompatActivity {
     private void initializeViews(){
 
         //Error Field
-        mError = (TextView) findViewById(R.id.error);
+        mError = findViewById(R.id.error);
         mError.setVisibility(View.GONE);
 
         //Input Area
-        mInputText = (EditText) findViewById(upc);
-        mSelectMovie = (RadioButton) findViewById(R.id.selectMovie);
-        mSelectBook = (RadioButton) findViewById(R.id.selectBook);
+        mInputText = findViewById(upc);
+        mSelectMovie = findViewById(R.id.selectMovie);
+        mSelectBook = findViewById(R.id.selectBook);
 
         //Progress Bar
-        mProgress = (ProgressBar) findViewById(R.id.ProgressBarWait);
+        mProgress = findViewById(R.id.ProgressBarWait);
 
         //Details Area
-        mDetailView = (LinearLayout) findViewById(R.id.details);
-        mTopButtonLayout = (LinearLayout) findViewById(R.id.top_button_layout);
-        mTitle = (EditText) findViewById(R.id.add_view_Title);
-        mByline = (EditText) findViewById(R.id.add_view_byline);
-        mAuthors = (EditText) findViewById(R.id.authors);
-        mArtImage = (ImageView) findViewById(R.id.artView);
-        mReleaseDate = (EditText) findViewById(R.id.releaseDate);
-        mSubTextOne = (EditText) findViewById(R.id.subText1);
-        mSubTextTwo = (EditText) findViewById(R.id.subText2);
-        mFavButton = (CheckBox) findViewById(R.id.FavButton);
-        mBranding = (ImageView) findViewById(R.id.addNewBranding);
-        mSynopsis = (EditText) findViewById(R.id.synopsis);
-        mStore = (EditText) findViewById(R.id.store);
-        mNotes = (EditText) findViewById(R.id.notes);
-        mTrailerScroll = (LinearLayout) findViewById(R.id.trailer_scroll);
-        mDivider = (View)findViewById(R.id.divider);
-        mUserInput = (LinearLayout) findViewById(R.id.user_input);
-        mButtonLayout = (LinearLayout)findViewById(R.id.button_layout);
+        mDetailView = findViewById(R.id.details);
+        mTopButtonLayout = findViewById(R.id.top_button_layout);
+        mTitle = findViewById(R.id.add_view_Title);
+        mByline = findViewById(R.id.add_view_byline);
+        mAuthors = findViewById(R.id.authors);
+        mArtImage = findViewById(R.id.artView);
+        mReleaseDate = findViewById(R.id.releaseDate);
+        mSubTextOne = findViewById(R.id.subText1);
+        mSubTextTwo = findViewById(R.id.subText2);
+        mFavButton = findViewById(R.id.FavButton);
+        mBranding = findViewById(R.id.addNewBranding);
+        mSynopsis = findViewById(R.id.synopsis);
+        mStore = findViewById(R.id.store);
+        mNotes = findViewById(R.id.notes);
+        mTrailerScroll = findViewById(R.id.trailer_scroll);
+        mDivider = findViewById(R.id.divider);
+        mUserInput = findViewById(R.id.user_input);
+        mButtonLayout = findViewById(R.id.button_layout);
     }
 
     private void inflateMovieViews(String[] data){
@@ -876,7 +876,7 @@ public class AddNewActivity extends AppCompatActivity {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(AddNewActivity.this);
         final View urlInput = getLayoutInflater().inflate(R.layout.dialog_add_image, null);
-        final EditText edittext = (EditText) urlInput.findViewById(R.id.dialogURL);
+        final EditText edittext = urlInput.findViewById(R.id.dialogURL);
         alert.setMessage("Set Image");
         alert.setTitle("Enter Image URL:");
         alert.setView(urlInput);
@@ -917,10 +917,10 @@ public class AddNewActivity extends AppCompatActivity {
         //Create AlertDialog that allows user to input/update the rating and the runtime of movie.
         final View ratingRuntimeDialog = getLayoutInflater().inflate(R.layout.dialog_rating_runtime, null);
         //Get reference to Rating EditText and load data we have
-        final EditText Rating = (EditText) ratingRuntimeDialog.findViewById(R.id.dialogRating);
+        final EditText Rating = ratingRuntimeDialog.findViewById(R.id.dialogRating);
         Rating.setText(mMovie[14]);
         //Get reference to Runtime and load data we have
-        final EditText Runtime = (EditText) ratingRuntimeDialog.findViewById(R.id.dialogRuntime);
+        final EditText Runtime = ratingRuntimeDialog.findViewById(R.id.dialogRuntime);
         Runtime.setText(mMovie[8]);
 
         //Make and Launch AlertDialog
@@ -1162,7 +1162,7 @@ public class AddNewActivity extends AppCompatActivity {
 
                 for(String url: tempTrail){
                     View v =  vi.inflate(R.layout.content_trailer_list_item, view, false);
-                    TextView listText = (TextView) v.findViewById(R.id.list_item_trailer_text);
+                    TextView listText = v.findViewById(R.id.list_item_trailer_text);
                     String text = "Play Trailer number"+ String.valueOf(i+1);
                     //ALLy Content description for trailers
                     v.setContentDescription(text);

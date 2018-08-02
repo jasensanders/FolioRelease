@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = findViewById(R.id.adView);
 
         if(!BuildConfig.DEBUG_BUILD) {
 
@@ -207,20 +207,20 @@ public class MainActivity extends AppCompatActivity
         mAdView.loadAd(request);
 
         //Initialize empty view
-        mEmptyView = (TextView) findViewById(R.id.recyclerView_empty);
+        mEmptyView = findViewById(R.id.recyclerView_empty);
 
         //Initialize recycler view
-        itemList = (RecyclerView) findViewById(R.id.content_list);
+        itemList = findViewById(R.id.content_list);
 
         //Setup toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTitleViewLabel = (TextView) findViewById(R.id.viewLabel);
+        mTitleViewLabel = findViewById(R.id.viewLabel);
         mTitleViewLabel.setText(mViewLabel);
 
         //Setup Floating Action Button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,13 +230,13 @@ public class MainActivity extends AppCompatActivity
         });
 
         //Setup Nav Drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Check for the WRITE_EXTERNAL_STORAGE permission. This is needed for local backup.  If the
@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;

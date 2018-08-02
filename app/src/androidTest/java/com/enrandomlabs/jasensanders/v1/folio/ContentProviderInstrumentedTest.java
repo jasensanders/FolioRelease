@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 public class ContentProviderInstrumentedTest {
     @Test
-    public void useAppContext() throws Exception {
+    public void useAppContext() {
           // Context of the app under test.
           Context appContext = InstrumentationRegistry.getTargetContext();
 

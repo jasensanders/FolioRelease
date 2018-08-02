@@ -602,11 +602,7 @@ public class FetchBookService extends IntentService {
 
     private boolean resultsValid(String[] results){
 
-        if( results == null ||results[0].length()==0 || results[3].length() == 0){
-
-            return false;
-        }
-        return true;
+        return results != null && results[0].length() != 0 && results[3].length() != 0;
     }
     private void sendApologies(String message){
         sendDataBack( new String[]{message, param1, "none", NOT_FOUND});

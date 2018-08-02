@@ -54,11 +54,11 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ViewHo
         public ViewHolder(View view){
             super(view);
 
-            artImage = (ImageView) view.findViewById(R.id.thumbnail);
-            title = (TextView) view.findViewById(R.id.headline_title);
-            byline = (TextView) view.findViewById(R.id.byline);
-            addDate = (TextView)  view.findViewById(R.id.date_added);
-            subText = (TextView) view.findViewById(R.id.sub_text);
+            artImage = view.findViewById(R.id.thumbnail);
+            title = view.findViewById(R.id.headline_title);
+            byline = view.findViewById(R.id.byline);
+            addDate = view.findViewById(R.id.date_added);
+            subText = view.findViewById(R.id.sub_text);
             view.setOnClickListener(this);
 
         }

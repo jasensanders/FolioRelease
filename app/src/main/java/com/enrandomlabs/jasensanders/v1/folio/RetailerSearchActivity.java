@@ -87,7 +87,7 @@ public class RetailerSearchActivity extends AppCompatActivity {
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        mAdView = (AdView) findViewById(R.id.retailerAdView);
+        mAdView = findViewById(R.id.retailerAdView);
         AdRequest.Builder builder = new AdRequest.Builder();
         if(BuildConfig.DEBUG_BUILD) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
@@ -160,13 +160,13 @@ public class RetailerSearchActivity extends AppCompatActivity {
 
                     //Tell the user the Scan Failed, then log event.
                     ((TextView) findViewById(R.id.error)).setText(R.string.barcode_failure);
-                    ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
+                    findViewById(R.id.error).setVisibility(View.VISIBLE);
                     //Log.d(LOG_TAG, "No barcode captured, intent data is null");
                 }
             } else {
 
                 //Tell the user the Activity Failed
-                ((TextView) findViewById(R.id.error)).setVisibility(View.VISIBLE);
+                findViewById(R.id.error).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.error)).setText(String.format(getString(R.string.barcode_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
 
@@ -376,8 +376,8 @@ public class RetailerSearchActivity extends AppCompatActivity {
     }
     private void initializeViews(){
 
-        mUpcInput = (EditText) findViewById(R.id.upc_input);
-        mTitleInput = (EditText) findViewById(R.id.title_input);
+        mUpcInput = findViewById(R.id.upc_input);
+        mTitleInput = findViewById(R.id.title_input);
 
     }
 

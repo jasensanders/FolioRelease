@@ -69,7 +69,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
 
 
         //Set onClick for each Spinner
-        mViewSpin = (Spinner) rootView.findViewById(R.id.widget_view_type);
+        mViewSpin = rootView.findViewById(R.id.widget_view_type);
         mViewSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -87,7 +87,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
         });
         mViewSpin.setSelection(Utility.indexOf(viewValues, viewType));
 
-        mSortTypeSpin = (Spinner) rootView.findViewById(R.id.widget_sort_type);
+        mSortTypeSpin = rootView.findViewById(R.id.widget_sort_type);
         mSortTypeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -104,7 +104,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
         });
         mSortTypeSpin.setSelection(Utility.indexOf(sortTypeValues, sortType));
 
-        mSortOrderSpin = (Spinner) rootView.findViewById(R.id.widget_sort_order);
+        mSortOrderSpin = rootView.findViewById(R.id.widget_sort_order);
         mSortOrderSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -171,9 +171,7 @@ public class Utility {
     static public boolean isValidUpc(String s) {
         if(isNum(s)){
             //s.length() == 10 || s.length() == 13
-            if(s.length() ==12 || s.length() == 10 || s.length() == 13){
-                return true;
-            }
+            return s.length() == 12 || s.length() == 10 || s.length() == 13;
         }
         return false;
     }

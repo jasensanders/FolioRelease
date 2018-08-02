@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -146,7 +147,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
@@ -209,28 +210,28 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     private void initializeViews(){
 
         //Input Area
-        mError = (TextView) mRootView.findViewById(R.id.error);
+        mError = mRootView.findViewById(R.id.error);
         mError.setVisibility(View.GONE);
 
         //Book Details Area
-        mDetailView = (LinearLayout) mRootView.findViewById(R.id.details);
-        mTitle = (TextView) mRootView.findViewById(R.id.detail_view_title);
-        mByline = (TextView) mRootView.findViewById(R.id.detail_view_byline);
-        mAuthors = (TextView) mRootView.findViewById(R.id.detail_view_authors);
-        mPosterImage = (ImageView) mRootView.findViewById(R.id.posterView);
-        mBranding = (ImageView) mRootView.findViewById(R.id.branding);
-        mBarcodeImage = (ImageView) mRootView.findViewById(R.id.upcBarcodeImage);
-        mReleaseDate = (TextView) mRootView.findViewById(R.id.releaseDate);
-        mSubTextOne = (TextView) mRootView.findViewById(R.id.detail_subtext1);
-        mSubTextTwo = (TextView) mRootView.findViewById(R.id.detail_subtext2);
-        mFavButton = (CheckBox) mRootView.findViewById(R.id.FavButton);
-        mSearchRetail = (Button) mRootView.findViewById(R.id.search_retail);
-        mSynopsis = (TextView) mRootView.findViewById(R.id.synopsis);
-        mStore = (EditText) mRootView.findViewById(R.id.store);
-        mNotes = (EditText) mRootView.findViewById(R.id.notes);
-        mTrailerScroll = (LinearLayout) mRootView.findViewById(R.id.trailer_scroll);
-        mDeleteButton = (Button) mRootView.findViewById(R.id.delete_button);
-        mSaveButton = (Button) mRootView.findViewById(R.id.save_button);
+        mDetailView = mRootView.findViewById(R.id.details);
+        mTitle = mRootView.findViewById(R.id.detail_view_title);
+        mByline = mRootView.findViewById(R.id.detail_view_byline);
+        mAuthors = mRootView.findViewById(R.id.detail_view_authors);
+        mPosterImage = mRootView.findViewById(R.id.posterView);
+        mBranding = mRootView.findViewById(R.id.branding);
+        mBarcodeImage = mRootView.findViewById(R.id.upcBarcodeImage);
+        mReleaseDate = mRootView.findViewById(R.id.releaseDate);
+        mSubTextOne = mRootView.findViewById(R.id.detail_subtext1);
+        mSubTextTwo = mRootView.findViewById(R.id.detail_subtext2);
+        mFavButton = mRootView.findViewById(R.id.FavButton);
+        mSearchRetail = mRootView.findViewById(R.id.search_retail);
+        mSynopsis = mRootView.findViewById(R.id.synopsis);
+        mStore = mRootView.findViewById(R.id.store);
+        mNotes = mRootView.findViewById(R.id.notes);
+        mTrailerScroll = mRootView.findViewById(R.id.trailer_scroll);
+        mDeleteButton = mRootView.findViewById(R.id.delete_button);
+        mSaveButton = mRootView.findViewById(R.id.save_button);
 
     }
 
@@ -337,7 +338,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
                 String Notes = mNotes.getText().toString();
 
                 //Determine from which list we are updating
-                Uri updateMovie = mParam1;;
+                Uri updateMovie = mParam1;
                 ContentValues update = Utility.makeUpdateValues(Store, Notes, Utility.BOOK_BY_UPC);
                 String saveSelection = DataContract.BookEntry.COLUMN_UPC + " = ?";
                 int rowsUpdated;
@@ -366,7 +367,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
 
         super.onSaveInstanceState(outState);
         outState.putString(DETAIL_BOOK_CURRENT_STORE, mStore.getText().toString());
@@ -375,6 +376,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
+    @NonNull
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         return new CursorLoader(getActivity(),
@@ -386,7 +388,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
 
         if(data.moveToFirst()){
             inflateViews(data);
@@ -395,7 +397,7 @@ public class DetailBookFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
 
